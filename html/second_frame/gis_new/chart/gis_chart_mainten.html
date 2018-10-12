@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>title</title>
+    <link rel="stylesheet" type="text/css" href="../../../../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../../css/mui.min.css"/>
+    <style>
+    	html,body {min-height: 100%;background-color: #efeff4;}
+    	.my-chart{
+    		width:100%;
+    		height:auto;
+    		overflow: hidden;
+    		text-align: center;
+    		margin:10px 0px;
+		    background: #fff;
+    		padding: 10px 0px;
+    	}
+    	.chart{height:220px;width:100%;}
+    	.chart-nodata1{
+    		background:url(../../../../image/gis/nochart-1.png);width:100%;height:100%;font-size: 26px;padding-top: 15%;
+    		background-position: center;
+    		background-size: cover;
+    		color: #ddd;
+    	}
+    	.chart-nodata2{
+    		background:url(../../../../image/gis/nochart-2.png);width:100%;height:100%;font-size: 26px;padding-top: 15%;
+    		background-position: center;
+    		background-size: cover;
+    		color: #ddd;
+    	}
+    </style>
+</head>
+<body>
+	<div class="mui-content">
+		<div class="my-chart">
+			<h4>当前缺陷统计</h4>
+			<h5 style="margin: 10px 0px;">更新时间：<span id="disease_times"></span></h5>
+			<div id="disease_chart" class="chart"></div>
+		</div>
+		<div class="my-chart">
+			<h4>当前弱电故障分级统计</h4>
+			<h5 style="margin: 10px 0px;">更新时间：<span id="problem_times"></span></h5>
+			<div id="problem_chart" class="chart"></div>
+		</div>
+	</div>
+</body>
+<script type="text/javascript" src="../../../../script/api.js"></script>
+<script type="text/javascript" src="../../../../script/mui.min.js"></script>
+<script type="text/javascript" src="../../../../script/zepto.min.js"></script>
+<script type="text/javascript" src="../../../../script/echarts.min.js"></script>
+<script type="text/javascript" src="../../../../script/transform.js"></script>
+<script type="text/javascript">
+	var disease_chart = null,problem_chart = null;
+	apiready = function(){
+		var datenow = new Date().Format('yyyy-MM-dd hh:mm');
+		$('#disease_times').html(datenow);
+		$('#problem_times').html(datenow);
+		window.setTimeout(function(){
+			fnCountDisease();
+			fnCountProblem();
+		},300);
+	};
+	
+	function fnRefresh(){
+		var datenow = new Date().Format('yyyy-MM-dd hh:mm');
+		$('#disease_times').html(datenow);
+		$('#problem_times').html(datenow);
+		fnCountDisease();
+		fnCountProblem();
+	}
+	
+	function fnCountDisease(){
+		var reportUrl = $api.getStorage("report_url");
+		api.ajax({
+	        url:reportUrl+'gims/gis-new/countDiseaseByZone',
+	        data:{
+	        	values:{zoneName:api.pageParam.title}
+	        },
+	        timeout:10
+        },function(json,err){
+        	if(json&&json.errcode==0&&json.data.length>0){
+        		var legend_data = ['绿化\n'+json.data[0].lhnum+'件','保洁\n'+json.data[0].bjnum+'件','结构\n'+json.data[0].jgnum+'件'];
+				var series_data = [{value:json.data[0].lhnum, name:legend_data[0]},{value:json.data[0].bjnum, name:legend_data[1]},{value:json.data[0].jgnum, name:legend_data[2]}];
+        		var option = {
+				    tooltip : {
+				        trigger: 'item',
+				        formatter: "{a} <br/>{b}({d}%)"
+				    },
+				    legend: {
+				    	show:false,
+				        data: legend_data
+				    },
+				    series : [
+				        {
+				            name: '病害统计',
+				            type: 'pie',
+				            radius : '65%',
+				            center: ['50%', '50%'],
+				            data:series_data,
+				            itemStyle: {
+				                emphasis: {
+				                    shadowBlur: 10,
+				                    shadowOffsetX: 0,
+				                    shadowColor: 'rgba(0, 0, 0, 0.5)'
+				                }
+				            }
+				        }
+				    ]	
+				};
+				if(disease_chart==null){
+					disease_chart = echarts.init(document.getElementById('disease_chart'));
+				}
+				disease_chart.setOption(option);
+        	}else{
+        		document.getElementById('disease_chart').innerHTML = '<div class="chart-nodata1">暂无数据</div>';
+        	}
+        });
+	}
+	
+	function fnCountProblem(){
+		var reportUrl = $api.getStorage("report_url");
+		api.ajax({
+	        url:reportUrl+'gims/gis-new/countProblemByZone',
+	        data:{
+	        	values:{zoneName:api.pageParam.title}
+	        },
+	        timeout:10
+        },function(json,err){
+        	if(json&&json.errcode==0&&json.data!=null){
+        		var data = json.data;
+				var series_data = [];
+				series_data[0] = {value:data.onenum, name:'一级故障\n'+data.onenum+'起'};
+				series_data[1] = {value:data.twonum, name:'二级故障\n'+data.twonum+'起'};
+				series_data[2] = {value:data.threenum, name:'三级故障\n'+data.threenum+'起'};
+				var option = {
+				    tooltip : {
+				        trigger: 'item',
+				        formatter: "{a} <br/>{b} : {c} ({d}%)"
+				    },
+				    color:['#FF9900','#ff0000','#66CC00'],
+				    series : [
+				        {
+				            name: '机电故障',
+				            type: 'pie',
+				            radius : '65%',
+				            center: ['50%', '50%'],
+				            data:series_data,
+				            itemStyle: {
+				                emphasis: {
+				                    shadowBlur: 10,
+				                    shadowOffsetX: 0,
+				                    shadowColor: 'rgba(0, 0, 0, 0.5)'
+				                }
+				            }
+				        }
+				    ]
+				};
+				if(problem_chart==null){
+					problem_chart = echarts.init(document.getElementById('problem_chart'));
+				}
+				problem_chart.setOption(option);
+        	}else{
+        		document.getElementById('problem_chart').innerHTML = '<div class="chart-nodata1">暂无数据</div>';
+        	}
+        });
+	}
+</script>
+</html>

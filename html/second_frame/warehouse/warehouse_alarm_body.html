@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+          content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>title</title>
+    <link rel="stylesheet" type="text/css" href="../../../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/mui.min.css"/>
+    <style>
+        html, body {
+            min-height: 100%;
+        }
+
+        #videoPlay {
+            width: 100%;
+            min-height: 160px;
+            background: #424242;
+            display: -webkit-box;
+            -webkit-box-orient: horizontal;
+            -webkit-box-pack: center;
+            -webkit-box-align: center;
+        }
+
+        .road-btn {
+            border-radius: 50%;
+            margin-left: 5px;
+        }
+
+        #content_div {
+            overflow: auto;
+            background: #fff;
+            padding: 10px;
+        }
+
+        #user_list {
+            list-style: none;
+            width: 100%;
+            overflow: hidden;
+            min-height: 100px;
+        }
+
+        #user_list li {
+            float: left;
+            margin-right: 5px;
+        }
+
+        #user_list li div {
+            height: 60px;
+            width: 60px;
+            overflow: hidden;
+            border: 1px solid #a0a0a0;
+            border-radius: 5px;
+            display: -webkit-box;
+            -webkit-box-orient: horizontal;
+            -webkit-box-pack: center;
+            -webkit-box-align: center;
+        }
+        #user_list li div img{
+        	width:100%;
+        }
+
+        #user_list li p {
+            width: 100%;
+            text-align: center;
+        }
+
+        .my-bottom-btn {
+            display: table-cell;
+            overflow: hidden;
+            width: 1%;
+            height: 45px;
+            text-align: center;
+            vertical-align: middle;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+<div class="mui-content">
+    <div id="videoPlay">
+        <img src="../../../image/play.png"/>
+    </div>
+    <div class="mui-content-padded" style="overflow: hidden;margin:5px;margin-top: 8px;">
+        <!--<p style="float:left;margin: 5px 0;">关键摄像头:</p>-->
+        <span id="device_btns" style="float:left;"></span>
+        <button type="button" class="mui-btn mui-btn-primary" style="float:right;" onclick="fnOpenVideoWin()">实时视频
+        </button>
+    </div>
+    <div id="content_div">
+        <div class="mui-card" style="margin: 0 0 10px 0;">
+            <div class="mui-card-header"><span>仓库状态</span>
+                <div class="mui-slider-right" id="house_status"></div>
+            </div>
+            <div class="mui-card-content">
+                <div class="mui-card-content-inner">
+                    <p>库内人员：</p>
+                    <ul id="user_list"></ul>
+                </div>
+            </div>
+        </div>
+        
+        <button type="button" class="mui-btn  mui-btn-primary my-bottom-btn" onclick="fnOpenDoor(this)"
+                style="width:48%;margin:5px 5px 5px 0px;">关门
+        </button>
+        <button type="button" class="mui-btn  mui-btn-success my-bottom-btn" onclick="fnOpenDoor(this)"
+                style="width:48%;margin:5px 0px 5px 0px;">开门
+        </button>
+    </div>
+</div>
+</body>
+<script type="text/javascript" src="../../../script/api.js"></script>
+<script type="text/javascript" src="../../../script/mui.min.js"></script>
+<script type="text/javascript" src="../../../script/zepto.min.js"></script>
+<script type="text/javascript">
+    var playVideoHeight = 0;
+    var storeHouseInfo = null;
+    var videoPlayer = null;
+    var isFirstOpen = true;
+    apiready = function () {
+        playVideoHeight = api.frameWidth * 9 / 16;
+        $('#videoPlay').height(playVideoHeight);
+        $('#content_div').height(api.frameHeight - playVideoHeight - $('.mui-content-padded').height() - 15);
+        videoPlayer = api.require('dhvideo');
+        fnLoadInfo();
+    };
+
+    function fnLoadInfo() {
+        api.showProgress({
+            title: '请稍后',
+            text: '正在获取数据...',
+            modal: false
+        });
+        var serverUri = $api.getStorage('gmms_url') + 'modules/mobile/device/store-house!getStoreHouseInfo.action';
+        api.ajax({
+            url: serverUri,
+            method: 'get',
+            timeout: 10,
+            data: {
+                values: {
+                    houseId: api.pageParam.houseId
+                }
+            }
+        }, function (ret, err) {
+            if (ret) {
+                storeHouseInfo = ret;
+                if (ret.devices.length > 0) {
+                    $.each(ret.devices, function (i, device) {
+                        if (i == 0) {
+                            $('#device_btns').append('<button type="button" class="mui-btn mui-btn-primary road-btn" deviceidField="' + device.deviceId + '" onclick="goPlayVideo(this)" disabled>' + (i + 1) + '</button>');
+                            fnPlayVideo(device);
+                        } else {
+                            $('#device_btns').append('<button type="button" class="mui-btn road-btn" deviceidField="' + device.deviceId + '" onclick="goPlayVideo(this)">' + (i + 1) + '</button>');
+                        }
+                    });
+                }
+                $('#house_status').html('<span style="' + (ret.status == '正常' ? 'color:blue;' : 'color:red;') + '">' + ret.status + '</span>');
+                var userStr = '';
+                if (ret.userNames != null && ret.userNames != '') {
+                    var names = ret.userNames.split(',');
+                    $.each(names, function (i, name) {
+                        userStr += '<li><div><img src="../../../image/person.png"/></div><p>' + name + '</p></li>';
+                    });
+                } else {
+                    userStr += '<li style="margin-left:10px;"><p>暂无人员</p></li>';
+                }
+                $('#user_list').html(userStr);
+            } else {
+                api.toast({msg: '获取设备列表失败!'});
+            }
+            api.hideProgress();
+            isFirstOpen = false;
+        });
+    }
+
+    function goPlayVideo(_this) {
+        $('#device_btns button').removeClass('mui-btn-primary');
+        $('#device_btns button').removeAttr('disabled');
+        $(_this).addClass('mui-btn-primary');
+        $(_this).attr('disabled', true);
+        var deviceId = $(_this).attr('deviceidField');
+        fnPlayVideo(null, deviceId);
+    }
+    
+    function fnBackPlayVideo(){
+    	if(!isFirstOpen&&$('#device_btns button').length>0){
+    		$('#device_btns button').each(function(){
+    			if($(this).hasClass('mui-btn-primary')){
+    				var deviceId = $(this).attr('deviceidField');
+    				fnPlayVideo(null, deviceId);
+    				return false;
+    			}
+    		});
+    	}
+    }
+
+    var playHandle = false;
+    function fnPlayVideo(device, deviceId) {
+    	//关闭已经打开的地图避免视频层被地图层遮挡
+		api.execScript({
+		    name:'gis_main',
+		    frameName:'gis_main_body',
+		    script: 'closebmap();'
+	    });
+        if (deviceId == undefined) {
+//          console.log(JSON.stringify(device));
+            if (device.ipOut != "" && device.portOut != "" && device.userName != "" && device.password != "") {
+                videoPlayer.login({
+                    ip: device.ipOut,
+                    port: device.portOut,
+                    userName: device.userName,
+                    password: device.password
+                }, function (ret) {
+                    if (ret.success) {
+                        videoPlayer.open({
+                            x: 0,
+                            y: 0,
+                            w: api.frameWidth,
+                            h: playVideoHeight,
+                            fixedOn: api.frameName,
+                        });
+                        videoPlayer.start({
+                            deviceId: device.deviceId
+                        });
+                    }
+                });
+            }
+        } else {
+            videoPlayer.stop(function (ret) {
+                if (ret.success) {
+                    videoPlayer.open({
+                        x: 0,
+                        y: 0,
+                        w: api.frameWidth,
+                        h: playVideoHeight,
+                        fixedOn: api.frameName,
+                    });
+                    videoPlayer.start({
+                        deviceId: deviceId
+                    });
+                }
+            });
+        }
+    }
+
+    function fnCloseVideoPlayer() {
+        videoPlayer.stop();
+        playHandle = false;
+    }
+
+    function fnOpenVideoWin() {
+        api.openWin({
+            name: 'warehouse_video',
+            url: './warehouse_video.html',
+            bounces: false,
+            pageParam: {houseId: storeHouseInfo.storeHouseId, parentWin: 'warehouse_alarm'}
+        });
+    }
+
+    function fnOpenDoor(_this) {
+        var serverUri = $api.getStorage('gmms_url') + 'modules/mobile/device/store-house!entranceCtrl.action';
+        var msg = '正在进行开门操作...';
+        var oper = 1;
+        if ($(_this).text() == '关门') {
+            oper = 0;
+            msg = '正在进行关门操作...';
+        }
+        api.showProgress({
+            title: '请稍后',
+            text: msg,
+            modal: true
+        });
+        api.ajax({
+            url: serverUri,
+            method: 'post',
+            timeout: 15,
+            data: {
+                values: {
+                    storeHouseId: storeHouseInfo.storeHouseId,//仓库ID
+                    oper: oper,//开门 or 关门
+                    userId:$api.getStorage("userId")//用户ID
+                }
+            }
+        }, function (ret, err) {
+            if (ret) {
+            	api.toast({msg: ret.msg});
+            	if(ret.success){
+            		disableBtn($(_this));
+            	}
+            } else {
+                api.toast({msg: '操作失败!' + err.msg});
+            }
+            api.hideProgress();
+        });
+    }
+
+    function disableBtn(btn) {
+        var sec = 35;
+        $('.my-bottom-btn').attr('disabled', true);
+        var text = $(btn).text();
+        var mytimer = window.setInterval(function () {
+            $(btn).text(text + '(' + sec + 's)');
+            sec--;
+            if (sec < 0) {
+                window.clearInterval(mytimer);
+                $('.my-bottom-btn').removeAttr('disabled');
+                $(btn).text(text);
+            }
+        }, 1000);
+    }
+    function destory() {
+        videoPlayer.destroy();
+    }
+</script>
+</html>

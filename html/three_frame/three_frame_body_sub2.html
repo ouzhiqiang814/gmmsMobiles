@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>title</title>
+    <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/mui.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/iconfont.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/mui.tree.css"/>
+    <style>
+    	html,body {min-height: 100%;background-color: #efeff4;}
+    	.tree-item-icon{color:#007aff;}
+    </style>
+</head>
+<body>
+	<div class="mui-content">
+		<ul id="useunit_tree" style="margin-top:1px;">
+		</ul>
+		<div id="load_more" style="margin-bottom:10px;text-align: center;height:24px;"><span class="mui-spinner" style="vertical-align: bottom;"></span> 加载中...</div>
+	</div>
+</body>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/mui.min.js"></script>
+<script type="text/javascript" src="../../script/zepto.min.js"></script>
+<script type="text/javascript" src="../../script/mui.tree.js"></script>
+<script type="text/javascript">
+	var useunitTree = null;
+	apiready = function(){
+        initLoadData(false);
+        fnInitPull();
+	};
+	
+	// 刷新
+	function fnInitPull() {
+		api.setRefreshHeaderInfo({
+		 	bgColor: '#efeff4',
+	        dropColor:'#9BA2AC'
+		},function(){
+			initLoadData(true);
+		});
+	};
+	
+	function initLoadData(isLoad){
+		if(!isLoad){
+			$('#load_more').show();
+		}
+		api.ajax({
+		    url:$api.getStorage("gmms_url")+'modules/mobile/security/user!queryAllManageUseunit.action',
+		    method:'get',
+		    timeout:10,
+		    data:{
+		    	values:{useunitId:$api.getStorage("lesseeId")}
+		    }	    
+	    },function(dataList,err){
+	    	if(dataList){
+	    		if(useunitTree==null){
+		    		useunitTree = new mui.MyTree({
+						id:'useunit_tree',
+						data:dataList,
+						nodeClick:function(node){
+							fnOpenUserList(node);
+						}
+					});
+				}else{
+					useunitTree.reload(dataList);
+				}
+	    	}else{
+	    		api.toast({
+                    msg:err.msg,
+                    duration: 2000,
+					location: 'bottom'
+                });
+	    	}
+	    	if(isLoad){
+				api.refreshHeaderLoadDone(); //刷新结束
+			}else{
+				$('#load_more').hide();
+			}
+	    });
+	}
+	
+	function fnOpenUserList(useunitInfo){
+		var isselect = api.pageParam.isselect;
+		api.openWin({
+	        name: 'user_list',
+	        url: './user_list.html',
+	        pageParam: {
+		        useunit: useunitInfo,
+		        isselect:isselect
+		    },
+		    animation:{
+				type:'movein'
+			}
+        });
+	}
+</script>
+</html>

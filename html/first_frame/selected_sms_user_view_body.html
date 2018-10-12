@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>title</title>
+    <link rel="stylesheet" type="text/css" href="../../css/api.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/mui.min.css" />
+    <style>
+    	html,body{
+    		min-height:100%;
+    		background-color: #efeff4;
+    	}
+    </style>
+</head>
+<body>
+	<div class="mui-content">
+		<ul id="selected_list" class="mui-table-view">
+			<!--<li class="mui-table-view-cell">
+				<div class="mui-slider-right mui-disabled">
+					<a class="mui-btn mui-btn-red">删除</a>
+				</div>
+				<div class="mui-slider-handle">
+					左滑显示删除按钮
+				</div>
+			</li>-->
+		</ul>
+	</div>
+</body>
+<script id="template" type="text/template">
+	{{~ it:data }}
+	<li class="mui-table-view-cell" userId="{{=data.id}}" userName="{{=data.name}}">
+		<div class="mui-slider-right mui-disabled">
+			<a class="mui-btn mui-btn-red">删除</a>
+		</div>
+		<div class="mui-slider-handle">
+			{{=data.name}}
+		</div>
+	</li>
+	{{~}}
+</script>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/doT.min.js"></script>
+<script type="text/javascript" src="../../script/mui.min.js"></script>
+<script type="text/javascript" src="../../script/zepto.min.js"></script>
+<script type="text/javascript">
+	var infomation_list,dot;
+	apiready = function(){
+		fnInit();
+		mui('#selected_list').on('tap', '.mui-btn', function(event) {
+			var elem = this;
+			var li = elem.parentNode.parentNode;
+			api.confirm({
+			    title: '提示',
+			    msg: '确认删除该条记录？',
+			    buttons: ['确定', '取消']
+			}, function(ret, err) {
+			    if(ret.buttonIndex==1){
+			    	li.parentNode.removeChild(li);
+			    	resetSelectUsers();
+			    }else{
+			    	setTimeout(function() {
+						$.swipeoutClose(li);
+					}, 0);
+			    }
+			});
+		});
+	};
+	
+	function fnInit(){
+		var userIds = api.pageParam.userIds;
+		var userNames = api.pageParam.userNames;
+		var data = [];
+		var userIdArr = userIds.split(',');
+		var userNameArr = userNames.split(',');
+		$.each(userIdArr,function(i,userId){
+			var userInfo = {};
+			userInfo.id = userId;
+			userInfo.name = userNameArr[i];
+			data.push(userInfo);
+		});
+		selected_list = $api.byId('selected_list');
+		var template = $api.byId('template');
+    	dot = doT.template(template.innerHTML);
+    	selected_list.innerHTML = dot(data);
+	}
+	
+	function resetSelectUsers(){
+		var userIds = '';
+		var userNames = '';
+		$('#selected_list li').each(function(){
+			userIds += ','+$(this).attr('userId');
+			userNames += ','+$(this).attr('userName');
+		});
+		if(userIds!=''){
+			userIds = userIds.substring(1);
+			userNames = userNames.substring(1);
+		}
+		api.execScript({
+			name:'transmitMessage',
+			frameName:'transmitMessage_body',
+	        script: "delSelectSmsUsers('"+userIds+"','"+userNames+"');"
+        });
+	}
+</script>
+</html>

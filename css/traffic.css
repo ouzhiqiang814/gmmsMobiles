@@ -1,0 +1,54 @@
+#main {
+	/*background: url('../image/xiamenmap.jpg') no-repeat;*/
+	background-size: 100%;
+	background-position: center;
+	margin: 0;
+	padding: 0;
+	height: 100%;
+	position: relative;
+}
+
+#TBTstatue {
+	stroke: #00d20f;
+	stroke-width: 2.5;
+	fill: none;
+	height: 100px;
+}
+
+#TBTstatue > .Speedclass0 {
+	stroke: #cecece;
+}
+
+#TBTstatue > .Speedclass1 {
+	stroke: #00d20f;
+}
+
+#TBTstatue > .Speedclass2 {
+	stroke: #fda701;
+}
+
+#TBTstatue > .Speedclass3 {
+	stroke: #ff1515;
+}
+
+#TBTstatue > .Speedclass4 {
+	stroke: #bb0404;
+}
+
+.roadcons {
+	position: absolute;
+	height: 25px;
+	width: 50px;
+}
+.roadcons >span {
+	background-repeat: no-repeat;
+	background-size: 100% 100%;
+	height: 25px;
+	width: 25px;
+}
+.roadcons >sub {
+	vertical-align: super;
+}
+.roadcons >.shigong {
+	background-image: url('../image/fengq.png'); 
+}

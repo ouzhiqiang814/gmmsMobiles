@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>title</title>
+    <link rel="stylesheet" type="text/css" href="../../../css/api.css" />
+	<link rel="stylesheet" type="text/css" href="../../../css/common.css" />
+	<link rel="stylesheet" type="text/css" href="../../../css/mui.min.css"/>
+	<style>
+		#headerCheck .mui-active{
+			border-top: 2px solid #5d9cec;
+			color: #5d9cec
+		}
+		#headerCheck a{
+			background-color:#f2f2f2;
+			border-right:2px solid #e4e4e4;
+			color:#bcbcbc;
+		}
+		#headerCheck{
+			height:80px;
+			padding-top:3px;
+			padding-bottom:3px;
+		}
+	 	.title_box{
+	 		height:60px;
+	 	}
+	 	.updatatime_box{
+	 		text-align: center;
+			font-size: 13px;
+			color: #dddddd;
+			margin-top: -15px;
+	 	}
+		.mui-table-view:before{
+			background-color: #fff;
+		}
+		.mui-table-view:after{
+			background-color: #fff;
+		}
+		.mui-table-view-cell:after{
+			background-color: #fff;
+		}
+		.mui-table-view .mui-active{
+			background-color: #fff;
+		}
+		.border{
+			background-color: #c8c7cc;
+			height: 2px;
+			width:90%;
+			margin:0 auto;
+			margin-top:20px;
+		}
+	 	.span_1{
+	 		height:18px;
+	 		width: 10px;
+	 		background-color:#00cc00;
+	 		margin-bottom:-3px;
+	 		margin-left:20px;
+	 	}
+	 	.span_2{
+	 		float: right;
+	 	}		 				
+	</style>
+</head>
+<body>
+	<div class="mui-content" style="background-color:#fff">
+		<div class="mui-scroll-wrapper mui-slider-indicator mui-segmented-control mui-segmented-control-inverted">
+		    <div class="mui-scroll" id="headerCheck">
+		    </div>
+		    <div id="hide" style="display: none;"></div>
+		</div>
+		<div class="title_box">
+			<h1 class="mui-title">仓库统计</h1>	
+		</div>
+		<div class="updatatime_box">
+			<span class="updatatime_1"></span>
+		</div>		
+		<div id="main1" style="width:100%;height:400px;margin-top:40px;"></div>
+		<div class="border"></div>
+		<div id="middle" style="margin-top: 20px;margin-bottom: 5px;">
+			<ul class="mui-table-view" style="color:#5d9cec;font-size: 14px;">
+				<li class="mui-table-view-cell" id="middle_line_1" style="color:#000;font-size: 16px;">
+					<label></label>
+					<span></span>
+				</li>
+				<li class="mui-table-view-cell" id="middle_line_2">
+					<span class="span_1"></span>
+					<label>累计入库总金额</label>
+					<span class="span_2"></span>
+				</li>
+				<li class="mui-table-view-cell" id="middle_line_3">
+					<span class="span_1"></span>
+					<label>累积出库总金额</label>
+					<span class="span_2"></span>
+				</li>
+			</ul>
+		</div>
+		<div id="main2" style="width:100%;height:350px;"></div>
+	</div>
+</body>
+<script type="text/javascript" src="../../../script/api.js"></script>
+<script type="text/javascript" src="../../../script/common.js"></script>
+<script type="text/javascript" src="../../../script/mui.min.js"></script>
+<script type="text/javascript" src="../../../script/zepto.min.js"></script>
+<script type="text/javascript" src="../../../script/echarts.min.js"></script>
+<script type="text/javascript">
+	var charts_url = null;
+	apiready = function(){
+		getStoreHouseList();			
+	};
+
+	//获取仓库单
+	function getStoreHouseList(){
+		charts_url = $api.getStorage("charts_url");
+		var btnStr = "";
+		api.ajax({
+	        url:charts_url+'/report/device/ajaxQueryStoreHouseList',
+	        method:'get',
+        },function(ret,err){
+        	if(ret){
+        		var type = "";
+        		if(ret.length>0){
+        			for(var i=0;i<ret.length;i++){
+        				btnStr += '<a class="mui-control-item" store_id="'+ret[i].store_id+'">'+ret[i].store_name+'</a>';
+        			}
+        			var num = ret.length-1;
+        			$("#hide").append(btnStr);
+        			var all = '<a class="mui-control-item" store_id="'+ret[num].store_id+'">'+ret[num].store_name+'</a>';
+        			$("#hide").find('a[store_id=all]').empty();
+        			$("#headerCheck").append(all+$("#hide").html());
+        			$("#headerCheck").find('a').eq(0).addClass('mui-active')
+        			getDataForCharts(type);
+        			mui("#headerCheck").on('tap','a',function(){
+        				var id = $(this).attr('store_id');
+        				getDataForCharts(id);
+        			})	
+        		}
+        	}
+			else{
+	    		api.toast({
+		            msg:"链接出现错误，暂时无法查询数据，请稍后重试！",
+		            duration:3000,
+		            location:'bottom'
+	            });
+	            errDataForCharts();
+            }        	
+        });
+	}
+	
+	//根据编号获取对应数据
+	function getDataForCharts(type){
+		charts_url = $api.getStorage("charts_url");	
+		if(type == "all" || type == ""){
+			type = "";
+		}
+		var myChart1 = echarts.init(document.getElementById('main1'));
+		var option1 = {};
+		var myChart2 = echarts.init(document.getElementById('main2'));
+		var option2 = {};
+		
+		//折线图
+		api.ajax({
+	        url:charts_url+'/report/device/ajaxYearIOCountChart?isMobile=true&isDetail=true&storeHouseId='+type,
+	        method: 'get',
+	        timeout:30
+        },function(ret,err){
+        	if(ret){
+        		option1 = {
+				    tooltip : {
+				        trigger: 'item',
+				        axisPointer: {
+				            type: 'cross',
+				            label: {
+				                backgroundColor: '#6a7985'
+				            }
+				        },
+				        formatter : "{b}<br/>{a}:{c} 万元"
+				    },
+				    legend: {
+				        data:['出库金额','入库金额']
+				    },				    
+				    grid: {
+				        left: '3%',
+				        right: '4%',
+				        bottom: '3%',
+				        containLabel: true
+				    },
+				    xAxis : [
+				        {
+				            type : 'category',
+				            boundaryGap : true,
+				            data : ret.xAxis,
+				        }
+				    ],
+				    yAxis : [
+				        {
+				            type : 'value',
+				            name : '金额（万元）',
+				        }
+				    ],
+				    series : [
+				        {
+				        	name:'出库金额',
+				            type:'line',
+				            data:ret.outDatas
+				        },
+				        {
+				        	name:'入库金额',
+				        	type:'line',
+				        	data:ret.inDatas
+				        }
+				        
+				    ],
+				    color:["#0099ff","#ff9900"]				    				    				            			
+        		};
+        		myChart1.setOption(option1);
+        		$(".updatatime_1").html('更新时间：'+ret.updateTime); 
+        	}
+        });
+        
+       //柱状图
+       api.ajax({
+	       url:charts_url+'/report/device/ajaxEachStoreIOCountChart?isMobile=true&isDetail=true&storeHouseId='+type,
+	       method:'get',
+	       timeout:30
+       },function(ret,err){
+       		if(ret){
+				 $("#middle_line_1 span").html(ret.year+" 年物资采购统计");
+				 $("#middle_line_2 .span_2").html(ret.inTotal+" 万元");
+				 $("#middle_line_3 .span_2").html(ret.outTotal+" 万元");
+				   
+				   option2 = {
+					tooltip: {
+					    	trigger :'item',
+					        axisPointer: {
+					            type: 'shadow',
+					            label: {
+					                backgroundColor: '#6a7985'
+					            }
+					        },
+					        formatter : "<p style='text-align:center;margin-top:0px;margin-bottom:0px;color:#fff;'>"+ret.year+"年{b}月</p>{a}:{c}万元"					    	
+					    },
+					    legend: {
+					        data: ['出库金额', '入库金额']
+					    },
+					color:["#0099ff","#ff9900"],    
+					grid: {
+					        left: '2%',
+					        right: '10%',
+					        bottom: '3%',
+					        containLabel: true
+					    },
+				    xAxis : [
+				        {
+				            type : 'category',
+				            boundaryGap : true,
+				            data : ret.xAxis,
+				            name : '月份'
+				        }
+				    ],
+				    yAxis : [
+				        {
+				            type : 'value',
+				            name : '金额（万元）',
+				            show : false
+				        }
+				    ],
+				    series : [
+				        {
+				            name:'出库金额',
+				            type:'bar',
+				            data:ret.outDatas
+				        },
+				        {
+				            name:'入库金额',
+				            type:'bar',
+				            data:ret.inDatas
+				        }				        
+				    ]				    				    					    				   		
+				};				 
+				myChart2.setOption(option2);     			
+       		}
+       }); 
+	}
+
+	//数据查询失败函数
+	function errDataForCharts(){
+
+		var myChart1 = echarts.init(document.getElementById('main1'));
+		var option1 = {};
+		var myChart2 = echarts.init(document.getElementById('main2'));
+		var option2 = {};		
+		//折线图
+		option1 = {
+				    tooltip : {
+				        trigger: 'axis',
+				        axisPointer: {
+				            type: 'cross',
+				            label: {
+				                backgroundColor: '#6a7985'
+				            }
+				        },
+				        formatter : "{b}<br/>{a}:{c} 万元"
+				    },
+				    legend: {
+				        data:['出库金额','入库金额']
+				    },				    
+				    grid: {
+				        left: '3%',
+				        right: '4%',
+				        bottom: '3%',
+				        containLabel: true
+				    },
+				    xAxis : [
+				        {
+				            type : 'category',
+				            boundaryGap : true,
+				            data : ""
+				        }
+				    ],
+				    yAxis : [
+				        {
+				            type : 'value',
+				            name : '金额（万元）'
+				        }
+				    ],
+				    series : [
+				        {
+				        	name:'出库金额',
+				            type:'line',
+				            data:""
+				        },
+				        {
+				        	name:'入库金额',
+				        	type:'line',
+				        	data:""
+				        }
+				        
+				    ],
+				    color:["#0099ff","#ff9900"]				    				    				            			
+        		};
+        		myChart1.setOption(option1); 
+        
+       //柱状图
+		 $("#middle_line_1 span").html("物资采购统计");
+		 $("#middle_line_2 .span_2").html("0 万元");
+		 $("#middle_line_3 .span_2").html("0 万元");
+		   
+		   option2 = {
+			tooltip: {
+			    	trigger :'item',
+			        axisPointer: {
+			            type: 'shadow',
+			            label: {
+			                backgroundColor: '#6a7985'
+			            }
+			        },
+			        formatter : "<p style='text-align:center;margin-top:0px;margin-bottom:0px;color:#fff;'>"					    	
+			    },
+			    legend: {
+			        data: ['出库金额', '入库金额']
+			    },
+			color:["#0099ff","#ff9900"],    
+			grid: {
+			        left: '5%',
+			        right: '10%',
+			        bottom: '3%',
+			        containLabel: true
+			    },
+		    xAxis : [
+		        {
+		            type : 'category',
+		            boundaryGap : true,
+		            data : "",
+		        }
+		    ],
+		    yAxis : [
+		        {
+		            type : 'value',
+		            name : '金额（万元）'
+		        }
+		    ],
+		    series : [
+		        {
+		            name:'出库金额',
+		            type:'bar',
+		            data:""
+		        },
+		        {
+		            name:'入库金额',
+		            type:'bar',
+		            data:""
+		        }				        
+		    ]				    				    					    				   		
+		};				 
+		myChart2.setOption(option2);   
+	}	
+</script>
+</html>

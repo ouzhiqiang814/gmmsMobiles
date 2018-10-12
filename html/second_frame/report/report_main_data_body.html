@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>title</title>
+    <link rel="stylesheet" type="text/css" href="../../../css/api.css" />
+    <style>
+    	.main {
+			display: flex;
+		}
+		.main-left {
+			flex: 1;
+			background: #FFFFFF;
+			text-align: center;
+			border-right: 1px solid #EBECED;
+			border-bottom: 1px solid #EBECED;
+			padding-top: 30px;
+			padding-bottom: 30px;
+		}
+		.main-right {
+			flex: 1;
+			background: #FFFFFF;
+			text-align: center;
+			padding-top: 30px;
+			padding-bottom: 30px;
+			border-bottom: 1px solid #EBECED;
+		}
+		.menu div{padding:5px;}
+		.menu img{
+			width:80px;
+		}
+		.presshover {
+			background-color: #CCCCCC;
+		}
+		
+		
+		.oneTitle{
+			flex: 0;
+			float:left;
+			width:50%;
+		}
+    </style>
+</head>
+<body>
+	<div id="monitor_report" style="display: none;">
+		<div class="main">
+			<div class="main-left menu" tapmode="presshover" onclick="fnReportDetail('交通事件统计','event/statistics/list')">
+				<img src="../../../image/report/207DF.png" alt="" >
+				<div>交通事件统计</div>
+			</div>
+			<div class="main-right menu" tapmode="presshover" onclick="fnReportDetail('安保事件统计','event/sec-event-statistics/list')">
+				<img src="../../../image/report/207DF.png" alt="" >
+				<div>安保事件统计</div>
+			</div>
+		</div>
+	</div>
+	<div id="toll_report" style="display: none;">
+		<div class="main">
+			<div class="main-left menu" tapmode="presshover" onclick="fnOpenReport('次费明细报表','toll_c')">
+				<img src="../../../image/report/62DD.png" alt="" >
+				<div>次费报表</div>
+			</div>
+			<div class="main-right menu" tapmode="presshover" onclick="fnOpenReport('年费明细报表','toll_y')">
+				<img src="../../../image/report/3B6.png" alt="" >
+				<div>年费报表</div>
+			</div>
+		</div>
+		<div class="main">
+			<div class="main-left menu" tapmode="presshover" onclick="fnOpenFinanceReport('财务报表','finance')">
+				<img src="../../../image/report/4645.png" alt="" >
+				<div>综合报表</div>
+			</div>
+			<div class="main-right menu" tapmode="presshover">
+			</div>
+		</div>
+	</div>
+	<div id="road_report" style="display: none;">
+		<div class="main">
+			<div class="main-left menu" tapmode="presshover" onclick="fnReportDetail('超限处罚案件信息查询','road/exceed-vehicle/list')">
+				<img src="../../../image/report/3AF.png" alt="" >
+				<div>超限处罚案件信息查询</div>
+			</div>
+			<div class="main-right menu" tapmode="presshover" onclick="fnReportDetail('路产处罚案件信息查询','road/highway-property-vehicle/list')">
+				<img src="../../../image/report/3AF.png" alt="" >
+				<div>路产处罚案件信息查询</div>
+			</div>
+		</div>
+		<div class="main">
+			<div class="main-left menu" tapmode="presshover" onclick="fnReportDetail('路政工作情况统计表','road/road-details/infoList')">
+				<img src="../../../image/report/3AF.png" alt="" >
+				<div>路政工作情况统计表</div>
+			</div>
+			<div class="main-right menu" tapmode="presshover" onclick="fnReportDetail('治超统计明细表','')">
+				<img src="../../../image/report/3AF.png" alt="" >
+				<div>治超统计明细表</div>
+			</div>
+		</div>
+	</div>
+	<div id="finance_report" style="display: none;">
+		<div class="main">
+			<div class="main-left menu" tapmode="presshover" onclick="fnReportDetail('通行费收入预算','fee/finance/feeyear-goalinfo/list')">
+				<img src="../../../image/report/BC21.png" alt="" >
+				<div>通行费收入预算</div>
+			</div>
+			<div class="main-right menu" tapmode="presshover" onclick="fnReportDetail('通行费收入分析','fee/finance/feeincome-info/list')">
+				<img src="../../../image/report/BC21.png" alt="" >
+				<div>通行费收入分析</div>
+			</div>
+		</div>
+		<div class="main">
+			<div class="main-left menu" tapmode="presshover" onclick="fnReportDetail('次费、年费车道车流量占比统计','fee/finance/feelane-countinfo/list')">
+				<img src="../../../image/report/BC21.png" alt="" >
+				<div>次费、年费车道车流量占比统计</div>
+			</div>
+			<div class="main-right menu" tapmode="presshover" onclick="fnReportDetail('各管理中心车辆通行费征收情况','fee/finance/feeyear-info/list')">
+				<img src="../../../image/report/BC21.png" alt="" >
+				<div>各管理中心车辆通行费征收情况</div>
+			</div>
+		</div>
+		<div class="main">
+			<div class="main-left menu" tapmode="presshover" onclick="fnReportDetail('客车、货车通行占比统计表','fee/finance/feetype-countinfo/list')">
+				<img src="../../../image/report/BC21.png" alt="" >
+				<div>客车、货车通行占比统计表</div>
+			</div>
+			<div class="main-right menu" tapmode="presshover" onclick="fnReportDetail('四桥一隧车流量统计','fee/finance/passcount-yearinfo/list')">
+				<img src="../../../image/report/BC21.png" alt="" >
+				<div>四桥一隧车流量统计</div>
+			</div>
+		</div>
+		<div class="main">
+			<div class="main-left menu" tapmode="presshover" onclick="fnReportDetail('四桥一隧通行费收入车流量统计','fee/finance/feeinfo-yearinfo/list')">
+				<img src="../../../image/report/BC21.png" alt="" >
+				<div>四桥一隧通行费收入车流量统计</div>
+			</div>
+			<div class="main-right menu" tapmode="presshover" onclick="fnReportDetail('四桥一隧车流量统计表(按车型)','fee/finance/vkind-countinfo/list')">
+				<img src="../../../image/report/BC21.png" alt="" >
+				<div>四桥一隧车流量统计表(按车型)</div>
+			</div>
+		</div>
+		<div class="main">
+			<div class="main-left menu" tapmode="presshover" onclick="fnReportDetail('年费办卡车辆统计','fee/finance/cardvehicle/list')">
+				<img src="../../../image/report/BC21.png" alt="" >
+				<div>年费办卡车辆统计</div>
+			</div>
+			<div class="main-right menu" tapmode="presshover" onclick="fnReportDetail('车流量情况统计','fee/finance/pass-countinfo/list')">
+				<img src="../../../image/report/BC21.png" alt="" >
+				<div>车流量情况统计</div>
+			</div>
+		</div>
+		<div class="main">
+			<div class="main-left menu" tapmode="presshover" onclick="fnReportDetail('车辆通行费征收统计','fee/finance/fee-countinfo/list')">
+				<img src="../../../image/report/BC21.png" alt="" >
+				<div>车辆通行费征收统计</div>
+			</div>
+			<div class="main-right menu" tapmode="presshover">
+			</div>
+		</div>
+	</div>
+</body>
+<script type="text/javascript" src="../../../script/api.js"></script>
+<script type="text/javascript" src="../../../script/zepto.min.js"></script>
+<script type="text/javascript">
+	apiready = function(){
+		var pageParam = api.pageParam;
+		$('#'+pageParam.type+'_report').show();
+	};
+	
+	function fnReportDetail(title,method){
+		if(method==null||method==''){
+			api.toast({
+	            msg:'暂无该报表数据'
+            });
+            return;
+		}
+		api.openWin({
+			name : 'report_detail',
+			url : './report_detail.html',
+			bounces : false,
+			pageParam:{title:title,method:method},
+			animation:{
+				type:'movein'
+			}
+		});
+	}
+	
+	function fnOpenReport(title,type){
+		api.openWin({
+			name : 'report_main_data2',
+			url : './report_main_data2.html',
+			bounces : false,
+			pageParam:{title:title,type:type},
+			animation:{
+				type:'movein'
+			}
+		});
+	}
+	
+	function fnOpenFinanceReport(title,type){
+		api.openWin({
+			name : 'report_main_data',
+			url : './report_main_data.html',
+			bounces : false,
+			reload:true,
+			pageParam:{title:title,type:type},
+			animation:{
+				type:'movein'
+			}
+		});
+	}
+</script>
+</html>

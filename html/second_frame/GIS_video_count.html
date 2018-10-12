@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>title</title>
+    <link rel="stylesheet" type="text/css" href="../../css/api.css" />
+	<link rel="stylesheet" type="text/css" href="../../css/mui.min.css" />
+	<link rel="stylesheet" type="text/css" href="../../css/iconfont.css" />
+    <style>
+    	html,body{min-height:100%;background-color: #efeff4;}
+    	.mui-table-view .mui-media-object {
+		    line-height: 100px;
+		    max-width: 150px;
+		    height: 103px;
+		}
+		.mui-table-view-cell>a:not(.mui-btn){
+			padding:0;
+		}
+		.mui-media-body{padding:12px 0;}
+		.mui-media-body table{width:100%;color:#8f8f94;}
+		.img-div{position: absolute;left:0;width:145px;bottom:0;height:20px;text-align: center;color:#fff;background: rgba(21, 21, 21, 0.58);}
+    	.mui-card .mui-table-view .mui-table-view-cell:last-child, .mui-card .mui-table-view .mui-table-view-divider:last-child{
+    		border-bottom-left-radius: 0px;
+    		border-top-left-radius: 0px;
+    	}
+    </style>
+</head>
+<body>
+	<div class="mui-content">
+		<!--<div class="mui-card" plano="'+data.plano+'" planame="'+data.planame+'">
+			<ul class="mui-table-view">
+				<li class="mui-table-view-cell mui-media">
+					<a href="javascript:;" class="mui-navigate-right">
+						<div class="img-div">'+data.planame+'</div>
+						<img class="mui-media-object mui-pull-left" src="../../image/zone/0001.png">
+						<div class="mui-media-body" id="'+data.plano+'_body">
+							<table>
+								<tr><td width="30px"><i class="icon iconfont icon-video"></i></td><td class="mui-ellipsis">摄像头：0路</td></tr>
+								<tr><td><i class="icon iconfont icon-hangoutvideo"></i></td class="mui-ellipsis"><td>在线：0路</td></tr>
+								<tr><td><i class="icon iconfont icon-hangout-video-off"></i></td><td class="mui-ellipsis">离线：0路</td></tr>
+							</table>
+						</div>
+					</a>
+				</li>
+			</ul>
+		</div>-->
+	</div>
+</body>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/mui.min.js"></script>
+<script type="text/javascript" src="../../script/zepto.min.js"></script>
+<script type="text/javascript">
+	var gmms_url = null;
+	apiready = function(){
+		gmms_url = $api.getStorage("gmms_url");
+//		if($api.getStorage('ZONE_DATA')){
+//			showZoneList($api.getStorage('ZONE_DATA'));
+//		}else{
+//			fnInitZoneData();
+//		}
+		fnInitZoneData();
+		var pageParam = api.pageParam;
+		var bizType = null;
+		if(pageParam!=null){
+			if(pageParam.datafrom=='road'){
+				bizType = 3;
+			}
+			if(pageParam.datafrom=='toll'){
+				bizType = 2;
+			}
+		}
+		$('.mui-content').on('tap','.mui-card',function(){
+			var plano = $(this).attr('plano');
+			var planame = $(this).attr('planame');
+			api.openWin({
+	            name: 'GIS_zone_video',
+	            url: './GIS_zone_video.html',
+	            pageParam: {
+			        plano: plano,
+			        planame:planame,
+			        bizType:bizType
+			    },
+			    bounces : false,
+				animation:{
+					type:'movein'
+				}
+            });
+		});
+	};
+	//初始化区域列表
+	function fnInitZoneData(){
+		api.showProgress({
+			style : 'default',
+			animationType : 'fade',
+			title : '努力加载中...',
+			modal : false
+		});
+		var url = $api.getStorage("gmms_url");
+		api.ajax({
+	        url:gmms_url+'/modules/mobile/report/colligate-manager!getPlazaInfos.action',
+	        data:{
+				values:{userId:$api.getStorage("userId")}
+			},
+			method : 'get',
+			dataType : 'json',
+        },function(ret,err){
+        	if(ret){
+        		if(ret.length<=0){
+        			$('.mui-content').html('<p style="text-align: center;margin-top:20px;">暂无权限</p>');
+        		}else{
+	        		$api.setStorage("ZONE_DATA",ret);
+	        		showZoneList(ret);
+        		}
+        	}else{
+        		api.toast({
+	                msg:err.msg
+                });
+        	}
+        	api.hideProgress();
+        });
+	}
+	
+	function showZoneList(zoneData){
+		$('.mui-content').empty();
+		$.each(zoneData,function(i,data){
+			if(data.plano!='0000'){
+				$('.mui-content').append(
+					'<div class="mui-card" plano="'+data.plano+'" planame="'+data.planame+'">'+
+					'	<ul class="mui-table-view">'+
+					'		<li class="mui-table-view-cell mui-media">'+
+					'			<a href="javascript:;" class="mui-navigate-right">'+
+					'				<div class="img-div">'+data.planame+'</div>'+
+					'				<img class="mui-media-object mui-pull-left" src="../../image/zone/'+data.plano+'.png">'+
+					'				<div class="mui-media-body" id="'+data.plano+'_body">'+
+					'					<table>'+
+					'						<tr><td width="30px"><i class="icon iconfont icon-video"></i></td><td class="mui-ellipsis">摄像头：0路</td></tr>'+
+					'						<tr><td><i class="icon iconfont icon-hangoutvideo"></i></td class="mui-ellipsis"><td>在线：0路</td></tr>'+
+					'						<tr><td><i class="icon iconfont icon-hangout-video-off"></i></td><td class="mui-ellipsis">离线：0路</td></tr>'+
+					'					</table>'+
+					'				</div>'+
+					'			</a>'+
+					'		</li>'+
+					'	</ul>'+
+					'</div>'
+				);
+			}
+		});
+		
+		api.ajax({
+	        url:gmms_url+'/modules/mobile/report/colligate-manager!videoStatusTotalCountInfo.action',
+			method : 'get',
+			dataType : 'json',
+        },function(ret,err){
+        	if(ret&&ret.result){
+        		$.each(ret.data,function(i,data){
+        			if($('#'+data.plano+'_body').length>0){
+        				$('#'+data.plano+'_body').html(
+        					'	<table>'+
+							'		<tr><td width="30px"><i class="icon iconfont icon-video"></i></td><td class="mui-ellipsis">摄像头：'+data.sums+'路</td></tr>'+
+							'		<tr><td><i class="icon iconfont icon-hangoutvideo"></i></td class="mui-ellipsis"><td>在线：'+data.onlines+'路</td></tr>'+
+							'		<tr><td><i class="icon iconfont icon-hangout-video-off"></i></td><td class="mui-ellipsis">离线：'+data.downlines+'路</td></tr>'+
+							'	</table>'
+        				);
+        			}
+        		});
+        	}else{
+        		api.toast({
+	                msg:err.msg
+                });
+        	}
+        });
+	}
+	//刷新按钮调用
+	function refresh(){
+		fnInitZoneData();
+	}
+</script>
+</html>

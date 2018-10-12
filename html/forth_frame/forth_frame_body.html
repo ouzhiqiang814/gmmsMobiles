@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="../css/aui.css" />
+		<meta charset="UTF-8">
+		<meta name="format-detection" content="telephone=no"/>
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<title>文档</title>
+		<link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+		<link rel="stylesheet" type="text/css" href="../../css/style.css"/>
+		<style>
+			body {
+				background: #f4f5f7;
+			}
+			.me_header {
+				background: #FFFFFF;
+			}
+			.me_header {
+				width: 100%;
+				position: relative;
+			}
+			.me_header img {
+				display: block;
+				width: 100%;
+			}
+			.me_header a {
+				width: 7%;
+				position: absolute;
+				top: 8%;
+				left: 4%;
+			}
+			.me_header .me_info {
+				position: absolute;
+				top: 0;
+				left: 33%;
+				width: 36%;
+				height: 100%;
+			}
+			.me_header .me_info img {
+				display: block;
+				width: 60%;
+				margin: 5% auto 0;
+			}
+			.me_header .me_info span {
+				display: block;
+				width: 100%;
+				line-height: 16px;
+				font-size: 14px;
+			}
+			.me_header .me_info div {
+				width: 100%;
+				position: relative;
+			}
+			.me_header .me_info div img {
+				display: block;
+				width: 100%;
+			}
+			.me_header .me_info div span {
+				display: block;
+				position: absolute;
+				top: 10%;
+				font-size: 10px;
+			}
+			.secondblock {
+				background-color: #fff;
+			}
+			.item {
+				height: 50px;
+				line-height: 50px;
+				padding-left: 10px;
+				background-color: #fff;
+			}
+			.item_ico {
+				/*float: left;*/
+				width: 25px;
+				margin-right: 5px;
+				/*padding: 13px 10px;*/
+				vertical-align: middle;
+			}
+			.item_arrow {
+				float: right;
+				width: 20px;
+				padding-top: 15px;
+				margin-right: 15px;
+				/*padding: 17px 15px 15px 0;*/
+			}
+			.presshover {
+				background-color: #CCCCCC;
+			}
+			.h1 {
+				height: 1px;
+				margin-left: 15px;
+				background: #e9e7e7;
+				margin-right: 15px;
+			}
+			.cachesize {
+				position: absolute;
+				right: 15px;
+			}
+			.exit {
+				border-bottom: solid 1px #e9e7e7;
+				border-top: solid 1px #e9e7e7;
+				background: #FFFFFF;
+				margin-top: 20px;
+				height: 50px;
+				line-height: 50px;
+				text-align: center;
+			}
+		</style>
+	</head>
+	<body>
+		<!--<div class="me_header" >
+			<div class="me_info">
+				<img src="../../image/tx.png" />
+				<span style="text-align: center;color: #FFFFFF;"></span>
+				<div style="text-align: center;">
+					
+					<span id="username" style="text-align: center;margin-top: 2%;font-size: 13px;color: #FFFFFF;">shuishuishui</span>
+				</div>
+			</div>
+			<img src="../../image/me_header.png" />
+		</div>-->
+		<div class="secondblock">
+			<!--<div class="item" tapmode="presshover" onClick="">
+				<img src="../../image/synchronization.png" alt="" class="item_ico">
+				<span>同步</span>
+				<img src="../../image/arrow.png" alt="" class="item_arrow">
+			</div><div class="h1"></div>-->
+			<!--<div class="item" tapmode="presshover" onclick="openWin('setting');">
+				<img src="../../image/fit.png" alt="" class="item_ico">
+				<span>设置</span>
+				<img src="../../image/arrow.png" alt="" class="item_arrow">
+			</div><div class="h1"></div>-->
+			<div class="item" tapmode="presshover" onClick="openWin('remind');">
+				<img src="../../image/security.png" alt="" class="item_ico">
+				<span>安全提醒</span>
+				<img src="../../image/arrow.png" alt="" class="item_arrow">
+			</div><div class="h1"></div>
+			<div class="item" tapmode="presshover" onClick="openWin('message');">
+				<img src="../../image/edition.png" alt="" class="item_ico">
+				<span>版本信息</span>
+				<img src="../../image/arrow.png" alt="" class="item_arrow">
+			</div>
+		</div>
+		<div class="exit" tapmode="presshover" onClick="fnLoginout()" >
+			退出登录
+		</div>
+	</body>
+
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript">
+	apiready = function  () {
+		// api.parseTapmode();
+	}
+	
+	function openWin (name) {
+		api.openWin({
+			name: name,
+			url: 'widget://html/forth_frame/' + name + '.html',
+			delay:200
+		});
+	}
+	
+	function fnLoginout(){
+		$api.rmStorage("userId");
+		$api.rmStorage("user");
+		$api.rmStorage("userName");
+		$api.rmStorage("lesseeId");
+		$api.rmStorage("menuIds");
+		$api.rmStorage("dhServer");
+		$api.rmStorage("gis_videos_all");
+		$api.rmStorage('ZONE_DATA');
+		//停止推送服务
+		fnClosePush();
+		api.alert({
+			title: '提示',
+    		msg: '成功退出'
+        },function(ret,err){
+        	fnLogin();
+        });
+	}
+	
+	//打开登录页面
+	function fnLogin(){
+		api.openWin({
+			name: 'login',
+			url: '../login.html',
+			rect: {
+			    x: 0,
+			    y: 0,
+			    w: 'auto',
+			    h: 'auto',
+				marginLeft:0,   //相对父 window 左外边距的距离
+			    marginTop:0,    //相对父 window 上外边距的距离
+			    marginBottom:0, //相对父 window 下外边距的距离
+			    marginRight:0   //相对父 window 右外边距的距离
+			},
+			bounces: false,
+			bgColor: 'rgba(0,0,0,0)',
+			vScrollBarEnabled: true,
+			hScrollBarEnabled: true,
+			slidBackEnabled : false
+		});
+		window.setTimeout(function(){
+			api.closeWin({
+				name:'main'
+			});
+		},1000);
+	}
+	
+	function fnClosePush(){
+		var ajpush = api.require('ajpush');
+		ajpush.isPushStopped(function(ret) {
+		    if(ret && ret.isStopped==0){
+//		    	console.log('推送未停止');
+				ajpush.stopPush(function(ret) {
+				    if(ret && ret.status){
+//				        console.log('推送已关闭');
+				    }
+				});
+		    }
+		});
+	}
+</script>
+</html>

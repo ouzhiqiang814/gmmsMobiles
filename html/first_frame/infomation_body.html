@@ -1,0 +1,193 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="copyright" content="www.apicloud.com" />
+<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+<title>工作</title>
+<link rel="stylesheet" type="text/css" href="../../css/api.css" />
+<link rel="stylesheet" type="text/css" href="../../css/common.css" />
+<style>
+html,body {min-height: 100%; }
+
+.topbar {background: #1081DA; height:50px; position: relative;}
+.egret-header-title {position: absolute;width: 100%; line-height: 50px;color: #fff;font-size: 20px;text-align:center;}
+.egret-img {position: absolute;}
+.egret-img img {height: 30px;padding: 10px;vertical-align: top;}
+
+/* card */
+.sharecard {display: -webkit-box; -webkit-box-orient: vertical; border-radius: 5px; margin-left: 10px; margin-right: 10px; margin-top: 10px; padding: 10px 10px 10px 10px; border: 1px solid #e0e0e0;background-color: #fff;}
+.sharecard .rightcol {-webkit-box-flex: 1;}
+.sharecard .rightcol .usertitle {font-size: 0.9em; color: #666;}
+.sharecard .rightcol .usertitle .username{font-size: 1em; color: #507DAF; margin-right: 5px;}
+.sharecard .rightcol .usertitle .sharetime{float: right; font-size: 0.8em; color: #999;}
+.sharecard .rightcol .sharecontent {font-size: 1em; line-height: 1.3em;padding-top: 5px;}
+
+.sharecard .sharemusic{display: -webkit-box; -webkit-box-align: center; border-top:1px solid #e0e0e0;margin-top:5px;}
+.sharecard .sharemusic .musictitle { -webkit-box-flex: 1;text-align:right;}
+.sharecard .sharemusic .musictitle .title01{font-size: 0.8em;color: #999;padding-top :6px;}
+
+
+/* 悬浮 */
+.fmbtnhover {background: #D8D9DA ;}
+
+.badge {
+    font-size: 12px;
+    line-height: 1;
+    display: inline-block;
+    padding: 6px 12px;
+    color: #FFFFFF;
+    border-radius: 100px;
+}
+.red {
+    background-color: #dd524d;
+}
+.green {
+    background-color: #99CC00;
+}
+</style>
+</head>
+<body id='headlist'>
+
+</body>
+<script id="template" type="text/template">
+	{{~ it:data }}
+	<div class="sharecard" tapmode="fmbtnhover" onclick="openDynamic(this,{{=data.id}},'{{=data.key_id}}')">
+		<div class="rightcol">
+			<div class="usertitle">
+				<span class="username">{{=data.user_name}}</span>发送了一笔：<span class="sharetime">{{=data.create_time}}</span>
+			</div>
+			<p class="sharecontent">{{=data.content }}</p>
+		</div>
+		
+		<div class="sharemusic">
+			<div style='text-align:center;padding-top:6px;'>
+				{{? data.open_flag == 0}}<span class="badge red">未阅</span>
+				{{?? data.open_flag == 1}}<span class="badge green">已阅</span>{{?}}
+			</div>
+			<div class="musictitle">
+				<div class="title01">阅读全文</div>
+			</div>
+		</div>
+	</div>
+	{{~}}
+</script>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/doT.min.js"></script>
+<script type="text/javascript" src="../../script/zepto.min.js"></script>
+<script type="text/javascript" src="../../script/local.message.js"></script>
+<script type="text/javascript" src="../../script/CDateTime.js"></script>
+<script type="text/javascript">
+	var headlist, dot, user;
+	var isEmpty = false,
+	isPull = true,
+    skip = 0,
+    limit = 5;
+    
+	apiready = function (){
+		fninit();
+		fnInitDB();
+		fnInitPull();
+		fnInitPushRefresh();
+		showBusinessTodo();
+	}
+	
+	function fninit() {
+    	user = $api.getStorage("user");
+		headlist = $api.byId('headlist');
+    	var template = $api.byId('template');
+    	dot = doT.template(template.innerHTML);
+    }
+	
+	// 刷新
+    function fnInitPull() {
+		api.setRefreshHeaderInfo({
+			visible: true,
+//			loadingImg: 'widget://image/refresh_2.png',
+			bgColor: '#f0f0f0',
+			textColor: '#888',
+			textDown: '下拉刷新',
+			textUp: '松开刷新',
+			showTime: false
+		}, function(ret, err) {
+			skip = 0;
+            isEmpty = false;
+            isPull = true;
+			showBusinessTodo();
+		});
+	};
+	
+	 // 下拉加载更多
+	function fnInitPushRefresh() {
+		api.addEventListener({
+			name: 'scrolltobottom',
+			extra: {
+	      		threshold: 200
+	    	}
+	  	}, function(ret, err) {
+	  		isPull = false;
+	    	showBusinessTodo();
+	  	});
+	};
+	
+	function showBusinessTodo() {
+		if (isEmpty) {
+        	api.toast({
+          		msg: '没有更多了',
+          		duration: 2000,
+          		location: 'bottom'
+        	});
+        	return;
+      	}
+		
+		var moduleName = api.pageParam.name;
+		var userId = user.id;
+		var ret = fnFindMsgRemindByModuleName(moduleName,userId,skip,limit);
+    	if (ret.status) {
+    		$.each(ret.data, function(idx,item){
+    			item.create_time = tranTime(item.create_time);
+    		});
+    		
+            if (isPull) {
+	    		headlist.innerHTML = dot(ret.data);
+            } else {
+	    		headlist.innerHTML += dot(ret.data);
+            }
+            
+    		skip += limit;
+            if (ret.data.length < limit) {
+              isEmpty = true;
+            }
+    		api.refreshHeaderLoadDone(); //刷新结束
+	    } else 
+	        alert(ret.msg);
+    }
+    
+    
+    function setBadgeForNone(moduleName){
+    	var jsfun = 'setBadgeForNone("' + moduleName + '")';
+		api.execScript({
+		    name: 'main',//窗口名
+		    frameName : 'first_frame',
+		    script: jsfun
+		});
+    }
+    
+    function openDynamic(_this,id,keyId){
+    	fnSetRemindForOpen(id); //设置已阅读
+		api.openWin({
+			name: '消息查看',
+			url: './infomation_view.html',
+			pageParam: {
+		        id: keyId
+		    }
+		});
+		window.setTimeout(function(){
+			var badgeSpan = $(_this).find("div[class='sharemusic']").find('span');
+			badgeSpan.attr('class','badge green');
+			badgeSpan.html('已阅');
+		},1000);
+    }
+   
+</script>
+</html>

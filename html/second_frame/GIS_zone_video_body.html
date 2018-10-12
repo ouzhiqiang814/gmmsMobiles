@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>title</title>
+    <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/mui.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/iconfont.css" />
+    <style>
+    	html,body{
+    		min-height:100%;
+    		background-color: #efeff4;
+    	}
+    	.mui-table-view .mui-media-object{
+    		width:120px;
+    		max-width:none;
+    		height:85px;
+    	}
+    	.no-pic{
+    		text-align:center;
+    		position: relative;
+    		height:85px;
+    		background: #ddd;
+    	}
+    	.no-pic em{
+    		position:absolute;
+			top:20%;
+			left:50%;
+			margin-left:-12px;
+			color:#8f8f94;
+    	}
+    	.no-pic p{
+    		position:absolute;
+    		bottom: 5px;
+		    left: 0;
+		    right: 0
+    	}
+    	.no-data{
+		    text-align: center;
+		    padding: 10px;
+		    width: 100%;
+		    background: #efeff4;
+		    color: #a29e9e;
+    	}
+    	.mui-grid-view.mui-grid-9 .mui-table-view-cell{
+    		padding:0;
+    	}
+    	.mui-card{
+    		margin:2px;
+    	}
+    	.my-title{
+    		position: absolute;
+    		color: #fff;
+		    text-align: left;
+		    font-size: 15px;
+		    padding: 3px;
+	        left: 0;
+		    right: 0;
+		    bottom: 0;
+		    background: rgba(10, 10, 10, 0.4);
+		    
+    	}
+    	.mui-card-header, .mui-card-footer{
+    		padding:5px 10px;
+    		min-height:35px;
+    	}
+    	.mui-card{
+    		box-shadow: none;
+    	}
+    	.my-footer{
+    		width:100%;
+    		padding: 5px 10px;
+    		overflow: hidden;
+    	}
+    	.mui-grid-view.mui-grid-9 .mui-table-view-cell{
+    		border-right: none;
+    		border-bottom:none;
+    	}
+    </style>
+</head>
+<body>
+	<div class="mui-content">
+		<ul id="video_list" class="mui-table-view" style="margin-top:1px;display: none;">
+		</ul>
+		<ul id="video_list2" class="mui-table-view mui-grid-view mui-grid-9" style="margin-top:0px;">
+		</ul>
+		<div id="list_more" style="text-align: center;color: #737373;padding: 10px 0px;display: none;">
+			<span class="mui-spinner" style="margin-bottom: -5px;"></span>
+			加载中...
+		</div>
+	</div>
+</body>
+<script id="template" type="text/template">
+	{{~ it:data:index }}
+	<li class="mui-table-view-cell mui-media">
+		<a href="javascript:;">
+			{{? data.showPic == 'false'}}
+			<div class="mui-media-object mui-pull-left no-pic" style="height:85px;" imgId="img_{{=data.vidiconid}}" imgUrl="{{=data.picurl2}}" onclick="showPic(this)">
+				<em class="icon iconfont icon-video"></em>
+				<p>点击显示图片</p>
+			</div>
+			{{??}}
+			<img id="img_{{=data.vidiconid}}" src="../../image/imgloading.jpg" onclick="fnOpenVideoWin({{=data.vidiconid}})" realUrl="{{=data.picurl2}}" class="mui-media-object mui-pull-left"/>
+			{{?}}
+			<div class="mui-media-body" onclick="fnOpenVideoWin({{=data.vidiconid}})">
+				<span class="mui-ellipsis">{{=data.vidiconnameshort}}</span>
+				<p class='mui-ellipsis'>{{=data.biztypename}}</p>
+				<p style="margin-top: 15px;white-space: nowrap;">
+					{{? data.status == '1'}}
+					<span class="mui-badge mui-badge-success">在线</span>
+					{{??}}
+					<span class="mui-badge mui-badge-danger">离线</span>
+					{{?}}
+					<!--{{? data.islike}}
+					&nbsp;<span class="mui-badge mui-badge-danger">已收藏</span>
+					{{??}}
+					&nbsp;<span class="mui-badge">收藏</span>
+					{{?}}
+					 -->					
+					 <span class="mui-pull-right">
+						<i class="mui-icon mui-icon-location-filled"></i>
+						{{=data.vidiconareaname}}
+					</span>
+				</p>
+			</div>
+		</a>
+	</li>
+	{{~}}
+</script>
+<script id="template2" type="text/template">
+	{{~ it:data:index }}
+	<li class="mui-table-view-cell mui-media mui-col-xs-6 mui-col-sm-6">
+		<div class="mui-card">
+			<div id="div_{{=data.vidiconid}}" class="mui-card-header mui-card-media" onclick="fnOpenVideoWin({{=data.vidiconid}})"
+				realUrl="{{=data.picurl2}}" style="height:30vw;background-image:url(../../image/imgloading.jpg);position: relative;">
+				<p class="my-title mui-ellipsis">{{=data.vidiconnameshort}}</p>
+			</div>
+			<div class="mui-card-content">
+				<p style="text-align: left;margin-top:5px;">
+					<i class="mui-icon mui-icon-location-filled" style="font-size: 1.5em;"></i>{{=data.vidiconareaname}}
+				</p>
+				<div class="my-footer">
+					<div class="mui-pull-left">{{=data.biztypename}}</div>
+					<div class="mui-pull-right">
+						{{? data.status == '1'}}
+						<span class="mui-badge mui-badge-success">在线</span>
+						{{??}}
+						<span class="mui-badge mui-badge-danger">离线</span>
+						{{?}}
+					</div>
+				</div>
+			</div>
+		</div>
+    </li>
+	{{~}}
+</script>
+
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/mui.min.js"></script>
+<script type="text/javascript" src="../../script/zepto.min.js"></script>
+<script type="text/javascript" src="../../script/doT.min.js"></script>
+<script type="text/javascript" src="../../script/GIS_zone_video_body.js"></script>
+</html>

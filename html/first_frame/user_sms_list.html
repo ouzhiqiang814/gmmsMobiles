@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>title</title>
+    <link rel="stylesheet" type="text/css" href="../../css/api.css" />
+	<link rel="stylesheet" type="text/css" href="../../css/common.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/mui.min.css" />
+	<style>
+		#my-header{    
+			background: #1081da;
+    	}
+		#right_btn{
+			position:absolute;
+			right:10px;
+		    font-weight: normal;
+    		font-size: 18px;
+    		color:#fff;
+		}
+		#right_btn a{color:#fff;}
+		
+		#topPopover {
+			position: fixed;
+			top: 16px;
+			right: 6px;
+		}
+		#topPopover .mui-popover-arrow {
+			left: auto;
+			right: 6px;
+		}
+		.mui-popover {
+			height: 100px;
+    		width: 100px;
+		}
+		.mui-content {
+			padding: 10px;
+		}
+	</style>
+</head>
+<body>
+	<div id="wrap">
+		<div id="my-header">
+			<div id="header" style="position: relative;">
+			    <div class='egret-img event-back'>
+			    	<img src="../../image/back_btn.png" style="webkit-box-sizing: content-box;box-sizing: content-box;"/>
+			    </div>
+			    <div id="right_btn" style="display: none;">
+			    	<a class="mui-action-menu mui-pull-right" href="#">选择</a>
+			    </div>
+			    <h1 id="header_h1" style="line-height: 2.4;">某某部门</h1>
+		    </div>
+		</div>
+	</div>
+</body>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/common.js"></script>
+<script type="text/javascript" src="../../script/mui.min.js"></script>
+<script type="text/javascript">
+	var mnPopups = null;
+	apiready = function(){
+		var header = $api.byId('my-header');
+	    if (header) {
+	        $api.fixStatusBar(header);
+	        headerHeight = $api.offset(header).h;
+	    }
+		fnReadyKeyback();
+		
+		if(true == api.pageParam.isselect){
+			mnPopups = api.require('MNPopups');
+			document.getElementById('right_btn').style.display = '';
+			var right_btn = $api.byId('right_btn');
+			right_btn.onclick = function(){
+				fnSelectUsers();
+			}
+			api.parseTapmode();
+		}
+	    var useunitInfo = api.pageParam.useunit;
+	    document.getElementById('header_h1').innerHTML = useunitInfo.name+'('+useunitInfo.itemNum+'人)';
+	    fnFrame(useunitInfo.id);
+	};
+	
+	function fnFrame(useunitId){
+		var isselect = api.pageParam.isselect;
+		if(true == isselect){
+			api.openFrame({
+		        name: 'select_sms_user',
+		        url: './select_sms_user.html',
+		        bounces: false,
+		        pageParam:{useunitId:useunitId},
+		        rect: {
+		            x: 0,
+		            y: headerHeight,
+		            w: 'auto',
+		            h: 'auto'
+		        },
+		        vScrollBarEnabled: false
+		    });
+		}else{
+			api.openFrame({
+		        name: 'user_list_sms_body',
+		        url: './three_frame_sms_body_sub1.html',
+		        bounces: false,
+		        pageParam:{useunitId:useunitId},
+		        rect: {
+		            x: 0,
+		            y: headerHeight,
+		            w: 'auto',
+		            h: 'auto'
+		        },
+		        vScrollBarEnabled: false
+		    });
+		}
+	}
+	
+	function fnSelectUsers(){
+		mnPopups.open({
+		    rect: {
+		        w: 120,
+		        h: 100
+		    },
+		    position: {
+		        x: api.winWidth - 20,
+		        y: headerHeight-10
+		    },
+		    styles: {
+		        mask: 'rgba(0,0,0,0.2)',
+		        bg: '#eee',
+		        cell: {
+		            bg: {
+		                normal: '',
+		                highlight: ''
+		            },
+		            h: 45,
+		            title: {
+		                marginL: 15,
+		                color: '#636363',
+		                size: 14,
+		            }
+		        },
+		        pointer: {
+		            size: 7,
+		            xPercent: 90,
+		            yPercent: 0,
+		            orientation: 'downward'
+		        }
+		    },
+		    datas: [{
+		        title: '选择所选'
+		    }, {
+		        title: '选择全部'
+		    }],
+		    animation: true
+		}, function(ret) {
+		    if (ret) {
+		        if(ret.eventType=='click'){
+		        	if(ret.index==0){
+		        		//选择所选
+		        		api.execScript({
+		        			frameName:'select_sms_user',
+                            script: 'getSelectUsers();'
+                        });
+		        	}
+		        	if(ret.index==1){
+		        		//选择全部
+		        		api.execScript({
+		        			frameName:'select_sms_user',
+                            script: "getSelectUsers('all');"
+                        });
+		        	}
+		        }
+		    }
+		});
+	}
+	
+</script>
+</html>

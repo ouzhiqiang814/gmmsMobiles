@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>title</title>
+    <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/mui.min.css"/>
+    <style>
+    	html,body {min-height: 100%;background: #efeff4;}
+    	h5{margin:12px 8px 8px 8px;}
+    	.mui-table-view-cell img{width: 48px;height:48px;}
+    	.my-mui-badge{
+    		font-size: 12px;
+		    line-height: 1;
+		    display: inline-block;
+		    padding: 3px 6px;
+		    color: #333;
+		    border-radius: 100px;
+		    background-color: rgba(0,0,0,.15);
+		    font-size: 10px;
+		    line-height: 1.4;
+		    position: absolute;
+		    top: 0px;
+		    right:0px;
+	        margin-left: -10px;
+		    color: #fff;
+		    background: red;
+    	}
+    </style>
+</head>
+<body>
+	<div class="mui-content">
+		<h5>常用应用</h5>
+        <ul class="mui-table-view mui-grid-view mui-grid-9" style="background: #fff;">
+            <li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3">
+            	<a href="javascript:openNewWindow('business_todo')">
+                    <img src="../../image/work/96DF.png"/>
+                    <span id="businesstodo_badge" class="my-mui-badge" style="display: none;">0</span>
+                    <div class="mui-media-body">待我审批</div></a></li>
+            <li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3">
+            	<a href="javascript:openNewWindow('GIS_con')">
+                    <img src="../../image/work/gis.png"/>
+                    <div class="mui-media-body">GIS总览</div></a></li>
+            <li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3">
+            	<a href="javascript:openNewWindow('Report_data_query_con')">
+                    <img src="../../image/work/report1.png"/>
+                    <div class="mui-media-body">业务报表</div></a></li>
+            <li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3">
+            	<a href="javascript:openNewWindow('notice_more')">
+                    <img src="../../image/work/notice.png"/>
+                    <span id="notice_badge" class="my-mui-badge" style="display: none;">0</span>
+                    <div class="mui-media-body">公告</div></a></li>
+            <li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3">
+            	<a href="javascript:openNewWindow('infomation')">
+                    <img src="../../image/work/email.png"/>
+                    <div class="mui-media-body">内部邮件</div></a></li>
+            <li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3">
+            	<a href="#">
+                    <img src="../../image/work/check.png"/>
+                    <div class="mui-media-body">路政巡查</div></a></li>
+        </ul> 
+        <br/>
+        <h5>事务审批</h5>
+        <ul id="business_list" class="mui-table-view mui-grid-view mui-grid-9" style="background: #fff;">
+        </ul>
+        <div id="business_loading" style="text-align: center;margin-top:30px;display: none;">
+    		<span class="mui-spinner"></span>
+    	</div> 
+	</div>
+</body>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/mui.min.js"></script>
+<script type="text/javascript" src="../../script/zepto.min.js"></script>
+<script type="text/javascript">
+	mui.init();
+	apiready = function(){
+//		$('.mui-table-view').height($('.mui-table-view').height()-2);
+		//获取未读公告数量
+		fnLoadNoticeNum();
+		//加载新建事务列表
+		fnLoadAddBusiness(false);
+		//初始化下拉刷新
+		fnInitPull();
+	};
+	
+	// 刷新
+	function fnInitPull() {
+		api.setRefreshHeaderInfo({
+		 	bgColor: '#efeff4',
+	        dropColor:'#9BA2AC'
+		},function(){
+			fnLoadAddBusiness(true);
+			//获取未读公告数量
+			fnLoadNoticeNum();
+		});
+	};
+	
+	function openNewWindow(type) {
+		api.openWin({
+			name : type,
+			url : './' + type + '.html',
+			delay : 200,
+			bounces : false,
+			animation:{
+				type:'movein'
+			}
+		});
+	}
+	
+	function fnLoadNoticeNum(){
+		api.ajax({
+		    url:$api.getStorage("gmms_url")+'modules/security/notice!queryNotice.action',
+		    method:'post',
+		    timeout:10,
+		    data:{
+		    	values:{userId:$api.getStorage("userId")}
+		    }	    
+	    },function(ret,err){
+	    	if(ret){
+	    		var unReadNum = 0;
+	    		if(ret.length>0){
+		    		$.each(ret,function(i,notice){
+		    			var readSpan = '';
+		    			if(notice.readed==0){
+		    				unReadNum++;
+		    			}
+		    		});
+	    		}
+	    		$('#notice_badge').html(unReadNum);
+	    		if(unReadNum>0){
+	    			$('#notice_badge').show();
+	    		}else{
+	    			$('#notice_badge').hide();
+	    		}
+	    	}
+	    });
+	    
+	    api.ajax({
+		    url:$api.getStorage("gmms_url")+'/modules/mobile/business/business-deal!countBusinessTodoForApp.action',
+		    method:'post',
+		    timeout:10,
+		    data:{
+		    	values:{userId:$api.getStorage("userId"),lesseeId:$api.getStorage('lesseeId')}
+		    }	    
+	    },function(ret,err){
+	    	if(ret){
+	    		$('#businesstodo_badge').html(ret.todoNum);
+	    		if(ret.todoNum>0){
+	    			$('#businesstodo_badge').show();
+	    		}else{
+	    			$('#businesstodo_badge').hide();
+	    		}
+	    	}
+	    });
+	}
+	
+	function fnLoadAddBusiness(isLoad){
+		var ctype = api.connectionType;
+		if(ctype.toLowerCase()=='unknown'||ctype.toLowerCase()=='none'){
+			api.toast({
+			    msg: '暂无网络',
+			    duration: 2000,
+			    location: 'bottom'
+			});
+			if(isLoad){
+				api.refreshHeaderLoadDone(); //刷新结束
+			}
+		}else{
+			$('#business_loading').show();
+			var gmms_url = $api.getStorage('gmms_url');
+			var userId = $api.getStorage('userId');
+			var lesseeId = $api.getStorage('lesseeId');
+			api.ajax({
+		        url:gmms_url+'modules/mobile/business/business-deal!queryPermissionItemForApp.action',
+		        method: 'post',
+		        timeout:10,
+			    data: {
+			        values: {userId:userId,lesseeId:lesseeId}
+			    }
+	        },function(ret,err){
+	        	if(ret){
+	        		var itemListStr = '';
+        			$.each(ret.itemList,function(j,item){
+						itemListStr +=
+							'<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3">'+
+							'	<a href="javascript:fnAddBusiness('+item.id+',\''+item.itemName+'\')">'+
+			                '    <img src="'+gmms_url+'js/jcarousel/images/flat/'+item.icon+'"/>'+
+			                '    <div class="mui-media-body">'+item.itemName+'</div></a>'+
+			                '</li>';
+        			});
+	        		$('#business_list').html(itemListStr);
+	        	}else{
+	        		api.toast({
+	                    msg:err.msg,
+	                    duration: 2000,
+    					location: 'bottom'
+                    });
+	        	}
+	        	$('#business_loading').hide();
+	        	if(isLoad){
+					api.refreshHeaderLoadDone(); //刷新结束
+				}
+	        });
+        }
+	}
+	
+	/**
+	 * 新增事务 
+	 */
+	function fnAddBusiness(itemId,itemName){
+		api.openWin({
+			name : 'business_new_add',
+			url : './business_new_add.html',
+			delay : 200,
+			bounces : false,
+			pageParam:{
+				itemId:itemId,
+				itemName:itemName
+			},
+			animation:{
+				type:'movein'
+			}
+		});
+	}
+</script>
+</html>

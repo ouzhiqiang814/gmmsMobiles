@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+	<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+	<title>事务处理</title>
+	<link rel="stylesheet" type="text/css" href="../../css/api.css" />
+	<link rel="stylesheet" type="text/css" href="../../css/common.css" />
+</head>
+<body>
+	<div id="wrap">
+		<div id="header">
+			<div class='egret-img event-back'>
+				<img src="../../image/back_btn.png" alt="" />
+			</div>
+			<div id="top_close_btn" class='egret-img' style="left:35px;display: none;">
+				<img src="../../image/delete_btn.png" alt="" />
+			</div>
+			<h1>事务处理</h1>
+		</div>
+		<div id="main">
+		</div>
+	</div>
+</body>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/zepto.min.js"></script>
+<script type="text/javascript" src="../../script/common.js"></script>
+<script type="text/javascript">
+	var gmmsUrl = null;
+	apiready = function() {
+		fnReadyHeader2();
+		fnReadyKeyback('business_deal_todo', 'top_close_btn');
+		var bsnum = api.pageParam.bsnum;
+		var userId = $api.getStorage("user").id;
+		var lesseeId = $api.getStorage("user").lesseeId;
+		gmmsUrl = $api.getStorage("gmms_url") + '/modules/mobile/business/business-deal!login.action?method=todo&bsnum=' + bsnum + '&userId=' + userId + '&useunitId=' + lesseeId;
+		window.setTimeout(function() {
+			api.openFrame({
+				name: 'business_deal_todo',
+				url: gmmsUrl,
+				bounces: false,
+				rect: {
+					x: 0,
+					y: headerHeight,
+					w: 'auto',
+					h: 'auto'
+				},
+				vScrollBarEnabled: false,
+				progress: {
+					type: 'page'
+				}
+			});
+		}, 500)
+	};
+</script>
+</html>

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>title</title>
+    <link rel="stylesheet" type="text/css" href="../../../../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../../css/common.css" />
+</head>
+<body>
+	<div id="wrap">
+		<div id="header">
+		    <div class='egret-img event-back'>
+		    	<img src="../../../../image/back_btn.png"/>
+		    </div>
+		    <div id="top_other_btn" class='egret-img' style="right:0px;">
+		    	<img src="../../../../image/shuaxin.png" style="height: 25px;padding: 10px;webkit-box-sizing: content-box;box-sizing: content-box;"/>
+		    </div>
+		    <h1></h1>
+		</div>
+		<div id="main">
+		</div>	
+	</div>
+</body>
+<script type="text/javascript" src="../../../../script/api.js"></script>
+<script type="text/javascript" src="../../../../script/common.js"></script>
+<script type="text/javascript" src="../../../../script/zepto.min.js"></script>
+<script type="text/javascript">
+	apiready = function(){
+		fnReadyHeader();
+		fnMyReadyKeyback();
+		fnReadyShuaxin();
+		var title = api.pageParam.title;
+		$('#header h1').html(title);
+		fnFrame(api.pageParam.frameName);
+	};
+	
+	function fnReadyShuaxin(){
+		var shuaxinbtn = $api.byId('top_other_btn');
+		shuaxinbtn.onclick = function(){
+			api.execScript({
+				frameName:api.pageParam.frameName,
+	            script: 'fnRefresh();'
+            });
+		}
+		api.parseTapmode();
+	}
+	
+	function fnFrame(frameName){
+		var pageParam = api.pageParam;
+		pageParam.headerHeight = headerHeight;
+		api.openFrame({
+	        name: frameName,
+	        url: './' + frameName + '.html',
+	        bounces: false,
+	        rect: {
+	            x: 0,
+	            y: headerHeight,
+	            w: 'auto',
+	            h: 'auto'
+	        },
+	        pageParam:pageParam,
+	        vScrollBarEnabled: false
+	    });
+	}
+	
+	function fnMyReadyKeyback() {
+	    var keybacks = $api.domAll('.event-back');
+	    for (var i = 0; i < keybacks.length; i++) {
+	        $api.attr(keybacks[i], 'tapmode', 'highlight');
+	        keybacks[i].onclick = function() {
+	            closeWin();
+	            api.setScreenOrientation({
+				    orientation: 'portrait_up'
+				});
+	        };
+	    }
+		if(api.systemType!='ios'){
+		    api.addEventListener({
+		        name:'keyback'
+	        },function(ret,err){
+	    	 	closeWin();
+	    	 	api.setScreenOrientation({
+				    orientation: 'portrait_up'
+				});
+	        });
+	    }
+	    api.parseTapmode();
+	};
+	
+	function closeWin() {
+		if(api.pageParam.frameName=='gis_chart_toll_detail'){
+			api.execScript({
+				frameName:'gis_chart_toll_detail',
+		        script: 'videoDestroy();'
+		    });
+	    }
+	    api.closeWin();
+	}
+</script>
+</html>

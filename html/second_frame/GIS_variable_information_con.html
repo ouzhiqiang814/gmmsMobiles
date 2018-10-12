@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>title</title>
+		<link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+		<style>
+			.main {
+				display: flex;
+				margin-top:10px;
+			}
+			.main-left {
+				flex: 1;
+				background: #f4f5f7;
+				background: url('../../image/board01.png') no-repeat;
+				background-size: 100%;
+				background-position:center;
+				margin:5px;
+				height:120px;
+			}
+			.main-bottom {
+				flex: 1;
+				background: #f4f5f7;
+				background: url('../../image/board02.png') no-repeat;
+				background-size:100%;
+				background-position:center;
+				margin:5px;
+				height:120px;
+			}
+			.main-right {
+				flex: 1;
+				background: #f4f5f7;
+				background: url('../../image/board03.png') no-repeat;
+				background-size:100%;
+				background-position:center;
+				margin:5px;
+				height:120px;
+			}
+			.main-top {
+				flex: 3;
+				
+			}
+			.main-center {
+				margin: 5px;
+				line-height:40px;
+				text-align: center;
+				background: #111;
+				color: #00D20F;
+			}
+			.line {
+				height: 1px;
+				background: #CCCCCC;
+				margin-top:10px;
+				margin-bottom:10px;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="main">
+			<div class="main-left"></div>
+			<div class="main-top" id="oneid">
+				<!--<div class="main-center" onclick="openNewWindow()">
+				<span id="ledid"></span><span id="ledname"></span>
+				</div>
+				<div class="main-center" onclick="openNewWindow()">
+					1#情报板
+				</div>-->
+			</div>
+		</div>
+		<div class="line"></div>
+		<div class="main">
+			<div class="main-bottom"></div>
+			<div class="main-top" id="twoid">
+				<!--<div class="main-center" onclick="openNewWindow()">
+					2#情报板
+				</div>
+				<div class="main-center" onclick="openNewWindow()">
+					2#情报板
+				</div>
+				<div class="main-center" onclick="openNewWindow()">
+					2#情报板
+				</div>-->
+			</div>
+		</div>
+		<div class="line"></div>
+		<div class="main">
+			<div class="main-right"></div>
+			<div class="main-top" id="threeid">
+				<!--<div class="main-center" onclick="openNewWindow()">
+					3#情报板
+				</div>
+				<div class="main-center" onclick="openNewWindow()">
+					3#情报板
+				</div>-->
+			</div>
+		</div>
+		<div class="line"></div>
+	</body>
+	<script type="text/javascript" src="../../script/api.js"></script>
+	<script type="text/javascript" src="../../script/GIS_variable_information_con.js"></script>
+</html>

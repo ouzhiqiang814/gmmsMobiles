@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>title</title>
+    <link rel="stylesheet" type="text/css" href="../../../css/api.css" />
+	<link rel="stylesheet" type="text/css" href="../../../css/common.css" />
+	 <link rel="stylesheet" type="text/css" href="../../../css/mui.min.css"/>
+	 <style>
+	 	.title_box{
+	 		height:60px;
+	 	}
+	 	.updatatime_box{
+	 		text-align: center;
+			font-size: 13px;
+			color: #dddddd;
+			margin-top: -15px;
+	 	}
+		.mui-table-view:before{
+			background-color: #fff;
+		}
+		.mui-table-view:after{
+			background-color: #fff;
+		}
+		.mui-table-view-cell:after{
+			background-color: #fff;
+		}
+		.mui-table-view .mui-active{
+			background-color: #fff;
+		}
+		.border{
+			background-color: #c8c7cc;
+			height: 2px;
+			width:90%;
+			margin:0 auto;
+			margin-top:20px;
+		}
+	 	.span_1{
+	 		height:18px;
+	 		width: 10px;
+	 		background-color:#00cc00;
+	 		margin-bottom:-3px;
+	 		margin-left:20px;
+	 	}
+	 	.span_2{
+	 		float: right;
+	 	}	 		 		
+	 </style>
+</head>
+<body>
+	<div class="mui-content" style="background-color:#fff">
+		<div class="title_box">
+			<h1 class="mui-title">物资采购</h1>	
+		</div>
+		<div class="updatatime_box">
+			<span class="updatatime_1"></span>
+		</div>
+		<div id="main1" style="width:100%;height:350px;"></div>
+		<div class="border"></div>
+		<div id="middle" style="margin-top: 20px;margin-bottom: 5px;">
+			<ul class="mui-table-view" style="color:#5d9cec;font-size: 14px;">
+				<li class="mui-table-view-cell" id="middle_line_1" style="color:#000;font-size: 16px;">
+					<label></label>
+					<span></span>
+				</li>
+				<li class="mui-table-view-cell" id="middle_line_2">
+					<span class="span_1" style="background-color: #ff9900;"></span>
+					<label>累计采购总金额</label>
+					<span class="span_2"></span>
+				</li>
+				<li class="mui-table-view-cell" id="middle_line_3">
+					<span class="span_1"></span>
+					<label>养护物资采购总金额</label>
+					<span class="span_2"></span>
+				</li>
+				<li class="mui-table-view-cell" id="middle_line_4">
+					<span class="span_1"></span>
+					<label>非养护物资采购总金额</label>
+					<span class="span_2"></span>
+				</li>
+			</ul>
+		</div>
+		<div id="main2" style="width:100%;height:350px;"></div>
+	</div>
+</body>
+<script type="text/javascript" src="../../../script/api.js"></script>
+<script type="text/javascript" src="../../../script/common.js"></script>
+<script type="text/javascript" src="../../../script/mui.min.js"></script>
+<script type="text/javascript" src="../../../script/zepto.min.js"></script>
+<script type="text/javascript" src="../../../script/echarts.min.js"></script>
+<script type="text/javascript">
+	var charts_url = null;
+	apiready = function(){
+		getLine()
+		getBar()
+	};
+
+	function getLine(){
+		charts_url = $api.getStorage("charts_url");
+		var myChart1 = echarts.init(document.getElementById('main1'));
+		var option1 = {};
+		api.ajax({
+	        url:charts_url+'/report/goods-pay/ajaxGoodsPayLine?isMobile=true&isDetail=true',
+	        method:'get',
+		    timeout:30	        
+        },function(ret,err){
+        	if(ret){				
+				option1 = {
+				    tooltip : {
+				        trigger: 'item',
+				        axisPointer: {
+				            type: 'cross',
+				            label: {
+				                backgroundColor: '#6a7985'
+				            }
+				        },
+				        formatter : "{b}<br/>{c} 万元"
+				    },
+				    grid: {
+				        left: '3%',
+				        right: '4%',
+				        bottom: '3%',
+				        containLabel: true
+				    },
+				    xAxis : [
+				        {
+				            type : 'category',
+				            boundaryGap : true,
+				            data : ret.xAxis
+				        }
+				    ],
+				    yAxis : [
+				        {
+				            type : 'value',
+				            name : '采购金额（万元）'
+				        }
+				    ],
+				    series : [
+				        {
+				            type:'line',
+				            data:ret.datas
+				        }
+				    ],
+				    color:["#0099ff"]
+				};
+				myChart1.setOption(option1); 
+				$(".updatatime_1").html('更新时间：'+ret.updateTime)       		
+        	}
+			else{
+	    		api.toast({
+		            msg:"链接出现错误，暂时无法查询数据，请稍后重试！",
+		            duration:3000,
+		            location:'bottom'
+	            });
+	            errDataForCharts1();
+            }         	
+        });			
+	}
+	
+	function getBar(){
+		charts_url = $api.getStorage("charts_url");
+		var myChart2 = echarts.init(document.getElementById('main2'));
+		var option2 = {};
+		api.ajax({
+	        url:charts_url+'/report/goods-pay/ajaxGoodsPayBar?isMobile=true&isDetail=true',
+	        method:'get',
+		    timeout:30	        
+        },function(ret,err){
+        	if(ret){				   
+				   $("#middle_line_1 span").html(ret.year+" 年物资采购统计");
+				   $("#middle_line_2 .span_2").html(ret.total+" 万元");
+				   $("#middle_line_3 .span_2").html(ret.curingTotal+" 万元");
+				   $("#middle_line_4 .span_2").html(ret.uncuringTotal+" 万元");
+				   
+				   option2 = {
+					tooltip: {
+					    	trigger :'item',
+					        axisPointer: {
+					            type: 'shadow',
+					            label: {
+					                backgroundColor: '#6a7985'
+					            }
+					        },
+					        formatter : "<p style='text-align:center;margin-top:0px;margin-bottom:0px;color:#fff;'>"+ret.year+"年{b}月</p>{a}:{c}万元"					    	
+					    },
+					    legend: {
+					        data: ['养护物资', '非养护物资']
+					    },
+					color:["#0099ff","#ff9900"],    
+					grid: {
+					        left: '3%',
+					        right: '10%',
+					        bottom: '3%',
+					        containLabel: true
+					    },
+				    xAxis : [
+				        {
+				            type : 'category',
+				            boundaryGap : true,
+				            data : ret.xAxis,
+				            name : '月份'
+				        }
+				    ],
+				    yAxis : [
+				        {
+				            type : 'value',
+				            name : '采购金额（万元）',
+				            show : false
+				        }
+				    ],
+				    series : [
+				        {
+				            name:'养护物资',
+				            type:'bar',
+				            data:ret.curingDatas
+				        },
+				        {
+				            name:'非养护物资',
+				            type:'bar',
+				            data:ret.uncuringDatas
+				        }				        
+				    ]				    				    					    				   		
+				}; 
+				myChart2.setOption(option2);   		
+        	}
+			else{
+	    		api.toast({
+		            msg:"链接出现错误，暂时无法查询数据，请稍后重试！",
+		            duration:3000,
+		            location:'bottom'
+	            });
+	            errDataForCharts2();
+            }         	
+        });			
+	}
+
+		//数据查询失败函数
+	function errDataForCharts1(){
+
+		var myChart1 = echarts.init(document.getElementById('main1'));
+		var option1 = {};						   
+			option1 = {
+			    title: {
+			        text: '物资采购',
+			        left:'center'
+			    },
+			    tooltip : {
+			        trigger: 'axis',
+			        axisPointer: {
+			            type: 'cross',
+			            label: {
+			                backgroundColor: '#6a7985'
+			            }
+			        },
+			        formatter : "{b}<br/>{c} 万元"
+			    },
+			    grid: {
+			        left: '3%',
+			        right: '4%',
+			        bottom: '3%',
+			        containLabel: true
+			    },
+			    xAxis : [
+			        {
+			            type : 'category',
+			            boundaryGap : true,
+			            data : ""
+			        }
+			    ],
+			    yAxis : [
+			        {
+			            type : 'value',
+			            name : '采购金额（万元）'
+			        }
+			    ],
+			    series : [
+			        {
+			            type:'line',
+			            data:""
+			        }
+			    ],
+			    color:["#0099ff"]
+			};
+			myChart1.setOption(option1);   
+	}
+	
+		//数据查询失败函数
+	function errDataForCharts2(){
+
+		var myChart2 = echarts.init(document.getElementById('main2'));
+		var option2 = {};						   
+		   $("#middle_line_1 span").html("物资采购统计");
+		   $("#middle_line_2 .span_2").html("0万元");
+		   $("#middle_line_3 .span_2").html("0万元");
+		   $("#middle_line_4 .span_2").html("0万元");
+		   
+		   option2 = {
+			tooltip: {
+			    	trigger :'item',
+			        axisPointer: {
+			            type: 'shadow',
+			            label: {
+			                backgroundColor: '#6a7985'
+			            }
+			        },
+			        formatter : "<p style='text-align:center;margin-top:0px;margin-bottom:0px;color:#fff;'>"					    	
+			    },
+			    legend: {
+			        data: ['养护物资', '非养护物资']
+			    },
+			color:["#0099ff","#ff9900"],    
+			grid: {
+			        left: '5%',
+			        right: '10%',
+			        bottom: '3%',
+			        containLabel: true
+			    },
+		    xAxis : [
+		        {
+		            type : 'category',
+		            boundaryGap : true,
+		            data : "",
+		            name : '月份'
+		        }
+		    ],
+		    yAxis : [
+		        {
+		            type : 'value',
+		            name : '采购金额（万元）'
+		        }
+		    ],
+		    series : [
+		        {
+		            name:'养护物资',
+		            type:'bar',
+		            data:""
+		        },
+		        {
+		            name:'非养护物资',
+		            type:'bar',
+		            data:""
+		        }				        
+		    ]				    				    					    				   		
+		}; 
+		myChart2.setOption(option2);   
+	}		
+</script>
+</html>

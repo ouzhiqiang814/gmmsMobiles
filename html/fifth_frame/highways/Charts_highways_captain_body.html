@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>title</title>
+    <link rel="stylesheet" type="text/css" href="../../../css/api.css" />
+	<link rel="stylesheet" type="text/css" href="../../../css/common.css" />
+	<link rel="stylesheet" type="text/css" href="../../../css/mui.min.css"/>
+	 <style>
+	 	.mui-segmented-control{
+	 		height:50px!important;
+	 	} 
+		#headerCheck .mui-active{
+			border-bottom: 2px solid #5d9cec;
+			color: #5d9cec
+		}
+		#headerCheck a{
+			background-color:#f2f2f2;
+			border-right:2px solid #e4e4e4;
+			color:#353535;
+		}
+		#headerCheck{
+			
+			padding-top:3px;
+			padding-bottom:3px;
+		}	 	
+	 </style>
+</head>
+<body>
+	<div id="headTop">
+		<div class="mui-scroll-wrapper mui-slider-indicator mui-segmented-control mui-segmented-control-inverted">
+		    <div class="mui-scroll" id="headerCheck">
+		    	<a class="mui-control-item " ikey="0">案件处理情况</a>
+		    	<a class="mui-control-item" ikey="1">超限案件统计</a>
+		    	<a class="mui-control-item" ikey="2">执法投入统计</a>
+		    </div>
+		</div>	
+	</div>
+	<div id="main"></div>
+</body>
+<script type="text/javascript" src="../../../script/api.js"></script>
+<script type="text/javascript" src="../../../script/common.js"></script>
+<script type="text/javascript" src="../../../script/mui.min.js"></script>
+<script type="text/javascript" src="../../../script/zepto.min.js"></script>
+<script type="text/javascript" src="../../../script/echarts.min.js"></script>
+<script type="text/javascript">
+	apiready = function(){
+		init();
+		switchFrame(0)
+		mui("#headerCheck").on('tap','a',function(){
+			var ikey = $(this).attr('ikey');
+			switchFrame(ikey);
+		})					
+	};
+	
+  	var menus,headerH;
+    function init(){
+    	var header = $api.byId('headTop');
+    		
+    	//$api.fixStatusBar(header);
+    	
+    	headerH = $api.offset(header).h + 65;
+    	
+    	menus = $api.domAll(header, '.mui-control-item');  
+    };
+
+   	var frameGroup = ['handle_frame','outime_frame','putin_frame'];
+	function switchFrame(index){
+		for(var i=0; i<menus.length;i++){
+			if(i == index){
+				$api.addCls(menus[i], 'mui-active');
+				var y = 3 == i ? 0 :headerH;
+				api.openFrame({
+	        		name: frameGroup[index],
+	        		url: 'captain_frame/'+frameGroup[i]+'.html',
+	        		rect: {
+		       			 	x:0,
+		        			y:y,
+		        			w:api.winWidth,
+		        			h:api.winHeight - 80
+	        		},
+	        		pageParam:{
+	        			index:index
+	        		},
+	        		bounces:true,
+	        		vScrollBarEnabled: false,
+	        		hScrollBarEnabled: false,
+        		});
+			}
+			else{
+				$api.removeCls(menus[i], 'mui-active');
+
+				api.setFrameAttr({
+	                name: frameGroup[i],
+	                hidden:true
+                });
+			}
+		}
+	};   
+
+</script>
+</html>

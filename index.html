@@ -1,0 +1,177 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>管养小秘</title>
+		<link rel="stylesheet" type="text/css" href="./css/api.css" />
+		<style type="text/css">
+			body {
+				background-color: #FFFFFF;
+			}
+		</style>
+	</head>
+	<body></body>
+	<script type="text/javascript" src="./script/api.js"></script>
+	<script type="text/javascript" src="./script/local.init.js"></script>
+	<script type="text/javascript">
+		var ajpush = null;
+		apiready = function() {
+			fnOpenDatabase();			
+			if($api.getStorage("gmms_url")==null || $api.getStorage("gmms_url")=='http://218.85.121.196:8280/gmms/' || $api.getStorage("gmms_url")==undefined){
+				$api.setStorage("gmms_url", "http://125.77.254.250:8280/gmms/");//五通gmms服务器地址
+			}
+//			if($api.getStorage("networking_url")==null || $api.getStorage("networking_url")==undefined){
+//				$api.setStorage("networking_url", "http://125.77.254.250:8888/");//五通外网地址
+//			}
+//			if($api.getStorage("traffic")==null || $api.getStorage("traffic")==undefined){
+//				$api.setStorage("traffic", "http://125.77.254.250:8889/");//五通交通网地址
+//			}			
+			if($api.getStorage("report_url")==null || $api.getStorage("report_url")==undefined || $api.getStorage("report_url")=='http://172.16.53.229/'){
+				$api.setStorage("report_url", "http://125.77.254.250:8180/");//报表服务地址
+			}
+			if($api.getStorage("charts_url")==null || $api.getStorage("charts_url")==undefined){
+				$api.setStorage("charts_url", "http://125.77.254.250:8180");//图表服务地址
+			}
+//			if($api.getStorage("charts_url_2")==null || $api.getStorage("charts_url_2")==undefined){
+//				$api.setStorage("charts_url_2","http://125.77.254.250:8180");//图表服务地址
+//			}							
+			api.setStatusBarStyle({
+				style : 'light'
+			});
+			
+			var nextstep = $api.getStorage("nextstep");
+			//TODO 测试使用
+			var userId = $api.getStorage("userId");
+			//读取缓存的账号
+			if (nextstep == "" || nextstep == undefined || nextstep == "undefined") {
+				fnDisclaimer();
+				//没有登入免责声明，就登免责声明页面
+			} else if
+				(userId == "" || userId == undefined || userId == "undefined") {
+				fnLogin();
+				//没有登录信息，就打开登录页面
+			}else {
+				fnMain();
+				//打开功能列表
+			}
+			api.setKeepScreenOn({
+				keepOn : true
+			});
+			//初始化激光推送
+			fnInitJGPush();			
+		};
+		
+
+		//打开免责声明页面
+		function fnDisclaimer() {
+			api.openWin({
+				name : 'disclaimer',
+				url : './html/disclaimer.html',
+				rect : {
+					x : 0,
+					y : 0,
+					w : 'auto',
+					h : 'auto',
+					marginLeft : 0, //相对父 window 左外边距的距离
+					marginTop : 0, //相对父 window 上外边距的距离
+					marginBottom : 0, //相对父 window 下外边距的距离
+					marginRight : 0 //相对父 window 右外边距的距离
+				},
+				bounces : false,
+				bgColor : 'rgba(0,0,0,0)',
+				vScrollBarEnabled : true,
+				hScrollBarEnabled : true,
+				slidBackEnabled : false
+			});
+		}
+
+		//打开功能列表页面
+		function fnMain() {
+			api.openWin({
+				name : 'main',
+				url : './html/main.html',
+				rect : {
+					x : 0,
+					y : 0,
+					w : 'auto',
+					h : 'auto',
+					marginLeft : 0, //相对父 window 左外边距的距离
+					marginTop : 0, //相对父 window 上外边距的距离
+					marginBottom : 0, //相对父 window 下外边距的距离
+					marginRight : 0 //相对父 window 右外边距的距离
+				},
+				bounces : false,
+				bgColor : 'rgba(0,0,0,0)',
+				vScrollBarEnabled : true,
+				hScrollBarEnabled : true,
+				slidBackEnabled : false
+			});
+		}
+		
+		//打开登入页面
+		function fnLogin() {
+			api.openWin({
+				name : 'login',
+				url : './html/login.html',
+				rect : {
+					x : 0,
+					y : 0,
+					w : 'auto',
+					h : 'auto',
+					marginLeft : 0, //相对父 window 左外边距的距离
+					marginTop : 0, //相对父 window 上外边距的距离
+					marginBottom : 0, //相对父 window 下外边距的距离
+					marginRight : 0 //相对父 window 右外边距的距离
+				},
+				bounces : false,
+				bgColor : 'rgba(0,0,0,0)',
+				vScrollBarEnabled : true,
+				hScrollBarEnabled : true,
+				slidBackEnabled : false
+			});
+		}
+		
+		function fnInitJGPush(){
+			ajpush = api.require('ajpush');
+			if(api.systemType!='ios'){
+				ajpush.init(function(ret) {
+				    if (ret && ret.status){
+//				        console.log('极光推送注册成功');
+				    }
+				});
+			    api.addEventListener({name:'appintent'}, function(ret,err) {
+					api.execScript({
+						name:'main',
+	                    script: "switchframe('first_frame');"
+                    });
+					api.execScript({
+						name:'main',
+						frameName:'first_frame',
+	                    script: 'fnJMGetMessage();'
+                    });  
+				});
+			}else{
+				api.addEventListener({name: 'noticeclicked'}, function(ret, err) {
+					api.execScript({
+						name:'main',
+	                    script: "switchframe('first_frame');"
+                    });
+					api.execScript({
+						name:'main',
+						frameName:'first_frame',
+	                    script: 'fnJMGetMessage();'
+                    });
+				});
+			}
+		    api.addEventListener({name:'pause'}, function(ret,err) {
+		        ajpush.onResume();//监听应用进入后台，通知jpush暂停事件
+		    });
+		        
+		    api.addEventListener({name:'resume'}, function(ret,err) {
+		        ajpush.onPause();//监听应用恢复到前台，通知jpush恢复事件
+		    });
+		}
+	</script>
+</html>

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>title</title>
+    <link rel="stylesheet" type="text/css" href="../../css/api.css" />
+	<link rel="stylesheet" type="text/css" href="../../css/common.css" />
+	<link rel="stylesheet" type="text/css" href="../../css/mui.css" />
+	<link rel="stylesheet" type="text/css" href="../../css/iconfont.css" />
+    <style>
+    	#header{position: relative;background: #fff;border-bottom: 1px solid #ddd}
+		.my-search{
+			float:left;
+			width:100%;
+		}
+		.mui-search .mui-placeholder{
+			text-align:left;
+			left: 5px;
+			top:5px;
+			color:#8a8a8a;
+		}
+		.mui-input-row.mui-search .mui-icon-clear {
+		    top: 13px;
+		    color:#8a8a8a;
+		}
+		.mui-search .mui-placeholder .mui-icon{color:#8a8a8a;}
+		.mui-search.mui-active:before
+		{
+		    font-size: 20px;
+		    right: auto;
+		    top:18px;
+		    left: 5px;
+		    display: block;
+		    margin-right: 0;
+		    color:#8a8a8a;
+		}
+		.title-middle{
+			position: absolute;
+			left:30px;
+			right:40px;
+			top:0;
+			bottom:0;
+		}
+		
+		.select-list{
+			display:-moz-box; /* Firefox */
+			display:-webkit-box; /* Safari and Chrome */
+			display:box;
+			width:100%;
+			background-color: #fff;
+			margin:0;	
+			border-bottom:1px solid #efeff4;	
+		}
+		.list-tab{
+			-moz-box-flex:1.0; /* Firefox */
+			-webkit-box-flex:1.0; /* Safari and Chrome */
+			box-flex:1.0;
+			text-align: center;
+			padding:5px;
+			padding-left: 5px;
+			border-right: 1px solid #efeff4;
+			position: relative;
+		}
+		.list-tab span{position: absolute;right: 5px;top: 8px;font-size: 17px;color:gray;}
+		.list-tab:ACTIVE {background-color: #efeff4;}
+    </style>
+</head>
+<body>
+	<div id="wrap">
+		<div id="my-header">
+			<div id="header" style="position: relative;">
+			    <div class='egret-img event-back'>
+			    	<a class="mui-icon mui-icon-left-nav mui-pull-left" style="height:45px;width:30px;line-height:45px;color: #8a8a8a;"></a>
+			    </div>
+			    <div class="title-middle">
+			    	<table width="100%" cellpadding="0" cellspacing="0">
+			    		<tr>
+			    			<td align="left" style="white-space: nowrap;"><h1 style="font-size: 16px;line-height: 2.9;margin-top: -8px;color:#000;">厦门大桥漳州段&nbsp;&nbsp;</h1></td>
+			    			<td>
+			    				<div class="mui-input-row mui-search my-search">
+									<input id="my-search" type="search" class="mui-input-clear" placeholder="搜索" readonly="readonly" onclick="fnSearchInfo()"/>
+								</div>
+			    			</td>
+			    		</tr>
+			    	</table>
+			    </div>
+			    <div id="top_other_btn" class='egret-img' style="right:2px;color: #8a8a8a;height: 45px;width:40px;">
+			    	<em class="icon iconfont icon-list1" style="font-size: 24px;"></em>
+			    </div>
+		    </div>
+		    <div class="select-list">
+				<div class="list-tab" field="type" val=""><h5>全部类型</h5><span class="mui-icon mui-icon-arrowdown"></span></div>
+				<div class="list-tab" field="status" val=""><h5>全部状态</h5><span class="mui-icon mui-icon-arrowdown"></span></div>
+				<div class="list-tab" field="showPic" val="true" style="color:red;"><em class="mui-icon mui-icon-checkmarkempty mui-pull-left"></em><h5>图片</h5></div>
+				<!-- <div class="list-tab" field="showLike" val="false" style="color:red;"><em class="mui-icon mui-icon-checkmarkempty mui-pull-left" style="display: none;"></em><h5>收藏</h5></div> -->
+			</div>
+		</div>
+	</div>
+</body>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/common.js"></script>
+<script type="text/javascript" src="../../script/mui.min.js"></script>
+<script type="text/javascript" src="../../script/zepto.min.js"></script>
+<script type="text/javascript" src="../../script/GIS_zone_video.js"></script>
+</html>

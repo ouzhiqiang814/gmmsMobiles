@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>title</title>
+    <link rel="stylesheet" type="text/css" href="../../../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/mui.css"/>
+    <style>
+    	html,body {min-height: 100%;background-color: #efeff4;}
+    </style>
+</head>
+<body>
+	<div class="mui-content" id="pic_content"></div>
+</body>
+<script type="text/javascript" src="../../../script/api.js"></script>
+<script type="text/javascript" src="../../../script/mui.min.js"></script>
+<script type="text/javascript" src="../../../script/zepto.min.js"></script>
+<script type="text/javascript">
+	var page = 1;
+	var rows = 5;
+	var total = 0;
+	var isPush = true;
+	var gmms_url = null;
+	apiready = function(){
+		gmms_url = $api.getStorage("gmms_url");
+		fnInitPage();
+		fnInitPull();
+		fnInitPushRefresh();
+	};
+	
+	//监听window显示调用此方法
+	function fnInitPage(){
+		page = 1;
+		fnQueryPicList(false);
+	}
+	
+	// 刷新
+	function fnInitPull() {	
+		api.setRefreshHeaderInfo({
+		 	bgColor: '#efeff4',
+	        dropColor:'#9BA2AC'
+		},function(){
+			page = 1;
+			fnQueryPicList(true);	
+		});
+	};
+	
+	 // 下拉加载更多
+	function fnInitPushRefresh() {
+		api.addEventListener({
+			name: 'scrolltobottom',
+			extra: {
+	      		threshold: 0
+	    	}
+	  	}, function(ret, err) {
+	  		if(!isPush)
+	  			return;
+	  		var cardrows = $('#pic_content').find(".mui-card").length;
+	  		if(cardrows>=total){
+	  			api.toast({
+	          		msg: '没有更多了',
+	          		duration: 2000,
+	          		location: 'bottom'
+	        	});
+	        	isPush = false;
+	  		}else{
+	  			fnQueryPicList(false);
+	  		}
+	  	});
+	};
+	
+	function fnQueryPicList(isHeader){
+		if(page==1){
+			$('#pic_content').empty();
+			isPush = true;
+		}
+	
+		api.ajax({
+	        url:gmms_url+'modules/driverecord/work-pictures!list.action',
+	        method:'get',
+	        timeout:10,
+	        dataType:'json',
+	        data:{
+	        	values:{carId:api.pageParam.carId,page:page,rows:rows}
+	        }
+        },function(ret,err){
+        	if(ret){
+        		total = ret.total;
+        		if(ret.rows.length>0){
+        			var htmlStr = '';
+        			var imgSrc = null;
+        			$.each(ret.rows,function(i,data){
+        				var showUrl = '';
+        				imgSrc = '../../../image/noimage.gif'
+        				if(data.frontAnnexId!=null){
+        					imgSrc = '../../../image/imgloading.jpg';
+							fnCacheImage(data);
+							showUrl = gmms_url+'annexdownload?annexId='+data.frontAnnexId+'&code='+data.frontCode+'&download=false';
+        				}
+        				if(data.behindAnnexId!=null){
+        					showUrl += ','+gmms_url+'annexdownload?annexId='+data.behindAnnexId+'&code='+data.behindCode+'&download=false';
+        				}
+        				htmlStr += 
+        				'<div class="mui-card">'+
+						'	<div id="pic_'+data.id+'" onclick="fnShowImg(\''+showUrl+'\')" class="mui-card-header mui-card-media" style="height:50vw;background-image:url('+imgSrc+')"></div>'+
+						'	<div class="mui-card-content">'+
+						'		<div class="mui-card-content-inner">'+
+						'			<p>'+data.createTime+'</p>'+
+						'			<p style="text-align:right;margin-bottom: 0;">时速：'+data.speed+'km/h</p>'+
+						'		</div>'+
+						'	</div>'+
+						'</div>';
+        			});
+        			$('#pic_content').append(htmlStr);
+        		}else{
+        			$('#event_content').append('<div class="my-nodata">暂无数据</div>');
+					isPush = false;
+        		}
+        	}else{
+        		var msg = '连接超时';
+        		switch(err.code){
+        			case 0:msg = '连接错误';break;
+        			case 1:msg = '连接超时';break;
+        			case 2:msg = '授权错误';break;
+        			case 3:msg = '数据类型错误';break;
+        		}
+        		api.toast({
+	          		msg: msg,
+	          		duration: 2000,
+	          		location: 'bottom'
+	        	});
+        	}
+        });
+        if(isHeader){
+			api.refreshHeaderLoadDone(); //刷新结束
+		}
+		page++;
+	}
+	//缓存列表图片
+	function fnCacheImage(data){
+		if(data.frontAnnexId!=null){
+			var picUrl = gmms_url+'annexdownload?annexId='+data.frontAnnexId+'&code='+data.frontCode+'&download=false';
+			api.imageCache({
+			    url: picUrl,
+			    policy:'cache_only'		    
+			}, function(ret, err) {
+			    var url = ret.url;
+			    if(url == picUrl){
+			    	url = '../../../image/noimage.gif';
+			    }
+			    $('#pic_'+data.id).css('background-image','url('+url+')');
+			});
+		}
+	}
+	
+	//查看图片
+	function fnShowImg(imgPath){
+		if(imgPath==''){
+			api.toast({
+		        msg:'暂无图片可显示',
+		        duration: 2000,
+	    		location: 'middle'
+	        });
+	        return;
+		}
+		var imgArr = imgPath.split(',');
+		var imageBrowser = api.require('imageBrowser');
+		imageBrowser.openImages({
+			showList:false,
+			activeIndex:0,
+			tapClose:false,
+		    imageUrls: imgArr
+		});
+	}
+</script>
+</html>

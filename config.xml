@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<widget id="A6927723085992" version="0.0.1"> 
+  <name>gmmsMobile</name>  
+  <description>管养小秘</description>  
+  <author email="yenching@qq.com" href="http://www.apicloud.com">野指针</author>  
+  <content src="index.html"/>  
+  <preference name="appBackground" value="rgba(0,0,0,0)"/>  
+  <preference name="windowBackground" value="rgba(0,0,0,0)"/>  
+  <preference name="frameBackgroundColor" value="rgba(0,0,0,0)"/>  
+  <preference name="autoLaunch" value="true"/>  
+  <preference name="autoUpdate" value="true"/>  
+  <preference name="smartUpdate" value="true"/>  
+  <preference name="debug" value="false"/>  
+  <preference name="statusBarAppearance" value="true"/>  
+  <preference name="iOS7StatusBarAppearance" value="true"/>  
+  <preference name="backgroundMode" value="remote-notification"/>  
+  <permission name="location"/>  
+  <permission name="internet"/>  
+  <permission name="bootCompleted"/>  
+  <access origin="*"/>  
+  <feature name="db"/>  
+  <feature name="scrollPicture"/>  
+  <feature name="FNScanner"/>  
+  <feature name="FNPhotograph"/>  
+  <feature name="UIActionSelector"/>  
+  <feature name="NVNavigationBar"/>  
+  <feature name="videoPlayer"/>  
+  <feature name="dhvideo"/>  
+  <feature name="video"/>  
+  <feature name="bMap"> 
+    <param name="android_api_key" value="Nvk9n7Edy4BBnMbGVKVEztXZbIYkokCR"/>  
+    <param name="ios_api_key" value="PR7o0npfShMIerTUig2zGUrt5iAYPcE7"/> 
+  </feature>  
+  <feature name="imageBrowser"/>  
+  <feature name="UIListContacts"/>  
+  <feature name="docReader"/>  
+  <feature name="UIListCheck"/>  
+  <feature name="MNPopups"/>  
+  <feature name="ajpush"> 
+    <param name="app_key" value="72394a4bfca742a59c0bee99"/>  
+    <param name="channel" value="my apicloud"/> 
+  </feature> 
+</widget>

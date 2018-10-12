@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>title</title>
+    <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/mui.css" />
+    <style>
+    	html,body{
+    		min-height:100%;
+    		background-color: #efeff4;
+    	}
+    	.my-list-view{
+    		width: 100%;
+    		list-style: none;
+    		background: #ffffff;
+    		position: relative;
+    		margin-bottom: 10px;
+    	}
+    	.my-list-view li{
+    		position: relative;
+		    overflow: hidden;
+		    padding: 11px 15px;
+    	}
+    	.mui-btn-gray{
+		    color: #7b7a7a;
+		    border: none;
+		    background-color: #efeff4;
+    	}
+    	.mui-table-view-divider{
+    		font-size:14px;
+    		color:#000;
+    	}
+    	.mui-table-view-divider a{
+    		padding-right:15px;
+    	}
+    	.mui-table-view-divider:before{
+    		height:0px;
+    	}
+    </style>
+</head>
+<body>
+	<div class="mui-content">
+		<ul class="my-list-view">
+			<li>
+				<h5 style="color:#000;">推荐搜索</h5>
+				<button type="button" class="mui-btn mui-btn-gray">灯杆</button>
+				<button type="button" class="mui-btn mui-btn-gray">杆</button>
+				<button type="button" class="mui-btn mui-btn-gray">收费</button>
+				<button type="button" class="mui-btn mui-btn-gray">灭火器</button>
+			</li>
+		</ul>
+		<ul class="mui-table-view" id="history_list">
+			<li class="mui-table-view-divider">
+				历史搜索
+				<a class="mui-icon mui-icon-trash mui-pull-right" onclick="fnClearHis()"></a>
+			</li>
+		</ul>
+	</div>
+</body>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/mui.min.js"></script>
+<script type="text/javascript" src="../../script/zepto.min.js"></script>
+<script type="text/javascript">
+	apiready = function(){
+		var historySearch = $api.getStorage("HIS_SEARCH");
+		if(historySearch!=undefined && historySearch!=null){
+			var htmlStr = '';
+			$.each(historySearch,function(i,his){
+				htmlStr += '<li class="mui-table-view-cell"><p>'+his+'</p></li>';
+			});
+			$('#history_list').append(htmlStr);
+		}
+		
+		$('.my-list-view button').on('tap',function(){
+			var val = $(this).html();
+			api.execScript({
+		        name:'GIS_zone_video',
+		        script: 'fnSearch(\''+val+'\');'
+	        });
+	        api.closeWin();
+		});
+		
+		$('#history_list').on('tap','.mui-table-view-cell',function(){
+			var val = $(this).find('p').html();
+			api.execScript({
+		        name:'GIS_zone_video',
+		        script: 'fnSearch(\''+val+'\');'
+	        });
+	        api.closeWin();
+		});
+	};
+	
+	function fnClearHis(){
+		$api.setStorage("HIS_SEARCH",null);
+		$('#history_list .mui-table-view-cell').remove();
+	}
+</script>
+</html>

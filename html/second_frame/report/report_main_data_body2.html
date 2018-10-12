@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>title</title>
+    <link rel="stylesheet" type="text/css" href="../../../css/api.css" />
+    <style>
+    	.main {
+			display: flex;
+		}
+		.main-left {
+			flex: 1;
+			background: #FFFFFF;
+			text-align: center;
+			border-right: 1px solid #EBECED;
+			border-bottom: 1px solid #EBECED;
+			padding-top: 30px;
+			padding-bottom: 30px;
+		}
+		.main-right {
+			flex: 1;
+			background: #FFFFFF;
+			text-align: center;
+			padding-top: 30px;
+			padding-bottom: 30px;
+			border-bottom: 1px solid #EBECED;
+		}
+		.menu div{padding:5px;}
+		.menu img{
+			width:80px;
+		}
+		.presshover {
+			background-color: #CCCCCC;
+		}
+		
+		
+		.oneTitle{
+			flex: 0;
+			float:left;
+			width:50%;
+		}
+    </style>
+</head>
+<body>
+	<div id="toll_c_report" style="display: none;">
+		<div class="main">
+			<div class="main-left menu" tapmode="presshover" onclick="fnReportDetail('票证使用月报','fee/single/mtcrpt/billuseinfo')">
+				<img src="../../../image/report/6B00.png" alt="" >
+				<div>票证使用月报</div>
+			</div>
+			<div class="main-right menu" tapmode="presshover" onclick="fnReportDetail('月征费情况表','fee/single/monthly-levy/list')">
+				<img src="../../../image/report/6B00.png" alt="" >
+				<div>月征费情况表</div>
+			</div>
+		</div>
+		<div class="main">
+			<div class="main-left menu" tapmode="presshover" onclick="fnReportDetail('微机票收入情况表','fee/single/micro-ticket/list')">
+				<img src="../../../image/report/6B00.png" alt="" >
+				<div>微机票收入情况表</div>
+			</div>
+			<div class="main-right menu" tapmode="presshover" onclick="fnReportDetail('交通流量统计跨日报表','fee/single/pass-count/list')">
+				<img src="../../../image/report/6B00.png" alt="" >
+				<div>交通流量统计跨日报表</div>
+			</div>
+		</div>
+	</div>
+	<div id="toll_y_report" style="display: none;">
+		<div class="main">
+			<div class="main-left menu" tapmode="presshover" onclick="fnReportDetail('票证使用月报','fee/yearly/ytcrpt/billuseinfo')">
+				<img src="../../../image/report/3AF.png" alt="" >
+				<div>票证使用月报</div>
+			</div>
+			<div class="main-right menu" tapmode="presshover" onclick="fnReportDetail('工本费发票使用月报','fee/yearly/ytcrpt/costbilluseinfo')">
+				<img src="../../../image/report/3AF.png" alt="" >
+				<div>工本费发票使用月报</div>
+			</div>
+		</div>
+		<div class="main">
+			<div class="main-left menu" tapmode="presshover" onclick="fnReportDetail('公司年费收入汇总表','fee/yearly/fee-income/list')">
+				<img src="../../../image/report/3AF.png" alt="" >
+				<div>公司年费收入汇总表</div>
+			</div>
+			<div class="main-right menu" tapmode="presshover" onclick="fnReportDetail('年费电子标签发放统计月报表','fee/yearly/tag-issue/list')">
+				<img src="../../../image/report/3AF.png" alt="" >
+				<div>年费电子标签发放统计月报表</div>
+			</div>
+		</div>
+	</div>
+</body>
+<script type="text/javascript" src="../../../script/api.js"></script>
+<script type="text/javascript" src="../../../script/zepto.min.js"></script>
+<script type="text/javascript">
+	apiready = function(){
+		var pageParam = api.pageParam;
+		$('#'+pageParam.type+'_report').show();
+	};
+	
+	function fnReportDetail(title,method){
+		api.openWin({
+			name : 'report_detail',
+			url : './report_detail.html',
+			bounces : false,
+			pageParam:{title:title,method:method},
+			animation:{
+				type:'movein'
+			}
+		});
+	}
+</script>
+</html>

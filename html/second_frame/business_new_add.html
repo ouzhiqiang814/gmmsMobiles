@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>title</title>
+    <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/common.css"/>
+</head>
+<body>
+	<div id="wrap">
+		<div id="header">
+		    <div class='egret-img event-back'>
+		    	<img src="../../image/back_btn.png" alt="" />
+		    </div>
+		    <div id="top_close_btn" class='egret-img' style="left:35px;display: none;">
+		    	<img src="../../image/delete_btn.png" alt="" />
+		    </div>
+		    <h1></h1>
+		</div>
+		<div id="main">
+		</div>	
+	</div>
+</body>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/common.js"></script>
+<script type="text/javascript" src="../../script/zepto.min.js"></script>
+<script type="text/javascript">
+	apiready = function(){
+		fnReadyHeader2();
+		fnReadyKeyback(api.winName+'_body','top_close_btn');
+		$('#header h1').html(api.pageParam.itemName);
+		window.setTimeout(function(){
+			fnOpenframe();
+		},500);
+	};
+	
+	function fnOpenframe(){
+		var gmms_url = $api.getStorage('gmms_url');
+		var userId = $api.getStorage('userId');
+		var lesseeId = $api.getStorage('lesseeId');
+		var url = gmms_url+"modules/mobile/business/business-deal!addBusiness.action?itemid="+api.pageParam.itemId+"&itemName="+api.pageParam.itemName+"&userId="+userId+"&useunitId="+lesseeId;		
+		api.openFrame({
+	        name: api.winName+'_body',
+	        url: url,
+	        bounces: false,
+	        rect: {
+	            x: 0,
+	            y: headerHeight,
+	            w: 'auto',
+	            h: 'auto'
+	        },
+	        vScrollBarEnabled: false,
+	        progress:{
+	        	type:'page'
+	        }
+        });
+	}
+</script>
+</html>

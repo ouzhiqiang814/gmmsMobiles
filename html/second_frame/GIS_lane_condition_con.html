@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>title</title>
+		<link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+		<style>
+			html, body {
+				background: #f4f5f7;
+			}
+			.box {
+				background: #ededed;
+				height: 185px;
+				border-radius: 7px;
+				margin: 5%;
+			}
+			.firsttop {
+				padding: 15px;
+				background: #CCCCCC;
+				border-radius: 7px 7px 0px 0px;
+				color: #FFFFFF;
+			}
+			.topleft {
+				text-align: left;
+				color:#000000;
+			}
+			.second_floor {
+				display: flex;
+			}
+			.second_left {
+				flex: 1;
+				height:130px;
+				background: url('../../image/44.png') no-repeat;
+				background-position:center;
+			}
+			.second_right {
+				flex: 1;
+				height:130px;
+				background: url('../../image/55.png') no-repeat;
+				background-position:center;
+			}
+			.test {
+				background-color: #c3c3c3;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="box">
+			<div class="firsttop">
+				<div class="topleft" id="direction1">
+					方向:进岛
+				</div>
+			</div>
+			<div class="second_floor" id="enter">
+				<!--<div tapmode="test" class="second_left"></div>
+				<div tapmode="test" class="second_right"></div>-->
+			</div>
+		</div>
+		
+		
+		<div class="box">
+			<div class="firsttop">
+				<div class="topleft" id="direction2">
+					方向:出岛
+				</div>
+			</div>
+			<div class="second_floor" id="leave">
+				<!--<div class="second_left"></div>
+				<div class="second_left"></div>
+				<div class="second_right"></div>-->
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript" src="../../script/api.js"></script>
+	<script type="text/javascript" src="../../script/GIS_lane_condition_con.js"></script>
+</html>

@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>title</title>
+    <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/style.css"/>
+    <style>
+    	.secondfloor {
+			height: 50px;
+		}
+    	.information {
+    		position: relative;
+			padding-left: 10px;
+			padding-top: 15px;
+			border-bottom: solid 1px #e9e7e7;
+		}
+		.item_arrow {
+			position: absolute;
+			top:15px;
+			right:15px;
+			width: 20px;
+		}
+		.read_span{
+			color:red;border-radius:50%;background-color:red;width:8px;height:8px;
+		}
+		.content {
+			font-size: 16px;
+			padding-left: 10px;
+		}
+		.time {
+			padding-left: 10px;
+			font-size: 12px;
+			color: #CCCCCC;
+		}
+		.h1 {
+			height: 1px;
+			margin-left: 15px;
+			background: #e9e7e7;
+			margin-right: 15px;
+			margin-top: 15px;
+		}
+    </style>
+</head>
+<body>
+	<div id="my_notice_list" class="thirdfloor">
+			
+	</div>
+</body>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/zepto.min.js"></script>
+<script type="text/javascript">
+	apiready = function(){
+		fnLoadNotice();
+	};
+	function fnLoadNotice(){
+		var ctype = api.connectionType;
+		if(ctype.toLowerCase()=='unknown'||ctype.toLowerCase()=='none'){
+			api.toast({
+	            msg:'暂无网路',
+	            duration:2000,
+	            location:'middle'
+            });
+        	return;
+        }
+        api.showProgress({
+		    style: 'default',
+		    animationType: 'fade',
+		    title: '稍等...',
+		    text: '加载数据中...',
+		    modal: false
+		});
+		api.ajax({
+		    url:$api.getStorage("gmms_url")+'modules/security/notice!queryNotice.action',
+		    method:'post',
+		    timeout:10,
+		    data:{
+		    	values:{userId:$api.getStorage("userId")}
+		    }	    
+	    },function(ret,err){
+	    	api.hideProgress();
+	    	if(ret){
+	    		var htmlStr = '';
+	    		if(ret.length>0){
+		    		$.each(ret,function(i,notice){
+		    			var readSpan = '';
+		    			if(notice.readed==0)
+		    				readSpan = ' <span class="read_span"></span>';
+		    			htmlStr += '<div class="information" onclick="fnShowNotice(this,'+notice.id+')">'+
+									'<input type="hidden" name="content" value="'+notice.content+'"/>'+
+									'	<div class="content">'+
+											notice.name+readSpan+
+									'	</div>'+
+									'	<div class="time">'+
+											notice.createTime+
+									'	</div>'+
+									'	<img src="../../image/arrow.png" alt="" class="item_arrow">'+
+									'</div>';
+		    		});
+	    		}else{
+	    			htmlStr = '<div style="color: #CCCCCC;font-size: 14px;text-align:center;width:100%;padding-top:10px;">暂无数据</div>';
+	    		}
+				$('#my_notice_list').html(htmlStr);
+	    	}else{
+	    		api.toast({
+		            msg:err.msg,
+		            duration:2000,
+		            location:'bottom'
+	            });
+	    	}
+	    });
+	}
+	
+	/**
+	 * 查看详细公告 
+	 */
+	function fnShowNotice(_this,noticeId){
+		var content = $(_this).find("input[name='content']").val();
+		var name = $(_this).find("div[class='content']").html();
+		var createTime = $(_this).find("div[class='time']").html();
+		var gmms_url = $api.getStorage('gmms_url');
+		var userId = $api.getStorage('userId');
+		api.ajax({
+		    url:gmms_url+'modules/security/notice!updateNoticeRead.action',
+		    method:'post',
+		    timeout:10,
+		    data:{
+		    	values:{userId:userId,noticeId:noticeId}
+		    }
+	    },function(ret,err){
+	    	//coding...
+	    	if(ret){
+	    		$(_this).find("span[class='read_span']").remove();
+	    	}
+	    });
+		api.openWin({
+		    name: 'notice',
+		    url: './notice.html',
+		    bounces:false,
+			pageParam: {"content":content,"name": name,"createTime":createTime}
+	    });
+	}
+</script>
+</html>

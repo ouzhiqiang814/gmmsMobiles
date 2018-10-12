@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>title</title>
+    <link rel="stylesheet" type="text/css" href="../../css/api.css" />
+	<link rel="stylesheet" type="text/css" href="../../css/common.css" />
+</head>
+<body>
+	<div id="wrap">
+		<div id="header">
+		    <div class='egret-img event-back'>
+		    	<img src="../../image/back_btn.png" alt="" />
+		    </div>
+		    <h1>公告查看</h1>
+		</div>
+		<div id="main">
+		</div>	
+	</div>
+</body>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/common.js"></script>
+<script type="text/javascript">
+	apiready = function(){
+		fnReadyHeader2();
+		fnReadyKeyback();
+		fnOpenFrame();		
+	};
+	
+	function fnOpenFrame(){
+		api.openFrame({
+	        name: 'notice_body',
+	        url: './notice_body.html',
+	        bounces: true,
+	        pageParam: {
+		        name: api.pageParam.name,
+		        content:api.pageParam.content,
+		        createTime:api.pageParam.createTime
+		    },
+	        rect: {
+	            x: 0,
+	            y: headerHeight,
+	            w: 'auto',
+	            h: 'auto'
+	        },
+	        vScrollBarEnabled: false
+        });
+	}
+</script>
+</html>

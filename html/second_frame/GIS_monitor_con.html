@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<title>云API</title>
+		<link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+		<link rel="stylesheet" type="text/css" href="../../css/style.css"/>
+		<style>
+			html, body {
+				height: 100%;
+				margin: 0;
+				padding: 0;
+			}
+			body {
+				background: #e3e3e3;
+				display: flex;
+				flex-flow: column;
+				justify-content: flex-end;
+			}
+			.video {
+				flex: 1;
+			}
+			.box {
+				display: flex;
+				margin-top: 1%;
+			}
+			.boxleft {
+				flex: 1;
+				height: 64vw;
+			}
+			.boxcenter {
+				flex: 3;
+				height: 64vw;
+				display: flex;
+				flex-flow: column;
+			}
+			.boxright {
+				flex: 1;
+				height: 64vw;
+			}
+			.secondone {
+				display: flex;
+				flex-flow: row;
+				flex: 1;
+			}
+			.secondone > div {
+				flex: 1;
+				text-align: center;
+				padding-top: 20px;
+				background-size: 100% 100%;
+			}
+			.boxleft {
+				display: flex;
+				flex-flow: column;
+			}
+			.boxleft > div {
+				flex: 1;
+				text-align: center;
+				padding-top: 20px;
+				background-size: 100% 100%;
+			}
+			.boxright {
+				display: flex;
+				flex-flow: column;
+			}
+			.boxright > div {
+				flex: 1;
+				text-align: center;
+				padding-top: 20px;
+				background-size: 100% 100%;
+			}
+			.presshover {
+				background-color: #D4D4D4;
+			}
+			.one {
+				background: url('../../image/1_01.png') no-repeat;
+			}
+			.activeone {
+				background: url('../../image/5_1.png') no-repeat;
+			}
+			.two {
+				background: url('../../image/1_02.gif') no-repeat;
+			}
+			.activetwo {
+				background: url('../../image/5_2.png') no-repeat;
+			}
+			.three {
+				background: url('../../image/1_03.gif') no-repeat;
+			}
+			.activethree {
+				background: url('../../image/5_3.png') no-repeat;
+			}
+			.four {
+				background: url('../../image/1_04.gif') no-repeat;
+			}
+			.activefour {
+				background: url('../../image/5_4.png') no-repeat;
+			}
+			.five {
+				background: url('../../image/1_05.gif') no-repeat;
+			}
+			.six {
+				background: url('../../image/1_06.gif') no-repeat;
+			}
+			.activesix {
+				background: url('../../image/5_6.png') no-repeat;
+			}
+			.seven {
+				background: url('../../image/1_07.gif') no-repeat;
+			}
+			.activeseven {
+				background: url('../../image/5_7.png') no-repeat;
+			}
+			.eight {
+				background: url('../../image/1_08.gif') no-repeat;
+			}
+			.activeeight {
+				background: url('../../image/5_8.png') no-repeat;
+			}
+			.nine {
+				background: url('../../image/1_09.png') no-repeat;
+			}
+			.activenine {
+				background: url('../../image/5_9.png') no-repeat;
+			}
+			.leftone {
+				background: url('../../image/4_06.png') no-repeat;
+			}
+			.activeleftone {
+				background: url('../../image/5_10.png') no-repeat;
+			}
+			.lefttwo {
+				background: url('../../image/4_09.png') no-repeat;
+			}
+			.leftthree {
+				background: url('../../image/4_13.png') no-repeat;
+			}
+			.activeleftthree {
+				background: url('../../image/5_11.png') no-repeat;
+			}
+			.rightone {
+				background: url('../../image/4_06.png') no-repeat;
+			}
+			.activerightone {
+				background: url('../../image/5_10.png') no-repeat;
+			}
+			.righttwo {
+				background: url('../../image/4_08.png') no-repeat;
+			}
+			.rightthree {
+				background: url('../../image/4_13.png') no-repeat;
+			}
+			.activerightthree {
+				background: url('../../image/5_11.png') no-repeat;
+			}
+			.box_center{
+			  margin:10px;
+			  margin-bottom:25%;
+			  padding:10px;
+			  font-size:18px;
+			}
+			.center_one{
+			padding:10px;
+			border-bottom:1px solid #CCCCCC;
+			}
+			#header {
+	            background-color: #0877d0;
+				text-align: center;
+				color: #fff;
+				width: 100%;
+				position: relative;
+				padding-top: 20px;
+			}
+			#header span {
+				font-size: 1.125rem;
+				height: 3.125rem;
+				line-height: 3.125rem;
+				margin: 0em;
+				color: #fff;
+			}
+			.back-icon {
+				display: inline-block;
+				width: 3.125rem;
+				height: 3.375rem;
+				background: url(../../image/back_btn.png) no-repeat center center;
+				-webkit-background-size: 18px 20px;
+				background-size: 1.125rem 1.25rem;
+				position: absolute;
+				left: 0;
+				bottom: 0;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="video"></div>
+		<!--<div class="box">
+			<div class="boxleft">
+				<div class="leftone" tapmode="activeleftone" onclick="sendZoom('1','1')"></div>
+				<div class="lefttwo" ></div>
+				<div class="leftthree" tapmode="activeleftthree" onclick="sendZoom('1','2')"></div>
+			</div>
+			<div class="boxcenter">
+				<div class="secondone">
+					<div class="one" tapmode="activeone" onclick="sendOrder('5')"></div>
+					<div class="two" tapmode="activetwo" onclick="sendOrder('1')"></div>
+					<div class="three" tapmode="activethree" onclick="sendOrder('7')"></div>
+				</div>
+				<div class="secondone">
+					<div class="four" tapmode="activefour" onclick="sendOrder('3')"></div>
+					<div class="five" ></div>
+					<div class="six" tapmode="activesix" onclick="sendOrder('4')"></div>
+				</div>
+				<div class="secondone">
+					<div class="seven" tapmode="activeseven" onclick="sendOrder('6')"></div>
+					<div class="eight" tapmode="activeeight" onclick="sendOrder('2')"></div>
+					<div class="nine" tapmode="activenine" onclick="sendOrder('8')"></div>
+				</div>
+			</div>
+			<div class="boxright">
+				<div class="rightone" tapmode="activerightone" onclick="sendZoom(2,1)"></div>
+				<div class="righttwo"></div>
+				<div class="rightthree" tapmode="activerightthree" onclick="sendZoom(2,2)"></div>
+			</div>
+		</div>-->
+	</body>
+	<script type="text/javascript" src="../../script/api.js"></script>
+	<script type="text/javascript" src="../../script/GIS_monitor_con.js"></script>
+</html>

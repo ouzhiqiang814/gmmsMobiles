@@ -1,0 +1,180 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="copyright" content="www.apicloud.com" />
+<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+<title>工作</title>
+<link rel="stylesheet" type="text/css" href="../../css/api.css" />
+<link rel="stylesheet" type="text/css" href="../../css/common.css" />
+<link rel="stylesheet" type="text/css" href="../../css/mui.min.css">
+<link rel="stylesheet" type="text/css" href="../../css/icons-extra.css" />
+
+<style>
+html,body {min-height: 100%; }
+
+/* 以下重写 mui.css */
+.mui-grid-view.mui-grid-9
+{
+    background-color: #FFFFFF;
+}
+.mui-grid-view.mui-grid-9 .mui-table-view-cell
+{
+    padding: 4px 15px;
+}
+.mui-grid-view.mui-grid-9 .mui-media .mui-icon
+{
+    font-size: 2.0em;
+}
+.mui-table-view .mui-media-object
+{
+    line-height: 36px;
+    max-width: 36px;
+    height: 36px;
+}
+.mui-table-view-cell
+{
+    padding: 9px 15px;
+}
+.mui-icon-extra {
+	margin-top: 9px;
+}
+/* 以上重写 mui.css */
+
+.group_title
+{
+	height:30px;
+	text-align:left; 
+	padding-left:6px; 
+	line-height:30px; 
+	font-size: 0.9em; 
+	background-color: #FFFFFF;
+}
+
+.sub_title
+{
+	height:36px; 
+	line-height: 36px;
+	font-size: 0.9em; 
+}
+</style>
+</head>
+<body>
+
+<div class="mui-content" style="border-top: 1px #fff solid;">
+	<div class='group_title' style=" margin-top:160px;">常用应用</div>
+    <ul class="mui-table-view mui-grid-view mui-grid-9">
+        <li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3 " >
+        	<a href="#" onclick="fnOpenWin('GIS_con','GIS');">
+                <span class="mui-icon  mui-icon-map">
+                	<!--<img src="../../image/dbrw_default_icon.png" style='height:30px;width:30px;'/>-->
+                </span>
+                <div class="mui-media-body">GIS</div></a></li>
+        <li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3">
+        	<a href="#" onclick="fnOpenWin('data_query_con','报表查询');">
+                <span class="mui-icon-extra mui-icon-extra-trend"></span>
+                <div class="mui-media-body">报表查询</div></a></li>
+        <li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3">
+        	<a href="#" onclick="fnOpenWin('infomation','内部邮件');">
+                <span class="mui-icon mui-icon-email"><span class="mui-badge">5</span></span>
+                <div class="mui-media-body">内部邮件</div></a></li>
+        <li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3">
+        	<a href="#" onclick="fnOpenWin('infomation','通知');">
+                <span class="mui-icon mui-icon-chatbubble"></span>
+                <div class="mui-media-body">通知</div></a></li>
+        <li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3">
+        	<a href="#" onclick="fnOpenWin('infomation','公告');">
+                <span class="mui-icon mui-icon-chatboxes"></span>
+                <div class="mui-media-body">公告</div></a></li>
+        <li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3">
+        	<a href="#" onclick="fnOpenWin('infomation','会议纪要');">
+                <span class="mui-icon mui-icon-compose"></span>
+                <div class="mui-media-body">会议纪要</div></a></li>
+        <li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3">
+        	<a href="#" onclick="fnOpenWin('infomation','文件检索');">
+                <span class="mui-icon mui-icon-search"></span>
+                <div class="mui-media-body">文件检索</div></a></li>
+    </ul>
+</div>
+
+<div class='group_title' style="margin-top:20px;">事务新建</div>
+<ul class="mui-table-view mui-table-view-chevron">
+	<li class="mui-table-view-cell mui-media">
+		<a class="mui-navigate-right">
+			<img class="mui-media-object mui-pull-left" src="../../image/scan_problem_repair.png">
+			<div class="mui-media-body sub_title">
+				请假申请
+			</div>
+		</a>
+	</li>
+	<li class="mui-table-view-cell mui-media">
+		<a class='mui-navigate-right' href="javascript:;">
+			<img class="mui-media-object mui-pull-left" src="../../image/scan_problem_repair.png">
+			<div class="mui-media-body sub_title">
+				报告申请
+			</div>
+		</a>
+	</li>
+	<li class="mui-table-view-cell mui-media">
+		<a class="mui-navigate-right">
+			<img class="mui-media-object mui-pull-left" src="../../image/scan_problem_repair.png">
+			<div class="mui-media-body sub_title">
+				物资申请
+			</div>
+		</a>
+	</li>
+</ul>
+<br>
+</body>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/mui.min.js"></script>
+<script type="text/javascript">
+	function fnOpenWin (winName,title) {
+		api.openWin({
+			name: winName,
+			url: './' + winName + '.html',
+			delay:200,
+			pageParam: {"name": title},
+			
+		});
+	}
+
+	function openSlider(param) {
+        api.openWin({
+            name: '',
+            url: '',
+            pageParam: {"name": param}
+        })
+    }
+    
+	apiready = function  () {
+		var scrollPicture = api.require('scrollPicture')
+	            ,imgsArr=['widget://image/s2.jpg','widget://image/s4.jpg'];
+	    scrollPicture.open({
+	        x:0,
+	        y:0,
+	        w:api.winWidth,
+	        h:140,
+	        intervalTime:10,
+	        placeholderImg: 'widget://image/default.png',
+	        paths: imgsArr,
+	        control: {
+	            activeColor:'#333333',
+	            inactiveColor:'#9B9B9B'
+	        },
+	        fixed: false,
+	        fixedOn:'second_frame'
+	    }, function (ret, err) {
+	        if (ret.status) {
+//	            openSlider('三峡好风景');
+	        } else {
+	
+	        }
+	    });
+	    
+	    mui.init({
+			swipeBack: true //启用右滑关闭功能
+		});
+	}
+</script>
+</html>

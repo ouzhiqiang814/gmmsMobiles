@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>title</title>
+    <link rel="stylesheet" type="text/css" href="../../../../css/api.css" />
+	<link rel="stylesheet" type="text/css" href="../../../../css/common.css" />
+	<link rel="stylesheet" type="text/css" href="../../../../css/mui.min.css"/>
+	 <style>
+	 	.mui-title{
+	 		font-size:20px;
+	 	}
+	 	.updatatime_box{
+	 		text-align: center;
+			font-size: 13px;
+			color: #dddddd;
+			margin-top: -15px;
+	 	}
+	 	.header_1{
+	 		background-color: #fff;
+	 		padding-top: 30px;
+	 	}
+	 	.header_2{
+	 		background-color: #fff;
+	 		padding-top: 30px;
+	 		margin-top:30px;
+	 		padding-bottom:10px;
+	 	}
+	 	.title_box{
+	 		height:60px;
+	 	}	 	
+	 	.span_1{
+	 		height:18px;
+	 		width: 10px;
+	 		background-color:#00cc00;
+	 		margin-bottom:-3px;
+	 		margin-left:20px;
+	 	}
+	 	.span_2{
+	 		float:right;
+	 	}
+	 	.mui-table-view{
+	 		color:#5d9cec;
+	 		font-size: 14px;
+	 	}
+	 	.title{
+	 		color:#000;
+	 		font-size: 14px;
+	 	}
+	 	.smText{
+	 		display: flex;
+	 		flex-direction: column;
+	 		text-align:center;
+	 	}
+	 	.smText_box{
+	 		display: flex;
+			flex-direction: row;
+			justify-content: space-around
+	 	}
+	 	.span_3{
+	 		height:18px;
+	 		width: 7px;
+	 		background-color:#00cc00;
+	 		margin-bottom:-3px;
+	 		margin-left:0px;
+	 		margin-right:5px;
+	 	}
+	 	.smText_1{
+	 		color:#bcbcbc;
+	 	}
+	 	.bottom_percent{
+	 		text-align:center;
+	 	}	
+		.mui-table-view:before{
+			background-color: #fff;
+		}
+		.mui-table-view:after{
+			background-color: #fff;
+		}
+		.mui-table-view-cell:after{
+			background-color: #fff;
+		}
+		.mui-table-view .mui-active{
+			background-color: #fff;
+		}
+		.border{
+			background-color: #c8c7cc;
+			height: 2px;
+			width:90%;
+			margin:0 auto;
+			margin-top:20px;
+		}		 	 	
+	 </style>
+</head>
+<body>
+	<div class="mui-content">
+		<div id="content_1"  class="header_1">
+			<div class="title_box">
+				<h1 class="mui-title">路政案件处理情况</h1>	
+			</div>
+			<div class="updatatime_box">
+				<span class="updatatime_1"></span>
+			</div>
+<!--			<ul class="mui-table-view">
+				<li class="mui-table-view-cell title middle_line_1">
+					<label>2017年2月</label>
+					<span>杏林大桥班组案件查处情况</span>
+				</li>				
+			</ul>				
+			<div id="main1" style="width:100%;height:350px;background-color: #ff0000;"></div>-->				
+			<ul class="mui-table-view" id="line_1">
+				<li class="mui-table-view-cell title middle_line_1">
+					<label></label>
+					<span>案件处理情况</span>
+				</li>
+				<li class="mui-table-view-cell middle_line_2">
+					<span class="span_1"></span>
+					<label>查处案件</label>
+					<span class="span_2"></span>
+				</li>
+				<li class="mui-table-view-cell middle_line_3">
+					<span class="span_1"></span>
+					<label>结案</label>
+					<span class="span_2"></span>
+				</li>												
+			</ul>
+			<div id="main2" style="width:100%;height:350px;"></div>
+			<div class="border"></div>								
+			<ul class="mui-table-view" id="line_2">
+				<li class="mui-table-view-cell title middle_line_1">
+					<label></label>
+					<span>案件分布情况</span>
+				</li>				
+				<li class="mui-table-view-cell middle_line_2">
+					<span class="span_1"></span>
+					<label>累计发生案件</label>
+					<span class="span_2"></span>
+				</li>
+			</ul>				
+			<div id="main3" style="width:100%;height:300px;"></div>
+			<div class="border"></div>				
+			<ul class="mui-table-view" id="line_3">
+				<li class="mui-table-view-cell title middle_line_1">
+					<label>杏林大桥罚款、赔偿情况</label>
+					<span></span>
+				</li>				
+				<li class="mui-table-view-cell middle_line_2">
+					<span class="span_1"></span>
+					<label>累计罚款、赔偿总金额</label>
+					<span class="span_2"></span>
+				</li>
+			</ul>				
+			<div id="main4" style="width:100%;height:300px;"></div>				
+		</div>		
+	</div>
+</body>
+<script type="text/javascript" src="../../../../script/api.js"></script>
+<script type="text/javascript" src="../../../../script/common.js"></script>
+<script type="text/javascript" src="../../../../script/mui.min.js"></script>
+<script type="text/javascript" src="../../../../script/zepto.min.js"></script>
+<script type="text/javascript" src="../../../../script/echarts.min.js"></script>
+<script type="text/javascript">
+	apiready = function(){
+		getData();
+	};
+	
+	function getData(){
+		restQuester('/road/em-fileInfo/ajaxEmCloseRatePie/true/true',getPie_1);
+		restQuester('/road/em-fileInfo/ajaxEmFileInfoPie/true/true/true',getPie_2);
+		restQuester('/road/em-fileInfo/ajaxEmFileInfoFeePie/true/true/true',getPie_3);
+	}
+	
+	function getPie_1(data){
+		if(data){
+			var pie = {}
+			
+			$("#line_1 .middle_line_1 label").html(data.year + '年' + data.month + '月');
+			$("#line_1 .middle_line_1 span").html(data.planame+'案件处理情况');
+			$("#line_1 .middle_line_2 .span_2").html(data.totalCount + '起');
+			$("#line_1 .middle_line_3 .span_2").html(data.closeCount + '起');
+			$(".updatatime_1").html("更新时间："+data.updateTime);	
+			var num = 0;
+			if(data.closeCount == 0){
+				num = 0;
+			}
+			else{
+				num = data.closeCount / data.totalCount;
+			}       		
+			num = (num*100).toFixed(2);				
+			pie = {
+				percent : num,
+				subtext : '结案率',
+				id : 'main2'
+			}
+			echarts_2(pie);		
+		}	
+	}
+	
+	function getPie_2(data){
+		if(data){
+			var pieData = {}
+			
+			$("#line_2 .middle_line_1 label").html(data.year + '年' + data.month + '月');
+			$("#line_2 .middle_line_1 span").html(data.planame+'案件处理情况');
+			$("#line_2 .middle_line_2 .span_2").html(data.total + '起');
+			pieData = {
+				name : '案件分布',
+				datas : ['超限案件','路产案件'],
+				pi: '件',
+				data_1 : data.exceedCount,
+				data_2 : data.propertyCount,
+				name_1 : '超限案件',
+				name_2 : '路产案件',
+				id:'main3'
+			}
+			pie(pieData)				
+		}	
+	}	
+
+	function getPie_3(data){
+		var pieData = {}
+		if(data){
+			$("#line_3 .middle_line_1 label").html(data.year + '年' + data.month + '月');
+			$("#line_3 .middle_line_1 span").html(data.planame+'案件处理情况');
+			$("#line_3 .middle_line_2 .span_2").html(data.totalFineFee + '元');
+			pieData = {
+				name : '罚款赔偿情况',
+				datas : ['超限案件','罚款'],
+				pi: '元',
+				data_1 : data.forfeitFee,
+				data_2 : data.comFee,
+				name_1 : '超限案件',
+				name_2 : '罚款',
+				id : 'main4'
+			}
+			pie(pieData)			
+		}
+	}
+	
+	//数据查询通用函数
+	function restQuester(url,callback){
+		var charts_url = 'http://125.77.254.250:8180'
+		api.ajax({
+			url : charts_url + url,
+			method : 'get',
+			timeout : 30
+		},function(ret,err){
+			if(ret){
+				callback(ret);
+			}
+			else{
+				api.toast({
+					msg:"链接出现错误，暂时无法查询数据，请稍后重试！",
+					duration:3000,
+					location:'bottom'
+				});
+				callback();
+			}
+		})
+	}
+
+	//饼图标准	
+	function pie(data){
+		var myChart = echarts.init(document.getElementById(data.id));		
+		var option = {
+		    tooltip : {
+		        trigger: 'item',
+		        formatter: "{a} <br/>{b} : {c}"+data.pi+" ({d}%)"
+		    },
+//		    legend: {
+//		        orient: 'vertical',
+//		        right: '3%',
+//		        top:'15%',
+//		        data: data.datas
+//		    },
+		    series : [
+		        {
+		            name: data.name,
+		            //hoverAnimation:false,
+		            type: 'pie',
+		            radius : '55%',
+		            center: ['50%', '50%'],
+		            data:[
+		                {value:data.data_1, name:data.name_1},
+		                {value:data.data_2, name:data.name_2}
+		            ],
+					itemStyle: {
+						normal: {
+								label:{ 
+									show: true,  
+									formatter: '{b} \n {c}'+data.pi, 
+								} 
+						},
+					},		            
+		        }
+		    ],
+		    color : ['#48cfae','#fb6e52']
+		};
+		myChart.setOption(option)						
+	}
+	
+	//加载统计图表2
+	function echarts_2(data){
+		percent = data.percent;
+		var myChart = echarts.init(document.getElementById(data.id));
+		var option = {
+		    title: {
+		        text: percent + '%',
+		        x: 'center',
+		        y: 'center',
+		        subtext:data.subtext,
+		        textStyle: {
+		            color: '#000000',
+		            fontSize: 14
+		        },
+		        subtextStyle:{
+		            fontSize :14
+		        },		        
+		    },
+		    animation: true,
+		    series: [{
+		        name: 'main',
+		        hoverAnimation:false,
+		        type: 'pie',
+		        center: ['50%', '50%'],
+		        radius: ['65%', '85%'],
+		        label: {
+		            normal: {
+		                show: false
+		            }
+		        },
+		        data: getData_1()
+		    }]
+		};
+		myChart.setOption(option)		
+	}
+	
+	//圆环样式1
+	function getData_1() {
+	    return [{
+	        value: (percent/100),
+	        itemStyle: {
+	            normal: {
+	                color: '#41c7db',
+	            }
+	        }
+	    }, {
+	        value: 1 - (percent/100),
+	        itemStyle: {
+	            normal: {
+	                color: '#dddddd'
+	            }
+	        }
+	    }];
+	}			
+</script>
+</html>

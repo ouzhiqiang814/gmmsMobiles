@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>title</title>
+    <link rel="stylesheet" type="text/css" href="../../../css/api.css" />
+	<link rel="stylesheet" type="text/css" href="../../../css/common.css" />
+	<link rel="stylesheet" type="text/css" href="../../../css/mui.min.css"/>
+	 <style>
+	 	.mui-title{
+	 		font-size:20px;
+	 	}
+	 	.updatatime_box{
+	 		text-align: center;
+			font-size: 13px;
+			color: #dddddd;
+			margin-top: -15px;
+	 	}
+	 	.header_1{
+	 		background-color: #fff;
+	 		padding-top: 30px;
+	 	}
+	 	.header_2{
+	 		background-color: #fff;
+	 		padding-top: 30px;
+	 		margin-top:30px;
+	 		padding-bottom:10px;
+	 	}
+	 	.title_box{
+	 		height:60px;
+	 	}	 	
+	 	.span_1{
+	 		height:18px;
+	 		width: 10px;
+	 		background-color:#00cc00;
+	 		margin-bottom:-3px;
+	 		margin-left:20px;
+	 	}
+	 	.span_2{
+	 		float:right;
+	 	}
+	 	.mui-table-view{
+	 		color:#5d9cec;
+	 		font-size: 14px;
+	 	}
+	 	.title{
+	 		color:#000;
+	 		font-size: 14px;
+	 	}
+	 	.smText{
+	 		display: flex;
+	 		flex-direction: column;
+	 		text-align:center;
+	 	}
+	 	.smText_box{
+	 		display: flex;
+			flex-direction: row;
+			justify-content: space-around
+	 	}
+	 	.span_3{
+	 		height:18px;
+	 		width: 7px;
+	 		background-color:#00cc00;
+	 		margin-bottom:-3px;
+	 		margin-left:0px;
+	 		margin-right:5px;
+	 	}
+	 	.smText_1{
+	 		color:#bcbcbc;
+	 	}
+	 	.bottom_percent{
+	 		text-align:center;
+	 	}
+		.mui-table-view:before{
+			background-color: #fff;
+		}
+		.mui-table-view:after{
+			background-color: #fff;
+		}
+		.mui-table-view-cell:after{
+			background-color: #fff;
+		}
+		.mui-table-view .mui-active{
+			background-color: #fff;
+		}	 		 	
+	 </style>
+</head>
+<body>
+	<div class="mui-content">
+<!--		<div id="content_1"  class="header_1">
+			<div class="title_box">
+				<h1 class="mui-title">养护工程支付金额统计</h1>	
+			</div>
+			<div class="updatatime_box">
+				<span class="updatatime_1"></span>
+			</div>
+			<ul class="mui-table-view">
+				<li class="mui-table-view-cell title middle_line_1">
+					<label></label>
+					<span></span>
+				</li>				
+				<li class="mui-table-view-cell middle_line_2">
+					<span class="span_1"></span>
+					<label>合同支付总金额</label>
+					<span class="span_2"></span>
+				</li>
+				<li class="mui-table-view-cell middle_line_3">
+					<span class="span_1"></span>
+					<label>零星工程支付总金额</label>
+					<span class="span_2"></span>
+				</li>
+			</ul>				
+			<div id="main1" style="width:100%;height:350px;"></div>		
+		</div>	-->
+		<div id="content_2"  class="header_2">
+			<div class="title_box">
+				<h1 class="mui-title">养护病害统计</h1>	
+			</div>
+			<div class="updatatime_box">
+				<span class="updatatime_2"></span>
+			</div>			
+			<ul class="mui-table-view">
+				<li class="mui-table-view-cell title middle_line_1">
+					<label></label>
+					<span></span>
+				</li>				
+				<li class="mui-table-view-cell middle_line_2">
+					<span class="span_1"></span>
+					<label>发现病害</label>
+					<span class="span_2"></span>
+				</li>
+			</ul>				
+			<div id="main2" style="width:100%;height:300px;"></div>					
+		</div>		
+		
+		<div id="content_3"  class="header_2">
+			<div class="title_box">
+				<h1 class="mui-title">病害处理情况</h1>	
+			</div>
+			<div class="updatatime_box">
+				<span class="updatatime_3"></span>
+			</div>			
+			<ul class="mui-table-view">
+				<li class="mui-table-view-cell title middle_line_1">
+					<label></label>
+					<span></span>
+				</li>				
+				<li class="mui-table-view-cell middle_line_2">
+					<span class="span_1"></span>
+					<label>已处理病害</label>
+					<span class="span_2"></span>
+				</li>
+				<li class="mui-table-view-cell middle_line_3">
+					<span class="span_1"></span>
+					<label>未处理病害</label>
+					<span class="span_2"></span>
+				</li>
+			</ul>				
+			<div id="main3" style="width:100%;height:350px;"></div>		
+		</div>
+
+
+		<div id="content_4"  class="header_2">
+			<div class="title_box">
+				<h1 class="mui-title">任务执行情况统计</h1>	
+			</div>
+			<div class="updatatime_box">
+				<span class="updatatime_4"></span>
+			</div>			
+			<ul class="mui-table-view">
+				<li class="mui-table-view-cell title middle_line_1">
+					<label>2017年所辖区域任务执行情况统计</label>
+					<span></span>
+				</li>				
+				<li class="mui-table-view-cell middle_line_2">
+					<span class="span_1"></span>
+					<label>任务总件数</label>
+					<span class="span_2"></span>
+				</li>
+			</ul>				
+			<div id="main4" style="width:100%;height:300px;"></div>	
+			<ul class="mui-table-view">
+				<li class="mui-table-view-cell smText_box">
+					<label class="smText">
+						<span>
+							<span class="span_3"></span>
+							<span class="bottom_text_1"></span>							
+						</span>
+						<span class="smText_1">
+							已完成
+						</span>
+					</label>
+					<span class="smText">
+						<span>
+							<span class="span_3"></span>
+							<span class="bottom_text_2"></span>
+						</span>
+						<span class="smText_1">
+							未完成
+						</span>					
+					</span>
+				</li>				
+				<li class="mui-table-view-cell smText_box">
+					<label class="smText">
+						<span>
+							<span class="span_3"></span>
+							<span class="bottom_text_3"></span>							
+						</span>
+						<span class="smText_1">
+							按时完成
+						</span>
+					</label>
+					<span class="smText">
+						<span>
+							<span class="span_3"></span>
+							<span class="bottom_text_4"></span>
+						</span>
+						<span class="smText_1">
+							超时完成
+						</span>					
+					</span>
+				</li>
+			</ul>				
+		</div>						
+	</div>
+</body>
+<script type="text/javascript" src="../../../script/api.js"></script>
+<script type="text/javascript" src="../../../script/common.js"></script>
+<script type="text/javascript" src="../../../script/mui.min.js"></script>
+<script type="text/javascript" src="../../../script/zepto.min.js"></script>
+<script type="text/javascript" src="../../../script/echarts.min.js"></script>
+<script type="text/javascript">
+	var charts_url = null;
+	charts_url = $api.getStorage("charts_url");
+	apiready = function(){
+		//getMaintain();
+		getTroubleMaintain();
+		getTroubleHandle();		
+		getTask();
+				
+	};
+
+	//养护工程支付金额统计数据下载
+	function getMaintain(){
+		var maintainData = {};
+//		api.ajax({
+//	        url:''
+//      },function(ret,err){
+//      	//coding...
+//      });
+		maintainData = {
+			xAxis : [1,2,3,4,5,6,7,8,9,10,11,12],
+			contract : [230,150,378,515,791,45,418,219,348,199,610,515],
+			odd : [123,244,348,125,139,55,93,15,178,99,107,205],
+			time : '2017年',
+			contractAll : '3489万',
+			oddAll : '1153万',
+			upTime: '2017-07-15 23:59'
+		}
+		getMaintain_echarts(maintainData);
+	}	
+	//养护工程支付金额统计数据加载
+	function getMaintain_echarts(data){
+		var myChart = echarts.init(document.getElementById('main1'));
+		var option = {};
+		$("#content_1 .middle_line_1 label").html(data.time+'所有区域养护工程支付金额统计');
+		$("#content_1 .middle_line_2 .span_2").html(data.contractAll+'元');
+		$("#content_1 .middle_line_3 .span_2").html(data.oddAll+'元');
+		$(".updatatime_1").html('更新时间：'+data.upTime);
+		//折线图
+		option = {
+//      			title :{
+//      				text :'仓库统计',
+//      				left :'center'
+//      			},
+				    tooltip : {
+				        trigger: 'item',
+				        axisPointer: {
+				            type: 'cross',
+				            label: {
+				                backgroundColor: '#6a7985'
+				            }
+				        },
+				        formatter : "{b}月<br/>{a}:{c} 万元"
+				    },
+				    legend: {
+				        data:['合同支付','零星工程支付'],
+				        top:'10%'
+				    },				    
+				    grid: {
+				        left: '3%',
+				        right: '4%',
+				        bottom: '3%',
+				        top: '25%',
+				        containLabel: true
+				    },
+				    xAxis : [
+				        {
+				            type : 'category',
+				            boundaryGap : true,
+				            data : data.xAxis
+				        }
+				    ],
+				    yAxis : [
+				        {
+				            type : 'value',
+				            name : '金额（万元）'
+				        }
+				    ],
+				    series : [
+				        {
+				        	name:'合同支付',
+				            type:'line',
+				            data:data.contract
+				        },
+				        {
+				        	name:'零星工程支付',
+				        	type:'line',
+				        	data:data.odd
+				        }
+				        
+				    ],
+				    color:["#89e0cb","#ffd369"]				    				    				            			
+        		};
+        		myChart.setOption(option); 						
+	}
+
+	//养护病害统计数据下载
+	function getTroubleMaintain(){
+		var troubleData = {};				
+		api.ajax({
+	        url:charts_url+'/report/disease/ajaxManagerDiseaseChart?isMobile=true&isDetail=true',
+	        method:'get',
+		    timeout:30
+        },function(ret,err){
+	 		troubleData = {
+				all : '',
+				time : '',
+				place : [],
+				count : [],
+				upTime : ''
+			}       	
+        	if(ret){
+        		troubleData.all = ret.total+'条';
+        		troubleData.time = ret.year+'年'+ret.month+'月';
+        		troubleData.upTime = ret.updateTime;
+        		for(var i=0;i<ret.datas.length;i++){
+        			for(var k in ret.datas[i]){
+        				troubleData.place.push(k);
+        				troubleData.count.push(ret.datas[i][k]);
+        			}
+        		}
+        	}
+        	else{
+	 	 		troubleData = {
+					all : '0条',
+					time : '',
+					place : [],
+					count : [],
+					upTime : ''
+				}
+	    		api.toast({
+		            msg:"链接出现错误，暂时无法查询数据，请稍后重试！",
+		            duration:3000,
+		            location:'bottom'
+	            });					        		
+        	}
+        	getTroubleMaintain_echarts(troubleData)	
+        });	
+	}
+	//养护病害统计数据加载
+	function getTroubleMaintain_echarts(data){
+		var myChart = echarts.init(document.getElementById('main2'));
+		var option = {};
+		$("#content_2 .middle_line_1 label").html(data.time+'所有区域病害统计');
+		$("#content_2 .middle_line_2 .span_2").html(data.all);
+		$(".updatatime_2").html('更新时间：'+data.upTime);
+		
+		var str = [];
+		for(var i=0;i<data.place.length;i++){
+		  str.push({value:data.count[i],name:data.place[i]})  
+		}		
+		option = {
+		    tooltip : {
+		        trigger: 'item',
+		        formatter: "{a} <br/>{b} : {c}条 ({d}%)"
+		    },
+//		    legend: {
+//		        orient: 'vertical',
+//		        right: '3%',
+//		        top:'15%',
+//		        data: data.place
+//		    },
+		    series : [
+		        {
+		            name: '病害处理',
+		            //hoverAnimation:false,
+		            type: 'pie',
+		            radius : '65%',
+		            center: ['50%', '50%'],
+		            data:str,
+		           	itemStyle: {		                
+		                normal: {
+							label:{ 
+								show: true,  
+								formatter: '{b} \n {c} 条'
+							}, 	                
+		                }
+		            }			            
+		        }
+		    ],
+		    color:['#ed5555','#fc8d52','#ffce55','#ec87bf','#48cfae']
+		};
+		myChart.setOption(option)						
+	}
+	
+	//病害处理数据下载
+	function getTroubleHandle(){
+		var troubleData = {};
+		var url = 'http://172.16.53.225:9080/report/disease/ajaxDiseaseExecuteChart?isMobile=true&isDetail=true'
+		api.ajax({
+	        url:charts_url+'/report/disease/ajaxDiseaseExecuteChart?isMobile=true&isDetail=true',
+	        method:'get',
+		    timeout:30
+        },function(ret,err){
+        	if(ret){
+				troubleData = {
+					time : ret.year+'年',
+					finished : ret.dealTotal+'条',
+					unfinished : ret.unDealTotal+'条',
+					upTime : ret.updateTime,
+					xAxis : ret.xAxis,
+					finishedCount : ret.dealDatas,
+					unfinishedCount : ret.unDealDatas		
+				}        		
+        	}
+        	else{
+				troubleData = {
+					time : '',
+					finished : '0条',
+					unfinished : '0条',
+					upTime : '',
+					xAxis : '',
+					finishedCount : '',
+					unfinishedCount : ''		
+				}
+	    		api.toast({
+		            msg:"链接出现错误，暂时无法查询数据，请稍后重试！",
+		            duration:3000,
+		            location:'bottom'
+	            });					         		
+        	}
+        	getTroubleHandle_echarts(troubleData)
+        });		
+	}
+	//病害处理数据加载
+	function getTroubleHandle_echarts(data){
+		var myChart = echarts.init(document.getElementById('main3'));
+		var option = {};
+		$("#content_3 .middle_line_1 label").html(data.time+'所有区域病害处理情况');
+		$("#content_3 .middle_line_2 .span_2").html(data.finished);
+		$("#content_3 .middle_line_3 .span_2").html(data.unfinished);
+		$(".updatatime_3").html('更新时间：'+data.upTime);
+		
+		option = {
+		    tooltip : {
+		        trigger: 'item',
+		        axisPointer : {            
+		            type : 'shadow'       
+		        },
+		        formatter: "{a} <br/>{b} : {c} 条",
+		    },
+		    legend: {
+		        data: ['已处理', '未处理']
+		    },
+		    grid: {
+		        left: '3%',
+		        right: '4%',
+		        bottom: '3%',
+		        containLabel: true
+		    },
+		    xAxis:  {
+		        type: 'value'
+		    },
+		    yAxis: {
+		        type: 'category',
+		        data: data.xAxis 
+		    },
+		    series: [
+		        {
+		            name: '已处理',
+		            type: 'bar',
+		            //stack: '总量',
+		            label: {
+		                normal: {
+		                    show: false,
+		                    position: 'insideRight'
+		                }
+		            },
+		            data: data.finishedCount
+		        },
+		        {
+		            name: '未处理',
+		            type: 'bar',
+		            //stack: '总量',
+		            label: {
+		                normal: {
+		                    show: false,
+		                    position: 'insideRight'
+		                }
+		            },
+		            data: data.unfinishedCount
+		        }
+		    ],
+		    color:['#8bbc22','#9c1a1a']
+		};	
+		myChart.setOption(option); 				
+	}
+		
+	//任务执行情况数据下载
+	function getTask(){
+		var taskData = {};
+		api.ajax({
+	        url:charts_url+'/report/task/ajaxEachZoneTaskExecuteChart?isMobile=true&isDetail=true',
+	       	method:'get',
+		    timeout:30	
+        },function(ret,err){
+        	if(ret){
+				taskData = {
+					time : ret.year+'年',
+					countAll : ret.total+'件',
+					finished : ret.finishedCount+'件',
+					unfinished : ret.unFinishedCount+'件',
+					intime : ret.inTimeCount,
+					untime : ret.outTimeCount,
+					upTime : ret.updateTime
+				}
+				getTask_echarts(taskData);        		
+        	}
+        	else{
+				taskData = {
+					time : '',
+					countAll : '0件',
+					finished : '0件',
+					unfinished : '0件',
+					intime : 0,
+					untime : 0,
+					upTime : '2017-01-15 29:59'	
+				}
+	    		api.toast({
+		            msg:"链接出现错误，暂时无法查询数据，请稍后重试！",
+		            duration:3000,
+		            location:'bottom'
+	            });					
+				getTask_echarts(taskData);        		
+        	}
+        });
+	}
+	//任务执行情况数据加载
+	function getTask_echarts(data){
+		var myChart = echarts.init(document.getElementById('main4'));
+		var option = {};
+		$("#content_4 .middle_line_1 label").html(data.time+'所有区任务执行情况统计');
+		$("#content_4 .middle_line_2 .span_2").html(data.countAll);	
+		$(".bottom_text_1").html(data.finished);
+		$(".bottom_text_2").html(data.unfinished);
+		$(".bottom_text_3").html(data.intime+'件');
+		$(".bottom_text_4").html(data.untime+'件');
+		$(".updatatime_4").html('更新时间：'+data.upTime);
+		
+		option = {
+		    series: [ {
+		            type: 'pie',
+		            center: ['50%', '50%'],
+		            radius: ['70%', '80%'],
+		            name :'完成率',
+		            hoverAnimation:false,
+		            tooltip: {
+		                trigger: 'item',
+		                formatter: "{a} <br/>{b} : {c} ({d}%)"
+		            },
+		            label: {
+		                normal: {
+		                    position: 'center'
+		                }
+		            },
+		            data: [{
+		                value: data.intime,
+		                name: '按时完成',
+		                itemStyle: {
+		                    normal: {
+		                        color: '#3366ff'
+		                    }
+		                },
+		                label: {
+		                    normal: {
+		                        formatter: '{d} %',
+		                        textStyle: {
+		                            color: '#3366ff',
+		                            fontSize: 16
+		
+		                        }
+		                    }
+		                }
+		            }, {
+		                value: data.untime,
+		                name: '未按时完成',
+		                tooltip: {
+		                    show: true
+		                },
+		                itemStyle: {
+		                    normal: {
+		                        color: '#dddddd'
+		                    }
+		                },
+		                label: {
+		                    normal: {
+		                        textStyle: {
+		                            color: '#666',
+		                             fontSize: 12
+		                        },
+		                        formatter: '\n按时完成率',
+		                    }
+		                }
+		            }]
+		        }
+		    ]
+		};
+		myChart.setOption(option);			
+	}
+	
+
+</script>
+</html>

@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html>
+	<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	<meta name="viewport"
+	content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+	<title></title>
+	<link rel="stylesheet" type="text/css" href="../css/api.css"/>
+	<style>
+		body {
+			display: -webkit-box;
+			-webkit-box-orient: vertical;
+		}
+		/* 头部  */
+		header {
+			display: -webkit-box;
+		  -webkit-box-orient: horizontal;
+		  -webkit-box-pack: center;
+		  -webkit-box-align: center;
+		  
+		  display: -moz-box;
+		  -moz-box-orient: horizontal;
+		  -moz-box-pack: center;
+		  -moz-box-align: center;
+		  
+		  display: -o-box;
+		  -o-box-orient: horizontal;
+		  -o-box-pack: center;
+		  -o-box-align: center;
+		  
+		  display: -ms-box;
+		  -ms-box-orient: horizontal;
+		  -ms-box-pack: center;
+		  -ms-box-align: center;
+		  
+		  display: box;
+		  box-orient: horizontal;
+		  box-pack: center;
+		  box-align: center;
+		}
+		
+		header .header {
+			background-image: url(../image/xmrbi.png);
+			background-position: center;
+			background-repeat: no-repeat;
+			background-size: 35%;
+			height:100%;width:100%;
+		}
+		/* 内容  */
+		.content {
+			display: -webkit-box;
+			-webkit-box-orient: vertical;
+		}
+		.userInfo {
+			display: block;
+			width: 30px;
+			height: 30px;
+			background-size: 30px;
+			background-repeat: no-repeat;
+			background-position: center;
+		}
+		.user {
+			background-image: url("../image/login_account@2x.png");
+		}
+		.password {
+			background-image: url("../image/logn_password@2x.png");
+		}
+		.input-wrap {
+			padding: 5px 10px;
+			display: -webkit-box;
+			background-color: rgba(255, 255, 255, 0.8);
+		}
+		.input-wrap:first-child {
+			border-top: 1px solid #d4d4d4;
+			border-left: 1px solid #d4d4d4;
+			border-right: 1px solid #d4d4d4;
+			border-top-left-radius: 5px;
+			border-top-right-radius: 5px;
+		}
+		.input-wrap:last-child {
+			border: 1px solid #d4d4d4;
+			border-bottom-left-radius: 5px;
+			border-bottom-right-radius: 5px;
+		}
+		input {
+			padding-left: 10px;
+		}
+		.input-wrap input {
+			display: block;
+			-webkit-box-flex: 1;
+			height: 32px;
+		}
+		.form {
+			margin: 0 20px;
+			line-height: 30px;
+		}
+		.footer, .form {
+			-webkit-box-flex: 1;
+		}
+		#register {
+			display: block;
+			color: #ffffff;
+			margin: 0 40px;
+			text-align: center;
+			border-radius: 5px;
+			height: 40px;
+			line-height: 40px;
+			margin-top: 20px;
+			background-color: #1081DA;
+		}
+	</style>
+</head>
+<body>
+	<header id='headId'>
+		<div style="text-align: center;">
+			<img src="../image/xmrbi.png"/>
+			<h3 style="color:#484848;">厦门市路桥管理有限公司<br/>信息管理平台</h3>
+		</div>
+	</header>
+	<div class="content">
+		<div class="form">
+			<div class="input-wrap">
+				<i class="userInfo user"></i>
+				<input type="text" placeholder="用户名" id="username" value=""/>
+			</div>
+			<div class="input-wrap">
+				<i class="userInfo password"></i>
+				<input type="password" placeholder="密码" id="password" value=""/>
+			</div>
+		</div>
+		<footer class="footer">
+			<div class="yellow" id="register" tapmode="yellow-btn-active" onclick="fnLogin();">
+				登录
+			</div>
+		</footer>
+	</div>
+	<div style="position: absolute;top: 25px;right: 5px;width: 25px;height: 25px;">
+		<img src="../image/fit.png" width="25px" height="25px" onclick="fnLoginSet()"/>
+	</div>
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/zepto.min.js"></script>
+<script>
+	apiready = function() {
+		var head = $api.byId('headId');
+		$api.css(head, 'height:' + api.winHeight / 2 + 'px;');
+		api.addEventListener({
+			name : 'keyback'
+		}, function(ret, err) {
+			//operation
+			api.closeWidget({
+			});
+		});
+		/**
+		 * 窗口显示事件 
+		 */
+		api.addEventListener({
+		    name:'viewappear'
+		}, function(ret, err){		
+			api.setStatusBarStyle({
+				style : 'dark'
+			});
+		});
+		/**
+		 * 窗口消失事件 
+		 */
+		api.addEventListener({
+		    name:'viewdisappear'
+		}, function(ret, err){        
+		   	api.setStatusBarStyle({
+				style : 'light'
+			});
+		});
+	};
+	function fnLogin() {
+		var username = $('#username').val() + ".rba";
+		var password = $('#password').val();
+		api.showProgress({
+			title : '登录中',
+			modal : true
+		});
+		fnPost('modules/security/user!validateUP.action', {
+			values : {
+				loginName : username,
+				passWord : password
+			}
+		}, function(ret, err) {
+			if (ret && ret.id) {
+				$api.setStorage("user", ret);
+				$api.setStorage("userId", ret.id);
+				$api.setStorage('userName', ret.name);
+				$api.setStorage('lesseeId', ret.lesseeId);
+				$api.setStorage('menuIds', ret.menuIds);
+				$api.setStorage("roleNames",ret.roleNames);
+				var showuserinfo = 'showuserinfo();';
+				api.execScript({
+					name : 'main',
+					script : showuserinfo
+				});
+				fnMain();
+				//注册推送服务
+				fnSetJGPush(ret.id);
+			} else {
+				alert('用户名或密码错误');
+			}
+		});
+	};
+	function fnPost(path, data, callback) {
+		api.showProgress({
+			title : '验证中',
+			modal : true
+		});
+		var url = $api.getStorage("gmms_url");
+		api.ajax({
+			url : url + path,
+			method : 'post',
+			timeout : 5,
+			dataType : 'json',
+			returnAll : false,
+			data : data
+		}, function(ret, err) {
+			api.hideProgress();
+			callback(ret, err);
+		});
+	};
+	//打开功能列表页面
+	function fnMain() {
+		api.openWin({
+			name : 'main',
+			url : './main.html',
+			rect : {
+				x : 0,
+				y : 0,
+				w : 'auto',
+				h : 'auto',
+				marginLeft : 0, //相对父 window 左外边距的距离
+				marginTop : 0, //相对父 window 上外边距的距离
+				marginBottom : 0, //相对父 window 下外边距的距离
+				marginRight : 0 //相对父 window 右外边距的距离
+			},
+			bounces : false,
+			bgColor : 'rgba(0,0,0,0)',
+			vScrollBarEnabled : false,
+			hScrollBarEnabled : false,
+			slidBackEnabled : false
+		});
+	}
+	//打开登陆设置页面
+	function fnLoginSet(){
+		api.openWin({
+			name : 'loginset',
+			url : './set/loginset.html',
+			rect : {
+				x : 0,
+				y : 0,
+				w : 'auto',
+				h : 'auto',
+				marginLeft : 0, //相对父 window 左外边距的距离
+				marginTop : 0, //相对父 window 上外边距的距离
+				marginBottom : 0, //相对父 window 下外边距的距离
+				marginRight : 0 //相对父 window 右外边距的距离
+			},
+			bounces : false,
+			bgColor : 'rgba(0,0,0,0)',
+			vScrollBarEnabled : false,
+			hScrollBarEnabled : false,
+			slidBackEnabled : false
+		});
+	}
+	
+	function fnSetJGPush(userId){
+		var ajpush = api.require('ajpush');
+		var param = {alias:'alias_'+userId};
+		ajpush.bindAliasAndTags(param,function(ret) {
+//	        console.log('绑定别名:'+ret.statusCode);
+		});
+		ajpush.isPushStopped(function(ret) {
+    		if(ret && ret.isStopped==1){
+//		    			console.log('推送服务停止了');
+    			ajpush.resumePush(function(ret) {
+				    if(ret && ret.status){
+//						console.log('推送服务启动了');
+				    }
+				});
+    		}
+    	});
+	}
+</script>
+</html>

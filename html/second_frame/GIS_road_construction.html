@@ -1,0 +1,32 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=0, width=device-width"/>
+<meta name="format-detection" content="telephone=no" />
+<meta name="format-detection" content="address=no" />
+<title>api</title>
+<link rel="stylesheet" type="text/css" href="../../css/api.css" />
+<link rel="stylesheet" type="text/css" href="../../css/GIS_road_construction.css" />
+</head>
+<body>
+<div id="wrap">
+  <div id="header">
+			<a class="back-icon" tapmode="" onClick="api.closeWin();"></a>
+			<span>道路施工</span>
+		</div>
+  <div class="tabs" id="title">
+    <ul class="tex" >
+      <li id="one" class="active"  onClick="Selecttype('one',this)" >厦门大桥</li>
+      <li id="two" onClick="Selecttype('two',this)">海沧大桥</li>
+      <li id="three" onClick="Selecttype('three',this)">集美大桥</li>
+      <li id="four" onClick="Selecttype('four',this)">杏林大桥</li>
+      <li id="five" onClick="Selecttype('five',this)">翔安隧道</li>
+      <div><p class="btn"></p></div>
+    </ul>
+  </div>
+</div>
+</body>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/GIS_road_construction.js"></script>
+</html>

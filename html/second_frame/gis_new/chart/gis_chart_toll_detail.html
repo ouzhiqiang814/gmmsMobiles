@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>title</title>
+    <link rel="stylesheet" type="text/css" href="../../../../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../../css/mui.min.css"/>
+    <style>
+    	html,body {min-height: 100%;background-color: #efeff4;}
+    	.my-chart{
+    		width:100%;
+    		height:auto;
+    		overflow: hidden;
+    		text-align: center;
+    		margin:10px 0px;
+		    background: #fff;
+    		padding: 10px 0px;
+    	}
+    	.chart{height:210px;width:100%;}
+    	.chart2{height:auto;width:100%;text-align: left;}
+    	.chart-nodata1{
+    		background:url(../../../../image/gis/nochart-1.png);width:100%;height:100%;font-size: 26px;padding-top: 15%;
+    		background-position: center;
+    		background-size: cover;
+    		color: #ddd;
+    	}
+    	.chart-nodata2{
+    		background:url(../../../../image/gis/nochart-2.png);width:100%;height:100%;font-size: 26px;padding-top: 15%;
+    		background-position: center;
+    		background-size: cover;
+    		color: #ddd;
+    	}
+    	
+    	#videoPlay {
+            width: 100%;
+            min-height: 200px;
+            display: -webkit-box;
+            background: #ccc;
+            -webkit-box-orient: horizontal;
+            -webkit-box-pack: center;
+            -webkit-box-align: center;
+            background-position: center;
+    		background-size: cover;
+        }
+        .road-btn {
+            border-radius: 50%;
+            margin-left: 5px;
+        }
+        .mui-grid-view.mui-grid-9{
+    	    border-top: 0;
+		    border-left: 0;
+		    background-color: #fff;
+        }
+        .mui-grid-view.mui-grid-9 .mui-table-view-cell{
+        	padding:0;margin-top:5px;border-left:0;border-right:0;
+        }
+		.toll-table{
+			border-collapse:collapse;color: #fff;
+			border: 1px solid #fff;
+			width:100%;
+		}
+		.toll-table tr th{background: rgba(0, 153, 0, 1);padding:5px;text-align: center;font-size:14px;}
+		.toll-table tr td{background: #343535;padding:2px;text-align: center;font-size:12px;}
+		.td-span{border:1px solid #fff;border-radius: 50%;padding:0px 2px;}
+		.bg-aqua-active{
+		    background-color: #00a7d0 !important;
+		}
+    </style>
+</head>
+<body>
+	<div class="mui-content">
+		<div style="height:auto;overflow: hidden;background: #fff;">
+			<div id="videoPlay">
+		        <img src="../../../../image/play2.png" onclick="fnOpenVideoWin()"/>
+		    </div>
+		    <div class="mui-content-padded" style="overflow: hidden;margin:5px;margin-top: 8px;">
+		        <span id="device_btns" style="float:left;">
+		        </span>
+		        <button type="button" onclick="fnOpenVideoList()" class="mui-btn mui-btn-primary" style="float:right;" >收费站视频</button>
+		    </div>
+	    </div>
+	    <div class="my-chart">
+			<h4>收费站车道指示灯</h4>
+			<h5 style="margin: 10px 0px;">时区：<span id="roadRampDevice_times"></span></h5>
+			<ul id="roadRampDevice_list" class="mui-table-view mui-grid-view mui-grid-9 chart2">
+			</ul>
+		</div>
+		<div class="my-chart">
+			<h4>当前现金收费情况</h4>
+			<h5 style="margin: 10px 0px;">时区：<span id="mtcFeeCount_times"></span></h5>
+			<div style="width: 100%;padding:5px 20px;color:rgb(93, 156, 236);overflow: hidden;">
+				<span class="mui-pull-left" style="position: relative;">
+					<em style="position:absolute;left:0;top:0;bottom:0;width:10px;background:#0dda0d;"></em>
+					&nbsp;&nbsp;&nbsp;<span id="planame_span"></span>累计金额
+				</span>
+				<span class="mui-pull-right" id="toll_mtcFeeCount_total">0 元</span>
+			</div>
+			<div id="toll_mtcFeeCount_chart" class="chart"></div>
+		</div>
+	</div>
+</body>
+<script type="text/javascript" src="../../../../script/api.js"></script>
+<script type="text/javascript" src="../../../../script/mui.min.js"></script>
+<script type="text/javascript" src="../../../../script/zepto.min.js"></script>
+<script type="text/javascript" src="../../../../script/echarts.min.js"></script>
+<script type="text/javascript" src="../../../../script/transform.js"></script>
+<script type="text/javascript">
+	var videoPlayer = null;
+	var isMax = false;		//是否全屏
+	var playHandle = false;//播放句柄
+	var cur_videos = [];
+	apiready = function(){
+		var datenow = new Date();
+		var bdate = datenow.Format('yyyy-MM-dd')+' 00:00';
+		var edate = new Date().Format('yyyy-MM-dd hh:mm');
+		$('#roadRampDevice_times').html(bdate+' ~ '+edate);
+		$('#mtcFeeCount_times').html(bdate+' ~ '+edate);
+		$('#planame_span').html(api.pageParam.title);
+		$('#videoPlay').height(api.frameWidth*9/16);
+		var toll_plano_video = [
+			{plano:'0001',vidiconids:[1312,1290]},
+			{plano:'0002',vidiconids:[3192,3232]},
+			{plano:'0003',vidiconids:[1754]},
+			{plano:'0004',vidiconids:[3140]},
+			{plano:'0005',vidiconids:[2438]}
+		];
+		fnLoadData(toll_plano_video);
+		window.setTimeout(function(){
+			fnQueryRoadLampDevice();
+			fnCountFeeSubmit();
+		},300);
+	};
+	
+	function fnLoadData(toll_plano_video){
+		$.each(toll_plano_video,function(i,v){
+			if(v.plano == api.pageParam.plano){
+				var ids = '';
+				$.each(v.vidiconids,function(k,vid){
+					$('#device_btns').append('<button type="button" class="mui-btn road-btn" onclick="fnBtnPlayVideo('+k+')">'+(k+1)+'</button>');
+					ids += ','+vid;
+				});
+				var reportUrl = $api.getStorage("report_url");
+				api.ajax({
+	                url:reportUrl+'gims/gis-new/queryVidiconByIds',
+	        		timeout:10,
+	                data:{
+	                	values:{vidiconids:ids.substring(1)}
+	                }
+                },function(ret,err){
+                	if(ret){
+                		cur_videos = ret.data;
+                		if(cur_videos.length>0){
+							var picRoot = reportUrl.replace(reportUrl.substring(reportUrl.lastIndexOf(':'),reportUrl.length),':9080');
+							var picurl = picRoot+cur_videos[0].picurl2;
+							api.imageCache({
+							    url: picurl,
+							    policy:'no_cache'		    
+							}, function(rett, errr) {
+							    if(rett.url!=picurl){
+							    	$('#videoPlay').css('background-image','url('+rett.url+')');
+							    }else{
+							    	$('#videoPlay').css('background-image','url(../../image/noimage.png)');
+							    }
+							});
+						}
+                	}
+                });
+				return false;	
+			}
+		});
+	}
+	
+	function fnRefresh(){
+		var datenow = new Date();
+		var bdate = datenow.Format('yyyy-MM-dd')+' 00:00';;
+		var edate = new Date().Format('yyyy-MM-dd hh:mm');
+		$('#roadRampDevice_times').html(bdate+' ~ '+edate);
+		$('#mtcFeeCount_times').html(bdate+' ~ '+edate);
+		fnQueryRoadLampDevice();
+		fnCountFeeSubmit();
+	}
+	
+	function fnQueryRoadLampDevice(){
+		var reportUrl = $api.getStorage("report_url");
+		api.ajax({
+	        url:reportUrl+'gims/gis-new/queryRoadLampDevice',
+	        timeout:10,
+	        data:{
+	        	values:{plano:api.pageParam.plano}
+	        }
+        },function(json,err){
+        	if(json&&json.errcode==0&&json.data!=null){
+        		var htmlStr = '';
+				var roadLampDevices = json.data.roadLampDevices;//车道指示设备
+				var mtcFees = json.data.mtcFees;				//收费数据
+				$.each(roadLampDevices,function(i,data){
+					var picStr = '';
+					if(data.status==0||data.status==1){
+						picStr = 'noentry.png';
+					}
+					if(data.status==2){
+						picStr = 'entry.png';
+					}
+					var roadno = Number(data.roadno)<10?'0'+data.roadno:data.roadno;
+					var passdata = '- 辆';
+					if(mtcFees.length>0){
+						$.each(mtcFees,function(j,fee){
+							if(fee.laneno == roadno){
+								passdata = fee.totalpasscount+'辆<br/>'+formatMoney(fee.totalfee,0)+'元';
+							}
+						});
+					}
+					htmlStr += 
+						'<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3">'+
+						'	<table class="toll-table" border="1" cellpadding="0" cellspacing="0">'+
+						'		<tbody>'+
+						'		<tr>'+
+						'			<th colspan="2"'+(data.roadtype==1?'class="bg-aqua-active"':'')+'>'+
+						'				<span class="td-span">'+roadno+'</span> '+(data.roadtype==1?'现金':'年费')+
+						'			</th>'+	
+						'		</tr>'+		
+						'		<tr>'+			
+						'			<td><img src="../../../../image/gis/'+picStr+'"></td>'+			
+						'			<td style="height:48px;">'+passdata+'</td>'+		
+						'		</tr>'+	
+						'		</tbody>'+
+						'	</table>'+
+				        '</li>';
+				});
+				$('#roadRampDevice_list').html(htmlStr);
+        	}else{
+        		$('#roadRampDevice_list').html('<div style="width:100%;text-align:center;color:#ddd;font-size: 20px;margin-top: 20px;">暂无车道数据</div>');
+        	}
+        });
+	}
+	
+	function fnCountFeeSubmit(){
+		var reportUrl = $api.getStorage("report_url");
+		api.ajax({
+	        url:reportUrl+'gims/gis-new/countMtcFeeByPlano',
+	        timeout:10,
+	        data:{
+	        	values:{plano:api.pageParam.plano}
+	        }
+        },function(json,err){
+        	if(json&&json.errcode==0&&json.data.length>0){
+        		$('#toll_mtcFeeCount_total').html(formatMoney(json.data[0].totalFee,0)+'元');
+        	}
+        });
+        
+        $('#toll_mtcFeeCount_chart').html('<div class="chart-nodata2">暂无数据</div>');
+	}
+	
+	/**
+	 * 打开收费视频列表 
+	 */
+	function fnOpenVideoList(){
+		var plano = api.pageParam.plano;
+		var planame = api.pageParam.title;
+		api.openWin({
+            name: 'GIS_zone_video',
+            url: '../../GIS_zone_video.html',
+            pageParam: {
+		        plano: plano,		//区域编码
+		        planame:planame,	//区域名称
+		        bizType:2    		//收费视频类型
+		    },
+		    bounces : false,
+			animation:{
+				type:'movein'
+			}
+        });
+        window.setTimeout(function(){
+        	stopVideo();
+        },300);
+	}
+	
+	/**
+	 * 打开实时视频 
+	 */
+	function fnOpenVideoWin(){
+		if(cur_videos.length>0){
+			//关闭已经打开的地图避免视频层被地图层遮挡
+			api.execScript({
+			    name:'gis_main',
+			    frameName:'gis_main_body',
+			    script: 'closebmap();'
+		    });
+			//获取大华服务器信息
+			var dhServer = $api.getStorage('dhServer');
+			if(dhServer==null||dhServer==undefined||dhServer.videoserverid!=cur_videos[0].videoserverid){
+				fnGetDHServer(cur_videos[0]);
+			}else{
+				openVideo(cur_videos[0]);
+			}
+			$($('#device_btns button')[0]).addClass('mui-btn-primary');
+		}
+	}
+	
+	function fnBtnPlayVideo(num){
+		if(cur_videos.length>0){
+			//关闭已经打开的地图避免视频层被地图层遮挡
+			api.execScript({
+			    name:'gis_main',
+			    frameName:'gis_main_body',
+			    script: 'closebmap();'
+		    });
+			if(playHandle){
+				videoPlayer.stop(function(ret){
+					playHandle = false;
+					openVideo(cur_videos[num]);
+				});
+			}else{
+				var dhServer = $api.getStorage('dhServer');
+				if(dhServer==null||dhServer==undefined||dhServer.videoserverid!=cur_videos[0].videoserverid){
+					fnGetDHServer(cur_videos[num]);
+				}else{
+					openVideo(cur_videos[num]);
+				}
+			}
+			$('#device_btns button').removeClass('mui-btn-primary');
+			$('#device_btns button').removeAttr('disabled');
+			$($('#device_btns button')[num]).addClass('mui-btn-primary');
+			$($('#device_btns button')[num]).attr('disabled', true);
+		}else{
+			api.toast({
+	            msg:'没有视频信息'
+            });
+		}
+	}
+	
+	function fnGetDHServer(cur_video){
+		api.showProgress({
+			style : 'default',
+			title : '获取视频服务中...',
+			modal : false
+		});
+		var reportUrl = $api.getStorage("report_url");
+		api.ajax({
+			url : reportUrl + '/gims/gis-new/getVideoServer',
+			data:{
+				values:{videoServerId:cur_video.videoserverid}
+			},
+			timeout:10,
+		}, function(ret, err) {
+			if(ret&&ret.errcode==0&ret.data!=null){
+				$api.setStorage('dhServer',ret.data);
+				openVideo(cur_video);
+			}else{
+				api.toast({
+		            msg:'获取视频服务失败，请检查网络'
+	            });
+			}
+			api.hideProgress();
+		});
+	}
+	
+	function openVideo(videoData){
+		if(playHandle){return;}
+		if(videoPlayer==null){
+			var dhServer = $api.getStorage('dhServer');
+			videoPlayer = api.require('dhvideo');
+			videoPlayer.login({
+		        ip: dhServer.extranetipaddress,//serveripinnet
+		        port: dhServer.port,
+		        userName: dhServer.outnetuser,
+	        	password: dhServer.outnetpwd
+		    }, function (ret) {
+		        if (ret.success) {
+		            videoPlayer.open({
+		                x: 0,
+		                y: 0,
+		                w: api.frameWidth,
+		                h: $('#videoPlay').height(),
+		                fixedOn: api.frameName
+		            });
+		            videoPlayer.start({
+		                deviceId: videoData.hkvidiconid//大华的摄像机ID目前写在海康字段上
+		            });
+		            api.openFrame({
+					    name: 'playtool',
+					    url: '../../playtool/playtool.html',
+					    rect: {
+						    x: 0,
+				            y: api.pageParam.headerHeight,
+				            w: api.frameWidth,
+				            h: $('#videoPlay').height()
+					    },
+					    pageParam:{frameName:api.frameName},
+					    bounces:false
+				    });
+		        }else{
+		        	api.toast({
+		                msg:'失败，请检查网络是否正常'
+		            });
+		        }
+		    });
+	    }else{
+	    	if(!isMax){
+		    	videoPlayer.open({
+		            x: 0,
+		            y: 0,
+		            w: api.frameWidth,
+		            h: $('#videoPlay').height(),
+		            fixedOn: api.frameName
+		        });
+		        videoPlayer.start({
+		            deviceId: videoData.hkvidiconid
+		        });
+	        }else{
+	        	videoPlayer.open({
+				    x: 0,
+				    y: 0,
+				    w: api.winWidth,
+				    h: api.winHeight,
+		            fixedOn: api.frameName
+				});
+				videoPlayer.start({
+		            deviceId: videoData.hkvidiconid
+		        });
+	        }
+	        api.setFrameAttr({
+			    name: 'playtool',
+				hidden:false    
+			});
+	    }
+	    playHandle = true;
+	}
+	
+	//最大化播放
+	function fnMaxVideo(){
+		api.setScreenOrientation({
+		    orientation: api.systemType=='ios'?'landscape_right':'landscape_left'
+		});
+		api.setFrameAttr({
+		    name: api.frameName,
+		    rect:{
+		    	x : 0,
+				y : 0,
+				w : 'auto',
+				h : 'auto'
+		    }
+	    });
+	    $('#videoPlay').height(api.frameHeight);
+	    window.setTimeout(function(){
+	    	videoPlayer.reset({
+	    		x: 0,
+			    y: 0,
+			    w: api.winWidth,
+			    h: api.winHeight,
+	            fixedOn: api.frameName
+	    	});
+	    	api.setFrameAttr({
+			    name: 'playtool',
+			    rect:{
+			    	x: 0,
+		            y: 0,
+		            w: 'auto',
+				    h: 'auto'
+			    }
+			});
+		},api.systemType=='ios'?300:500);
+		isMax = true;
+	}
+	
+	//普通播放
+	function fnNormalVideo(){
+		api.setScreenOrientation({
+		    orientation: 'auto_portrait'
+		});
+		api.setFrameAttr({
+		    name: api.frameName,
+		    rect:{
+		    	x : 0,
+				y : api.pageParam.headerHeight,
+				w : 'auto',
+				h : 'auto'
+		    }
+	    });
+		window.setTimeout(function(){
+			$('#videoPlay').height(api.frameWidth*9/16);
+			videoPlayer.reset({
+	    		x: 0,
+	            y: 0,
+	            w: api.frameWidth,
+	            h: $('#videoPlay').height(),
+	            fixedOn: api.frameName
+	    	});
+	        api.setFrameAttr({
+			    name: 'playtool',
+			    rect:{
+			    	x: 0,
+		            y: api.pageParam.headerHeight,
+		            w: api.frameWidth,
+		            h: $('#videoPlay').height()
+			    }
+			});
+		},api.systemType=='ios'?300:500);
+		isMax = false;
+	}
+	
+	function stopVideo(){
+		if(!playHandle){return;}
+		videoPlayer.stop(function(ret){
+			playHandle = false;
+			api.setFrameAttr({
+			    name: 'playtool',
+				hidden:true    
+			});
+		});
+	}
+	
+	function videoDestroy(){
+		if(videoPlayer!=null){
+			if(playHandle){
+				videoPlayer.stop(function(ret){
+					playHandle = false;
+					videoPlayer.destroy();
+				});
+			}else{
+				videoPlayer.destroy();
+			}
+		}
+	}
+</script>
+</html>

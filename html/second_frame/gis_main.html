@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>title</title>
+    <link rel="stylesheet" type="text/css" href="../../css/api.css" />
+</head>
+<body>
+	
+</body>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript">
+	var CUR_HEAD_HEIGHT = 0;
+	apiready = function(){
+		api.addEventListener({
+		    name:'viewappear'
+		}, function(ret, err){
+		   	api.setStatusBarStyle({
+				style : 'dark'
+			});
+			api.execScript({
+	            frameName:'gis_main_body',
+	            script: 'fnOperMap(true);'
+          });
+		});
+		api.addEventListener({
+		    name:'viewdisappear'
+		}, function(ret, err){        
+		   	api.setStatusBarStyle({
+				style : 'light'
+			});
+		});
+		CUR_HEAD_HEIGHT = (api.systemType=='ios'?65:70);
+		initFrame();
+		initHeader();
+		fnInitToolBarFrame();
+	};
+	
+	function initHeader(){
+		api.openFrame({
+	        name: 'gis_main_header',
+	        url: './gis_new/gis_main_header.html',
+	        hScrollBarEnabled:false,
+	        vScrollBarEnabled:false,
+	        rect: {
+		        x:0,
+		        y:0,
+		        w:'auto',
+		        h:CUR_HEAD_HEIGHT
+	        },
+	        animation:{
+	        	type:'ripple'
+	        }
+        });
+	}
+	
+	function initFrame(){
+		api.openFrame({
+	        name: 'gis_main_body',
+	        url: './gis_new/gis_main_body.html',
+	        rect: {
+		        x: 0,
+		        y: 0,
+		        w: 'auto',
+		        h: 'auto'
+	        }
+        });
+	}
+	
+	function fnInitToolBarFrame(){
+		api.openFrame({
+			name : 'gis_common_footer',
+			url : './gis_new/gis_common_footer.html',
+			rect : {
+				x : 0,
+				y : api.winHeight-75,
+				w : api.frameWidth,
+				h : 75
+			},
+			bgColor:'rgba(202, 202, 202, 0.5)',
+			pageParam: {
+		        parentWidth: api.frameWidth,
+		        parentHeight:api.winHeight
+		    },
+			bounces : false,
+			vScrollBarEnabled : false,
+			hScrollBarEnabled : false
+		});
+		api.openFrame({
+			name : 'gis_common_toolbar',
+			url : './gis_new/gis_common_toolbar.html',
+			rect : {
+				x : api.winWidth-38,
+				y : 105,
+				w : 38,
+				h : 160
+			},
+			bounces : false,
+			vScrollBarEnabled : false,
+			hScrollBarEnabled : false
+		});
+		
+		api.openFrame({
+			name : 'gis_common_notice',
+			url : './gis_new/gis_common_notice.html',
+			rect : {
+				x : 0,
+				y : CUR_HEAD_HEIGHT,
+				w : api.frameWidth,
+				h : 28
+			},
+			bounces : false,
+			vScrollBarEnabled : false,
+			hScrollBarEnabled : false
+		});
+	}
+	
+	/**
+	 * 选中 framegroup 
+	 */
+	function fnSelectFrameGroup(groupIndex){
+		api.setFrameGroupIndex({
+		    name: 'gis_main_group',
+		    index: groupIndex,
+		    scroll:true
+		});
+	}
+	
+	
+	function fnSelectPage(tabName){
+		var toolbarHeight = 160;
+		if(tabName == 'gis_main_group_road'){
+			toolbarHeight = 160-40;
+		}
+		if(tabName == 'gis_main_group_toll' || tabName == 'gis_main_group_mainten'){
+			toolbarHeight = 160-80;
+		}
+		if(tabName == 'gis_main_group_warehouse'){
+			toolbarHeight = 160-120;
+		}
+		api.execScript({
+			frameName:'gis_common_footer',
+            script: 'fnSelectToolBar(\''+tabName+'\');'
+        });
+        api.execScript({
+			frameName:'gis_common_toolbar',
+            script: 'fnSelectToolBar(\''+tabName+'\');'
+        });
+     	api.execScript({
+			frameName:'gis_common_notice',
+            script: 'fnSelectToolBar(\''+tabName+'\');'
+        });
+		if(tabName == 'gis_main_group_warehouse'){
+			api.setFrameAttr({
+	            name: 'gis_common_footer',
+	            hidden:true
+            });
+            api.setFrameAttr({
+	            name: 'gis_common_notice',
+	            hidden:true
+            });
+		}else{
+			api.setFrameAttr({
+	            name: 'gis_common_footer',
+	            hidden:false
+	        });
+		}
+	}
+</script>
+</html>

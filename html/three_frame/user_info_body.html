@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>title</title>
+    <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/mui.min.css"/>
+    <style>
+    	html,body {min-height: 100%;background-color: #efeff4;}
+    	.mui-table-view {
+			margin-top: 20px;
+		}
+    </style>
+</head>
+<body>
+	<div class="mui-content">
+		<ul class="mui-table-view mui-table-view-chevron" style="margin-top:0;">
+			<li class="mui-table-view-cell mui-media">
+				<a class="mui-navigate-right" href="#account">
+					<img class="mui-media-object mui-pull-left head-img" id="head-img" src="../../image/user_male.png">
+					<div class="mui-media-body">
+						<span id="user_name"></span>
+						<p class='mui-ellipsis'><span id="role_name"></span></p>
+					</div>
+				</a>
+			</li>
+		</ul>
+		<ul class="mui-table-view mui-table-view-chevron">
+			<li class="mui-table-view-cell">
+				<a href="javascript:fnGoCall()" class="mui-navigate-right">
+					<span class="mui-icon mui-icon-phone"></span> 手机
+					<span id="telphone" class="mui-pull-right" style="color:blue;">
+					</span>
+				</a>
+			</li>
+			<li class="mui-table-view-cell">
+				<a href="#" class="mui-navigate-right">
+					<span class="mui-icon mui-icon-person"></span> 部门
+					<span id="deptName" class="mui-pull-right" style="color:blue;">
+					</span>
+				</a>
+			</li>
+		</ul>
+    <div class="mui-button-row" style="margin-top: 15px;" id="sendMessage">
+        <button type="button" class="mui-btn mui-btn-primary" style="width:80%;">发送邮件</button>
+    </div>		
+	</div>
+</body>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/mui.min.js"></script>
+<script type="text/javascript" src="../../script/zepto.min.js"></script>
+<script type="text/javascript">
+	 	var parm = {};
+	apiready = function(){
+		var info = api.pageParam.userInfo;
+		parm = {
+			id:info.id,
+			remark:info.remark
+		}
+		
+		$('#user_name').text(info.remark!=null?info.remark:'');
+		$('#role_name').text(info.position!=null?info.position:'');
+		$('#telphone').text(info.telphone!=null?info.telphone:'');
+		$('#email').text(info.email!=null?info.email:'');
+		$('#deptName').text(info.dept_name!=null?info.dept_name:'');
+		
+		mui("#sendMessage").on('tap','button',function(){
+			sendMessage();
+		});
+	};
+	
+	function fnGoCall(){
+		var telphone = $('#telphone').html().trim();
+		if(telphone==''){
+			return;
+		}
+		api.call({
+		    type: 'tel_prompt',
+		    number: telphone
+		});
+	}
+	
+	function sendMessage(){
+		api.openWin({
+	        name: 'sendMessage_add',
+	        url: './sendMessage_add.html',
+	        pageParam:parm
+        });
+	}
+	
+	
+</script>
+</html>

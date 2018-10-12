@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>title</title>
+    <link rel="stylesheet" type="text/css" href="../../../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/mui.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/iconfont.css"/>
+    <style>
+    	html,body {min-height: 100%; background-color: #efeff4;}
+    	.mui-table-view {
+			margin-top: 20px;
+		}
+		.mui-table-view-cell a em{
+			font-size:40px;color:#8a8888;
+		}
+		
+		.play-box {
+		 	text-align:center;
+		 	position: relative;
+		 	min-height:160px;
+ 	        background: #ccc;
+	 	    background-position: center;
+    		background-size: cover;
+		}
+		.play-box img{
+			position:absolute;
+			top:50%;
+			left:50%;
+			margin-top:-25px;
+			margin-left:-25px;
+		}
+		
+		.mui-grid-view.mui-grid-9 .mui-table-view-cell{
+    		padding:0;
+    	}
+    	.mui-card{
+    		margin:2px;
+    	}
+    	.my-title{
+    		color: #333;
+		    text-align: left;
+		    font-size: 16px;
+		    padding: 5px;
+    	}
+    	.mui-card-header, .mui-card-footer{
+    		padding:5px 10px;
+    		min-height:35px;
+    	}
+    	.mui-card{
+    		box-shadow: none;
+    	}
+    	.mui-grid-view.mui-grid-9 .mui-table-view-cell{
+    		border-right: none;
+    		border-bottom:none;
+    	}
+    	.mui-table-view-divider{
+    		color: #000;
+    		background-color: #fff;
+    	}
+    	.mui-table-view-divider:before{background-color:#fff;}
+    	.mui-card-title{position: absolute;bottom:0;right: 0;left:0;height:25px;line-height:25px;padding:0px 5px;color:#fff;background:rgba(0, 0, 0, 0.4);text-align:right;}
+    </style>
+</head>
+<body>
+	<div class="mui-content">
+		<form id="videoForm" style="display: none;">
+			<input type="hidden" name="serverIP"/>
+			<input type="hidden" name="account"/>
+			<input type="hidden" name="password"/>
+			<input type="hidden" name="lineNo"/>
+			<input type="hidden" name="deviceId"/>
+			<input type="hidden" name="channelNum"/>
+			<input type="hidden" name="streamType"/>
+		</form>
+		<ul class="mui-table-view mui-table-view-chevron">
+			<li class="mui-table-view-cell mui-media">
+				<a href="javascript:;">
+					<em class="mui-media-object mui-pull-left iconfont icon-car"></em>
+					<div class="mui-media-body">
+						<span id="carNo"></span>
+						<p class='mui-ellipsis' id="carType"></p>
+					</div>
+				</a>
+			</li>
+		</ul>
+	
+		<ul class="mui-table-view">
+			<li class="mui-table-view-cell">所属公司:<span class="mui-pull-right" id="useunitName"></span></li>
+			<li class="mui-table-view-cell">司机:<span class="mui-pull-right" id="driverName"></span></li>
+         	<li class="mui-table-view-cell">
+         		联系方式:
+         		<span class="mui-pull-right" id="phone"></span>
+         	</li> 
+	   </ul>      
+	   <ul class="mui-table-view">      
+         	<li class="mui-table-view-cell">作业桥段:<span class="mui-pull-right" id="roadName"></span></li>
+         	<li class="mui-table-view-cell">作业里程:<span class="mui-pull-right" id="inspectMile"></span></li>
+         	<li class="mui-table-view-cell">作业时间:<span class="mui-pull-right" id="workTime"></span></li>
+         	<li class="mui-table-view-cell">作业覆盖率:<span class="mui-pull-right" id="inspectCover"></span></li>
+		</ul>
+		
+		<ul class="mui-table-view">
+			<li class="mui-table-view-divider">巡查视频</li>
+			<li class="mui-table-view-cell" style="padding:0;">
+				<div class="play-box">
+					<img src="../../../image/play2.png" onclick="fnViewVideo()"/>
+				</div>
+			</li>
+		</ul>
+		<ul class="mui-table-view">
+			<li class="mui-table-view-divider">巡查照片</li>
+			<li class="mui-table-view-cell" style="padding:0">
+				<ul id="pic_content" class="mui-table-view mui-grid-view mui-grid-9">
+				</ul>
+			</li>
+			<li id="pic_content_more" class="mui-table-view-cell" style="text-align: center;color: #737373;">
+				<a href="javascript:fnViewPic();">
+					<span class="mui-spinner" style="margin-bottom: -5px;"></span>
+					加载中...
+				</a>
+			</li>
+		</ul>
+	</div>
+</body>
+<script type="text/javascript" src="../../../script/api.js"></script>
+<script type="text/javascript" src="../../../script/mui.min.js"></script>
+<script type="text/javascript" src="../../../script/zepto.min.js"></script>
+<script type="text/javascript">
+	var gmms_url = null;
+	apiready = function(){
+		gmms_url = $api.getStorage("gmms_url");
+		var carId = api.pageParam.carId;
+        loadData(carId);
+        fnLoadWorkPic(carId);
+        $('.play-box').height(api.frameWidth*9/16);
+	};
+	
+	function loadData(carId){
+		var serverUri = gmms_url+'modules/driverecord/gps-cars!findCarsInfoRBA.action';
+		api.showProgress({
+		    title: '提示',
+		    text: '正在获取数据...',
+		    modal: false
+		});
+		api.ajax({
+	        url:serverUri,
+	        method: 'get',
+		    timeout:10,
+		    data: {
+		        values: {
+		            carId:carId
+		        }
+		    }
+        },function(json,err){
+        	if(json){
+        		$("input[name='serverIP']").val(json.ipAddr);
+				$("input[name='account']").val(json.account);
+				$("input[name='password']").val(json.password);
+				$("input[name='lineNo']").val(json.lineNo);
+				$("input[name='deviceId']").val(json.carNo);
+				$("input[name='channelNum']").val(json.channelNum);
+				$("input[name='streamType']").val(json.streamType);
+				$('#carNo').html(json.carNo);
+				switch(json.carType){
+				case 0:$('#carType').html('保洁巡检');break;
+				case 1:$('#carType').html('绿化巡检');break;
+				case 2:$('#carType').html('保洁洗扫');break;
+				case 3:$('#carType').html('保洁冲洗');break;
+				}
+				$('#useunitName').html(json.useunitName);
+				$('#driverName').html(json.driverName);
+				if(json.phone!=''&&json.phone!=null){
+					$('#phone').html(json.phone+'<a onclick="fnCall(\''+json.phone+'\')"><span class="mui-icon mui-icon-phone"></span></a>');
+				}else{
+					$('#phone').html('(暂无)');
+				}
+				$('#roadName').html(json.roadName!=null?json.roadName:'(未作业)');
+				$('#inspectMile').html(json.inspectMile!=null?json.inspectMile.toFixed(1)+'km':'(未作业)');
+				$('#workTime').html(json.workTime!=null?json.workTime:'(未作业)');
+				$('#inspectCover').html(json.inspectCover!=null?json.inspectCover+'%':'(未作业)');
+        	}else{
+        		api.alert({msg:JSON.stringify(err)});
+        	}
+        	api.hideProgress();
+        });
+	}
+	
+	function fnLoadWorkPic(carId){
+		api.ajax({
+	        url:gmms_url+'modules/driverecord/work-pictures!list.action',
+	        method:'get',
+	        timeout:10,
+	        dataType:'json',
+	        data:{
+	        	values:{carId:carId,page:1,rows:4}
+	        }
+        },function(ret,err){
+        	if(ret){
+        		total = ret.total;
+        		if(ret.rows.length>0){
+        			var htmlStr = '';
+        			var imgSrc = null;
+        			$.each(ret.rows,function(i,data){
+        				var showUrl = '';
+        				imgSrc = '../../../image/noimage.gif'
+        				if(data.frontAnnexId!=null){
+        					imgSrc = '../../../image/imgloading.jpg';
+							fnCacheImage(i,data);
+							showUrl = gmms_url+'annexdownload?annexId='+data.frontAnnexId+'&code='+data.frontCode+'&download=false';
+        				}
+        				if(data.behindAnnexId!=null){
+        					showUrl += ','+gmms_url+'annexdownload?annexId='+data.behindAnnexId+'&code='+data.behindCode+'&download=false';
+        				}
+        				htmlStr += 
+        					'<li class="mui-table-view-cell mui-media mui-col-xs-6 mui-col-sm-6">'+
+							'	<div class="mui-card">'+
+							'		<div id="pic_'+data.id+'" onclick="fnShowImg(\''+showUrl+'\')" class="mui-card-header mui-card-media" style="height:30vw;background-image:url('+imgSrc+')"></div>'+
+							'		<div class="mui-card-title">'+data.createTime+'</div>'+
+							'	</div>'+
+							'</li>';
+        			});
+        			$('#pic_content').append(htmlStr);
+        			
+        			$('#pic_content_more').html(
+        				'<a href="javascript:fnViewPic()">'+
+						'	查看更多'+
+						'</a>');
+        		}else{
+        			$('#pic_content').parent().hide();
+        			$('#pic_content_more').html(
+        				'<a href="javascript:">'+
+						'	暂无数据'+
+						'</a>');
+        		}
+        	}else{
+        		$('#pic_content').parent().hide();
+    			$('#pic_content_more').html(
+    				'<a href="javascript:">'+
+					'	暂无数据'+
+					'</a>');
+        	}
+        });
+	}
+	
+	function fnCall(phone){
+		api.call({
+		    type: 'tel_prompt',
+		    number: phone
+		});
+	}
+	
+	function fnViewVideo(){
+		var param = $('#videoForm').serializeObject();
+		api.openWin({
+	        name: 'car_video',
+	        url: './car_video.html',
+	        ret:{
+	        	x:0,
+	        	y:0,
+	        	h:'auto',
+	        	w:'auto'
+	        },
+	        pageParam:param
+        });	
+	}
+	
+	function fnViewPic(){
+		api.openWin({
+	        name: 'car_pic',
+	        url: './car_pic.html',
+	        ret:{
+	        	x:0,
+	        	y:0,
+	        	h:'auto',
+	        	w:'auto'
+	        },
+	        pageParam:{carId:api.pageParam.carId}
+        });
+	}
+	
+	//缓存列表图片
+	function fnCacheImage(index,data){
+		if(data.frontAnnexId!=null){
+			var picUrl = gmms_url+'annexdownload?annexId='+data.frontAnnexId+'&code='+data.frontCode+'&download=false';
+			api.imageCache({
+			    url: picUrl,
+			    policy:'cache_only'		    
+			}, function(ret, err) {
+			    var url = ret.url;
+			    if(url == picUrl){
+			    	url = '../../../image/noimage.gif';
+			    }
+			    $('#pic_'+data.id).css('background-image','url('+url+')');
+			    if(index==0){
+			    	$('.play-box').css('background-image','url('+url+')');
+			    }
+			});
+		}
+	}
+	
+	//查看图片
+	function fnShowImg(imgPath){
+		if(imgPath==''){
+			api.toast({
+		        msg:'暂无图片可显示',
+		        duration: 2000,
+	    		location: 'middle'
+	        });
+	        return;
+		}
+		var imgArr = imgPath.split(',');
+		var imageBrowser = api.require('imageBrowser');
+		imageBrowser.openImages({
+			showList:false,
+			activeIndex:0,
+			tapClose:false,
+		    imageUrls: imgArr
+		});
+	}
+	
+	$.fn.serializeObject = function(){    
+	   var o = {};    
+	   var a = this.serializeArray();    
+	   $.each(a, function() {    
+	       if (o[this.name]) {    
+	           if (!o[this.name].push) {    
+	               o[this.name] = [o[this.name]];    
+	           }    
+	           o[this.name].push(this.value || '');    
+	       } else {    
+	           o[this.name] = this.value || '';    
+	       }    
+	   });    
+	   return o;    
+	}; 
+</script>
+</html>

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<link rel="stylesheet" type="text/css" href="../css/aui.css" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport"
+          content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="../css/api.css"/>
+		<style>
+			#header {
+				background-color: #0877d0;
+				text-align: center;
+				color: #fff;
+				width: 100%;
+				position: relative;
+				padding-top: 20px;
+			}
+			#header span {
+				font-size: 1.125rem;
+				height: 3.125rem;
+				line-height: 3.125rem;
+				margin: 0em;
+				color: #fff;
+			}
+			.back-icon {
+				display: inline-block;
+				width: 3.125rem;
+				height: 3.375rem;
+				background: url(../../image/back_btn.png) no-repeat center center;
+				-webkit-background-size: 18px 20px;
+				background-size: 1.125rem 1.25rem;
+				position: absolute;
+				left: 0;
+				bottom: 0;
+			}
+			.box{
+			   overflow: auto;
+               margin-left: 10%;
+               margin-right: 10%;
+               margin-top:20%;
+               height:180px;
+               border: 1px solid #CCCCCC;
+			}
+			.content{
+			   padding:10px;
+			}
+			.accept{
+			   margin-left: 10%;
+               margin-right: 10%;
+               margin-top:15px;
+			}
+			.accept > span{
+			margin-left:5px;
+			}
+			.next{
+            color: #ffffff;
+            margin: 0 40px;
+            text-align: center;
+            border-radius: 5px;
+            height: 40px;
+            line-height: 40px;
+            background-color: #ccc;
+            margin-top:30px;
+			}
+			.checkbox{
+				height: 15px;
+				background: #ffffff;
+				border: solid 1px #dddddd;
+				border-radius: 4px;
+				background-color: #1abc9c;
+				border: solid 1px #1abc9c;
+			}
+			.activenext {
+				background:#3b75f2;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="wrap">
+			<div id="header">
+				<a class="back-icon" tapmode="" onClick="api.closeWin();"></a>
+				<span>免责声明</span>
+			</div>
+		</div>
+		<div class="box">
+		<div class="content" >您现在安装的是厦门市路桥管理有限公司信息管理平台手机版，使用本系统请遵守以下条款：</div>
+		<div class="content">一、您有责任维护公司的利益,自觉维护公司信息安全,一旦发生保密信息泄露情况，必须承担相应的责任.</div>
+		<div class="content">二、不复制、发布和转发危害公司安全、泄露公司秘密的信息。</div>
+		</div>
+		<div class="accept">
+		
+		<input type="checkbox" id="check"  onclick="Monit()" class="aui-checkbox aui-checkbox-primary aui-pull-right">
+		<span>我接受条款</span>
+		</div>
+		<div class="next" id="next" tapmode="yellow-btn-active" onclick="next();">下一步</div>
+	</body>
+	<script type="text/javascript" src="../script/api.js"></script>
+	<script type="text/javascript" src="../script/disclaimer.js"></script>
+
+</html>

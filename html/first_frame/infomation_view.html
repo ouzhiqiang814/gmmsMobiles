@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>消息查看</title>
+    <link rel="stylesheet" type="text/css" href="../../css/api.css" />
+	<link rel="stylesheet" type="text/css" href="../../css/common.css" />
+</head>
+<body>
+	<div id="wrap">
+		<div id="header">
+		    <div class='egret-img event-back'>
+		    	<img src="../../image/delete_btn.png" alt="" />
+		    </div>
+		    <h1>消息查看</h1>
+		</div>
+		<div id="main">
+		</div>	
+	</div>
+</body>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/zepto.min.js"></script>
+<script type="text/javascript" src="../../script/common.js"></script>
+<script type="text/javascript">
+	apiready = function(){
+		fnReadyHeader2();
+		fnReadyKeyback();		
+		var id = api.pageParam.id;
+		api.openFrame({
+	        name: 'infomation_view_body',
+	        url: './infomation_view_body.html',
+	        bounces: true,
+	        rect: {
+	            x: 0,
+	            y: headerHeight,
+	            w: 'auto',
+	            h: 'auto'
+	        },
+	        pageParam: {
+		        id: id
+		    },
+	        vScrollBarEnabled: false,
+	        scaleEnabled:true,
+	        progress:{
+	        	type:"default"
+	        }
+	    });
+	};
+	
+</script>
+</html>

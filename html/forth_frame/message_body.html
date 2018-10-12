@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>title</title>
+		<link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+		<style>
+		
+			.box {
+				margin-top: 0.625 rem;
+				height: 3.125 rem;
+				line-height: 3.125 rem;
+				padding: 10px;
+				background-color: #fff;
+				border: 1px solid #e9e7e7;
+				position: relative;
+				display: flex;
+				justify-content: space-between;
+			}
+			.box > input {
+				flex: 1;
+			}
+			.numberinput {
+				width: 34%;
+			}
+			.box > #passWord_fork {
+				visibility: hidden;
+			}
+			.box.focus > #passWord_fork {
+				visibility: visible;
+			}
+			.last_box {
+				text-align: center;
+			}
+			.confirm {
+				background-color: #c40e2c;
+				height: 40px;
+				width: 180px;
+				color: #FFFFFF;
+				font-size: 18px;
+				border-radius: 4px;
+				margin-top: 20px;
+			}
+			.confirm.disabled {
+				background-color: #ccc;
+			}
+			.about {
+				width: 100%;
+				text-align: center;
+				padding-top: 25px;
+			}
+			.pt10 {
+				padding-top: 10px;
+			}
+			.pt3 {
+				padding-top: 3px;
+				margin-bottom: 20px;
+			}
+			.firstblock {
+				margin-top: 15px;
+				border-bottom: solid 1px #e9e7e7;
+				border-top: 1px solid #e9e7e7;
+			}
+			.item {
+				line-height: 40px;
+				padding-left: 15px;
+			}
+			.firstblock2 {
+				border-bottom: solid 1px #e9e7e7;
+			}
+			.item_arrow {
+				float: right;
+				width: 16px;
+				padding: 13px 15px 15px 0;
+			}
+			.imging {
+				width: 25%;
+			}
+			.threesecond {
+				text-align: center;
+				width: 100%;
+				font-size: 14px;
+				bottom: 0px;
+				position: absolute;
+				line-height: 18px;
+				margin-bottom: 7px;
+				color: #747474;
+			}
+			table.gridtable td.one {
+				padding: 8px;
+				border-bottom: solid 1px #e9e7e7;
+				border-top: solid 1px #e9e7e7;
+				width: 20%;
+				text-align: right;
+			}
+			table.gridtable td.two {
+				padding: 8px;
+				border-bottom: solid 1px #e9e7e7;
+				border-top: solid 1px #e9e7e7;
+				width: 80%;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="about">
+			<img src="../../icon/icon150x150.png" class="imging">
+				<div class="pt10">
+					信息管理平台
+				</div>
+				<div class="pt3">
+					版本：<span id="version_span"></span>
+				</div>
+		</div>
+		<table class="gridtable">
+			<tr>
+				<td class="one">电话：</td>
+				<td class="two">(0592)3759979</td>
+			</tr>
+			<tr>
+				<td class="one">传真：</td>
+				<td class="two">(0592)3759587</td>
+			</tr>
+			<tr>
+				<td class="one">地址：</td>
+				<td class="two">厦门市湖里区五通店里工业区路桥管理公司</td>
+			</tr>
+		</table>
+		<div class="threesecond">
+			<div>
+				版权所有&nbsp;&nbsp;Copyright©2016
+			</div>
+			<div>
+				厦门市路桥管理有限公司&nbsp;&nbsp;厦门路桥信息股份有限公司
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript" src="../../script/api.js"></script>
+	<script type="text/javascript">
+		apiready = function() {
+			$api.html($api.byId('version_span'),api.appVersion);
+		};
+	</script>
+</html>

@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>title</title>
+    <link rel="stylesheet" type="text/css" href="../../../css/api.css" />
+	<link rel="stylesheet" type="text/css" href="../../../css/common.css" />
+	<link rel="stylesheet" type="text/css" href="../../../css/mui.min.css"/>
+	 <style>
+	 	.mui-title{
+	 		font-size:20px;
+	 	}
+	 	.updatatime_box{
+	 		text-align: center;
+			font-size: 13px;
+			color: #dddddd;
+			margin-top: -15px;
+	 	}
+	 	.header_1{
+	 		background-color: #fff;
+	 		padding-top: 30px;
+	 	}
+	 	.header_2{
+	 		background-color: #fff;
+	 		padding-top: 30px;
+	 		margin-top:30px;
+	 		padding-bottom:10px;
+	 	}
+	 	.title_box{
+	 		height:60px;
+	 	}	 	
+	 	.span_1{
+	 		height:18px;
+	 		width: 10px;
+	 		background-color:#00cc00;
+	 		margin-bottom:-3px;
+	 		margin-left:20px;
+	 	}
+	 	.span_2{
+	 		float:right;
+	 	}
+	 	.mui-table-view{
+	 		color:#5d9cec;
+	 		font-size: 14px;
+	 	}
+	 	.title{
+	 		color:#000;
+	 		font-size: 14px;
+	 	}
+	 	.smText{
+	 		display: flex;
+	 		flex-direction: column;
+	 		text-align:center;
+	 	}
+	 	.smText_box{
+	 		display: flex;
+			flex-direction: row;
+			justify-content: space-around
+	 	}
+	 	.span_3{
+	 		height:18px;
+	 		width: 7px;
+	 		background-color:#00cc00;
+	 		margin-bottom:-3px;
+	 		margin-left:0px;
+	 		margin-right:5px;
+	 	}
+	 	.smText_1{
+	 		color:#bcbcbc;
+	 	}
+	 	.bottom_percent{
+	 		text-align:center;
+	 	}
+		.mui-table-view:before{
+			background-color: #fff;
+		}
+		.mui-table-view:after{
+			background-color: #fff;
+		}
+		.mui-table-view-cell:after{
+			background-color: #fff;
+		}
+		.mui-table-view .mui-active{
+			background-color: #fff;
+		}
+		.border{
+			background-color: #c8c7cc;
+			height: 2px;
+			width:90%;
+			margin:0 auto;
+			margin-top:20px;
+		}	 		 	
+	 </style>
+</head>
+<body>
+	<div class="mui-content">
+		<div id="content_1"  class="header_1">
+			<div class="title_box">
+				<h1 class="mui-title">路政案件查处情况</h1>	
+			</div>
+			<div class="updatatime_box">
+				<span class="updatatime_1"></span>
+			</div>
+			<!--<ul class="mui-table-view">
+				<li class="mui-table-view-cell title middle_line1_1">
+					<label>2017年9月份</label>
+					<span>集美大桥路政中队三班案件查处情况</span>
+				</li>				
+			</ul>				
+			<div id="main1" style="width:100%;height:350px;background-color: #ff0000"></div>-->
+			<ul class="mui-table-view">
+				<li class="mui-table-view-cell title middle_line2_1">
+					<label></label>
+					<span>本班组案件分布情况</span>
+				</li>				
+				<li class="mui-table-view-cell middle_line2_2">
+					<span class="span_1"></span>
+					<label>累计查处案件</label>
+					<span class="span_2"></span>
+				</li>
+			</ul>
+			<div id="main2" style="width:100%;height:350px;"></div>
+			<div class="border"></div>
+			<ul class="mui-table-view">
+				<li class="mui-table-view-cell title middle_line3_1">
+					<label></label>
+					<span>本班组罚款、赔偿情况</span>
+				</li>				
+				<li class="mui-table-view-cell middle_line3_2">
+					<span class="span_1"></span>
+					<label>累计罚款、赔偿总金额</label>
+					<span class="span_2"></span>
+				</li>
+			</ul>
+			<div id="main3" style="width:100%;height:350px;"></div>								
+		</div>					
+	</div>
+</body>
+<script type="text/javascript" src="../../../script/api.js"></script>
+<script type="text/javascript" src="../../../script/common.js"></script>
+<script type="text/javascript" src="../../../script/mui.min.js"></script>
+<script type="text/javascript" src="../../../script/zepto.min.js"></script>
+<script type="text/javascript" src="../../../script/echarts.min.js"></script>
+<script type="text/javascript">
+	var charts_url = null;
+	charts_url = $api.getStorage("charts_url");
+	apiready = function(){
+		getData();
+	};
+	
+	function getData(){
+		restQuester('/road/em-fileInfo/ajaxEmFileInfoPie/false/true/true',getPie_1);//案件分布情况
+		restQuester('/road/em-fileInfo/ajaxEmFileInfoFeePie/false/true/true',getPie_2);//案件分布情况
+	}	
+	
+	function getPie_2(data){
+		var pieData = {}
+		if(data){
+			$(".middle_line3_1 label").html(data.year + '年' + data.month + '月');
+			$(".middle_line3_2 .span_2").html(data.totalFineFee + '元');
+			//$(".updatatime_1").html("更新时间："+data.updateTime);
+			
+			pieData = {
+				name : '罚款赔偿情况',
+				datas : ['超限案件','罚款'],
+				pi: '元',
+				data_1 : data.forfeitFee,
+				data_2 : data.comFee,
+				name_1 : '超限案件',
+				name_2 : '罚款',
+				id : 'main3'
+			}
+			pie(pieData)			
+		}
+	}
+
+	function getPie_1(data){
+		var pieData = {}
+		
+		if(data){
+			
+			$(".middle_line2_1 label").html(data.year + '年' + data.month + '月');
+			$(".middle_line2_2 .span_2").html(data.total + '件');
+			$(".updatatime_1").html("更新时间："+data.updateTime);
+			
+			pieData = {
+				name : '案件分布',
+				datas : ['超限案件','路产案件'],
+				pi: '件',
+				data_1 : data.exceedCount,
+				data_2 : data.propertyCount,
+				name_1 : '超限案件',
+				name_2 : '路产案件',
+				id:'main2'
+			}
+			pie(pieData)			
+		}
+	}
+	
+	//数据查询通用函数
+	function restQuester(url,callback){
+		var charts_url = 'http://125.77.254.250:8180'
+		api.ajax({
+			url : charts_url + url,
+			method : 'get',
+			timeout : 30
+		},function(ret,err){
+			if(ret){
+				callback(ret);
+			}
+			else{
+				api.toast({
+					msg:"链接出现错误，暂时无法查询数据，请稍后重试！",
+					duration:3000,
+					location:'bottom'
+				});
+				callback();
+			}
+		})
+	}
+
+	//饼图标准	
+	function pie(data){
+		var myChart = echarts.init(document.getElementById(data.id));		
+		var option = {
+		    tooltip : {
+		        trigger: 'item',
+		        formatter: "{a} <br/>{b} : {c}"+data.pi+" ({d}%)"
+		    },
+		    legend: {
+		        orient: 'vertical',
+		        right: '3%',
+		        top:'15%',
+		        data: data.datas
+		    },
+		    series : [
+		        {
+		            name: data.name,
+		            //hoverAnimation:false,
+		            type: 'pie',
+		            radius : '55%',
+		            center: ['50%', '50%'],
+		            data:[
+		                {value:data.data_1, name:data.name_1},
+		                {value:data.data_2, name:data.name_2}
+		            ],
+					itemStyle: {
+						normal: {
+								label:{ 
+									show: true,  
+									formatter: '{b} \n {c}'+data.pi, 
+								} 
+						},
+					},		            
+		        }
+		    ],
+		    color : ['#48cfae','#fb6e52']
+		};
+		myChart.setOption(option)						
+	}
+	
+
+</script>
+</html>

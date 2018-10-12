@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>title</title>
+    <link rel="stylesheet" type="text/css" href="../../../css/api.css" />
+	<link rel="stylesheet" type="text/css" href="../../../css/common.css" />
+	<style type="text/css">
+		#header h1{    
+			padding: 0 40px;
+		    white-space: nowrap;
+		    overflow: hidden;
+		    text-overflow: ellipsis;
+    	}
+	</style>
+</head>
+<body>
+	<div id="wrap">
+		<div id="header">
+		    <div class='egret-img event-back'>
+		    	<img src="../../../image/back_btn.png"/>
+		    </div>
+		    <h1></h1>
+		</div>
+		<div id="main"></div>	
+	</div>
+</body>
+<script type="text/javascript" src="../../../script/api.js"></script>
+<script type="text/javascript" src="../../../script/common.js"></script>
+<script type="text/javascript">
+	apiready = function(){
+		fnReadyHeader2();
+		fnReadyKeyback();
+		var header = $api.byId('header');
+		var pos = $api.offset(header);
+		var pageParam = api.pageParam;
+		$api.html($api.dom(header, 'h1'), pageParam.title);
+		var reportUrl = $api.getStorage("report_url");
+		if(reportUrl.substring(reportUrl.length-1)!='/'){
+			reportUrl = reportUrl+'/';
+		}
+		api.openFrame({
+			name : 'report_detail_body',
+			url : reportUrl+pageParam.method,
+			rect : {
+				x : 0,
+				y : pos.h,
+				w : 'auto',
+				h : 'auto'
+			},
+			progress:{
+				type:'page'
+			},
+			vScrollBarEnabled : false
+		});
+	};
+</script>
+</html>

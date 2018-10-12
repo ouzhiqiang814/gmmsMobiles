@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>title</title>
+    <link rel="stylesheet" type="text/css" href="../../../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/mui.min.css"/>
+    <style>
+    	html,body {min-height: 100%;}
+    	.mui-table-view-cell{padding-right:70px;}
+    </style>
+</head>
+<body>
+	<div class="mui-content">
+		<ul class="mui-table-view" id="msg_list">
+		</ul>
+	</div>
+</body>
+<script type="text/javascript" src="../../../script/api.js"></script>
+<script type="text/javascript" src="../../../script/mui.min.js"></script>
+<script type="text/javascript" src="../../../script/zepto.min.js"></script>
+<script type="text/javascript">
+	apiready = function(){
+		if(api.pageParam.alarmMap!=undefined){
+			var htmlStr = '';
+			$.each(api.pageParam.alarmMap,function(i,info){
+				htmlStr += '<li class="mui-table-view-cell">'+
+						   '发现'+info.name+'现场状态异常，疑似非法进入，请点击查看'+
+						   '<button type="button" class="mui-btn" onclick="fnOpenViewWin(\''+info.name+'\',\''+info.id+'\')">查看</button>'+
+						   '</li>';
+			});
+			$('#msg_list').html(htmlStr);
+		}
+	};
+	function fnOpenViewWin(name,houseId){
+		api.openWin({
+	        name: 'warehouse_alarm',
+	        url: './warehouse_alarm.html',
+	        bounces : false,
+	        slidBackEnabled:false,
+	        pageParam:{
+	        	name:name,
+	        	houseId:houseId
+	        }
+        });
+        api.closeFrame({
+        	name:'warehouse_msg'
+        });
+	}
+</script>
+</html>

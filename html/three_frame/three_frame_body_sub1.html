@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>title</title>
+    <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/mui.min.css"/>
+    <style>
+    	html,body {min-height: 100%;background-color: #efeff4;}
+    	.mui-control-content {
+			background-color: white;
+		}
+		.mui-loading {
+			margin-top: 50px;
+			background: #fafafa;
+		}
+    </style>
+</head>
+<body>
+	<div class="mui-content">
+		<div class="mui-content-padded" style="margin: 0px;padding: 5px;height: 45px;box-shadow: 0px 0px 1px 0px #9c9c9c;">
+		<div class="mui-input-row mui-search">
+			<input id="search_txt" type="search" class="mui-input-clear" placeholder="搜索">
+		</div>
+		</div>
+	</div>
+</body>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/mui.min.js"></script>
+<script type="text/javascript" src="../../script/zepto.min.js"></script>
+<script type="text/javascript">
+	var UIListContacts = null;
+	apiready = function(){
+		UIListContacts = api.require('UIListContacts');
+		UIListContacts.open({
+            rect : {
+                x : 0,
+                y : 46,
+                w : api.frameWidth,
+                h : api.frameHeight-46
+            },
+            fixedOn : api.frameName
+        }, function(ret) {
+            if (ret) {
+            	if(ret.eventType=='click'){
+                	fnOpenUserInfo(ret.contact);
+                }
+            }
+        });
+		$('#search_txt').on('keyup',function(e){
+			if(e.keyCode==13){//android搜索键
+				$(this).blur();
+			}
+		});
+		$('#search_txt').on('blur',function(){
+			initUserList($(this).val());
+		});
+		window.setTimeout(function(){
+			//读取缓存数据
+			var useunitId = api.pageParam.useunitId;
+			if(useunitId==$api.getStorage("lesseeId")){
+				var dataList = $api.getStorage("USER_LIST");
+				if(dataList!=undefined&&dataList!=null){
+					UIListContacts.reloadData({
+		    			contacts:dataList
+		    		});
+				}else{
+					initUserList(null);
+				}
+			}else{
+				initUserList(null);
+			}
+		},300);
+	};
+	
+	function initUserList(searchTxt){
+		api.showProgress({
+			title: '努力加载中',
+		    text: '请稍后...',
+		    modal: false
+        });
+        var useunitId = api.pageParam.useunitId;
+		api.ajax({
+		    url:$api.getStorage("gmms_url")+'modules/mobile/security/user!queryAllUsersUseunit.action',
+		    method:'get',
+		    timeout:30,
+		    data:{
+		    	values:{
+		    		useunitId:useunitId,
+		    		searchVal:searchTxt	
+		    	}
+		    }	    
+	    },function(dataList,err){
+	    	if(dataList){
+	    		//把所有用户放入缓存中
+	    		if((searchTxt==null||searchTxt=='')&&useunitId==$api.getStorage("lesseeId")){
+	    			$api.setStorage("USER_LIST",dataList);
+	    		}
+	    		UIListContacts.reloadData({
+	    			contacts:dataList
+	    		});
+	    	}else{
+	    		api.toast({
+                    msg:err.msg,
+                    duration: 2000,
+					location: 'bottom'
+                });
+	    	}
+    		api.hideProgress();
+	    });
+	}
+	
+	function fnOpenUserInfo(userInfo){
+		api.openWin({
+	        name: 'user_info',
+	        url: './user_info.html',
+	        pageParam: {
+		        userInfo: userInfo
+		    },
+			animation:{
+				type:'movein',
+				subType:'from_bottom'
+			}
+        });
+	}
+</script>
+</html>

@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>title</title>
+    <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/mui.min.css"/>
+    <style>
+    	html,body{
+    		min-height:100%;
+    		background-color: #efeff4;
+    	}
+    	.mui-btn.mui-icon {
+		    font-size: 16px;
+		    line-height: 1.42;
+		}
+    	h5{margin-top:10px;}
+    	.row {
+		    width: 100%;
+		    background-color: #fff;
+		}
+    	.image-list {
+		    width: 100%;
+		    height: auto;
+		    background-size: cover;
+		    padding: 10px 10px;
+		    overflow: hidden;
+		}
+    	.image-item.space {
+		    border: none;
+		}
+		.image-item {
+		    width: 65px;
+		    height: 65px;
+		    background-size: 100% 100%;
+		    display: inline-block;
+		    position: relative;
+		    border-radius: 5px;
+		    margin-right: 10px;
+		    margin-bottom: 10px;
+		    border: solid 1px #e8e8e8;
+		    vertical-align: top;
+		}
+		.image-item .image-up {
+		    height: 65px;
+		    width: 65px;
+		    border-radius: 10px;
+		    padding-top: 1em;
+		    border: 1px solid #ccc;
+		    color: #ccc;
+		    display: inline-block;
+		    text-align: center;
+	        background: #fff;
+		}
+		.image-item .image-up::after {
+		    font-family: '微软雅黑';
+		    content: "+";
+		    font-size: 60px;
+		}
+		.image-item .image-close {
+		    position: absolute;
+		    display: inline-block;
+		    right: -6px;
+		    top: -6px;
+		    width: 20px;
+		    height: 20px;
+		    text-align: center;
+		    line-height: 20px;
+		    border-radius: 12px;
+		    background-color: #FF5053;
+		    color: #f3f3f3;
+		    border: solid 1px #FF5053;
+		    font-size: 9px;
+		    font-weight: 200;
+		    z-index: 1;
+		}
+		.image-item img{
+		    height: 65px;
+		    width: 65px;
+		    border-radius: 10px;
+		    line-height: 65px;
+		    border: 1px solid #ccc;
+		    color: #ccc;
+		    display: inline-block;
+		    text-align: center;
+		}
+		
+		#textarea1{
+			background-color: #FFFFFF;
+			height: 120px;
+			width: 100%;
+			border: 1px solid #8F8F94;
+			overflow: auto;
+			color:#000000!important;
+			border-radius: 2px;
+		}
+    </style>
+</head>
+<body>
+	<div class="mui-content">
+		<form id="infomationForm" class="mui-content-padded">
+			<input  type="hidden" name="infomation.sender.id"/>
+			<input  type="hidden" name="infomation.lesseeId"/>
+			<input type="hidden" name="infomation.type" value=""/>
+			<input type="hidden" id="parentId" name="parentId" value="" />
+			<input type="hidden" name="base64Images"/>
+			<h5>等级:</h5>
+			<div id="grade_btngroup">
+				<input type="hidden" name="infomation.grade" value="1"/>
+				<button type="button" class="mui-btn mui-btn-primary" field="1">普通</button>
+				<button type="button" class="mui-btn" field="2">重要</button>
+			</div>
+			<h5><font style="color: red;">*</font>接收人:</h5>
+			<div id="users_btngroup">
+				<input type="hidden" name="infomationMapUserIds" value=""/>
+				<input type="hidden" name="infomationMapUserNames" value=""/>
+				<button type="button" class="mui-btn mui-icon mui-icon-plus">选择用户</button>
+				<button id="selectedUserBtn" type="button" class="mui-btn mui-icon mui-icon-contact">已选用户</button>
+			</div>
+			<h5>发送手机短信给:</h5>
+			<div id="smsAccepter_btngroup">
+				<input type="hidden" name="infomationSmsAccepterIds"/>
+				<input type="hidden" name="infomationSmsAccepterNames"/>
+				<button type="button" class="mui-btn mui-icon mui-icon-plus">选择用户</button>
+				<button id="selectedSmsUserBtn" type="button" class="mui-btn mui-icon mui-icon-contact">已选用户</button>
+			</div>			
+			<h5><font color="red">*</font>主题:</h5>
+			<div class="mui-input-row">
+				<input type="text" name="infomation.title" placeholder="请输入主题"/>
+			</div>
+			<h5>内容:</h5>
+			<div class="mui-input-row" id="con">
+				<div contenteditable="true"  id="textarea1" class="mui-input-clear question" style="-webkit-user-select:text">					
+				</div>
+			</div>	
+			<h5>图片:</h5>
+			<div class="mui-input-row">
+				<div id='image-list' class="image-list">
+					<div class="image-item space">
+						<div class="image-up" onclick="fnSelImage()"></div>
+					</div>
+				</div>
+			</div>
+			<button type="button" onclick="goSubmit()" class="mui-btn mui-btn-block mui-btn-primary" style="padding: 10px 0;">发送</button>
+		</form>
+	</div>
+</body>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/mui.min.js"></script>
+<script type="text/javascript" src="../../script/zepto.min.js"></script>
+<script type="text/javascript">
+	apiready = function(){
+		var parm = api.pageParam;
+		
+		mui('#grade_btngroup').on('tap','button',function(){
+			$('#grade_btngroup button').removeClass('mui-btn-primary');
+			$(this).addClass('mui-btn-primary');
+			$("input[name='infomation.grade']").val($(this).attr('field'));
+		});
+		
+		mui('#users_btngroup').on('tap','button',function(){
+			if($(this).text().indexOf('选择用户')>-1){
+				fnSelectUsers();
+			}
+			if($(this).text().indexOf('已选用户')>-1){
+				if($("input[name='infomationMapUserIds']").val()==''){
+					api.alert({msg:'暂无选择的人员'});
+					return;
+				}
+				fnViewSelectedUsers();
+			}
+		});
+		
+		mui('#smsAccepter_btngroup').on('tap','button',function(){
+			if($(this).text().indexOf('选择用户')>-1){
+				fnSelectSmsUsers();
+			}
+			if($(this).text().indexOf('已选用户')>-1){
+				if($("input[name='infomationSmsAccepterIds']").val()==''){
+					api.alert({msg:'暂无选择的人员'});
+					return;
+				}
+				fnViewSelectedSmsUsers();
+			}
+		});		
+		
+		$("input[name='infomation.sender.id']").val(parm["userId"]);
+		$("input[name='infomation.lesseeId']").val(parm["lesseeId"]);
+		$("input[name='infomation.type']").val(parm["type"]);
+		$("input[name='infomation.title']").val("Fw："+parm["title"]);		
+		$("#textarea1").html(parm["content"]);
+		$("#parentId").val(parm["id"]);
+		var strHtml = "";
+		if(parm["files"]){
+			for(var i=0;i<parm["files"].length;i++){
+			var extendName = parm["files"][i]["extendName"];
+			var fileSaveName = parm["files"][i]["fileSaveName"];
+			var fileUrl = parm["files"][i]["fileUrl"]
+			var img = '';
+			if(extendName == "jpg" || extendName == "jpeg" || extendName == "png"){
+				img = '<img src="../../image/fileType/jpg.png">';
+			}
+			else if(extendName == "rar" || extendName == "zip"){
+				img = '<img src="../../image/fileType/zip.png">';
+			}
+			else if(extendName == "xlsx" || extendName == "xls"){
+				img = '<img src="../../image/fileType/xls.png">';
+			}
+			else if(extendName == "doc" || extendName == "docx"){
+				img = '<img src="../../image/fileType/doc.png">';
+			}
+			else{
+				img = '<img src="../../image/fileType/'+extendName+'.png">';
+			}
+			strHtml += '<div class="mui-input-row" style="margin-bottom:10px;" name="file" fileUrl="'+fileUrl+'" fileSaveName="'+fileSaveName+'">'+img+fileSaveName +'</div>';					
+			}
+		}
+		$("#con").after('<h5>附件:</h5>'+strHtml)			
+	};
+	/**
+	 *选择照片 
+	 */
+	function fnSelImage(){
+		api.actionSheet({
+			cancelTitle:'取消',
+			buttons:['拍照','手机相册']
+		},function(ret,err){
+			var sourceType = null;
+			if(ret.buttonIndex==1){
+				sourceType = 'camera';
+			}
+			if(ret.buttonIndex==2){
+				sourceType = 'library';
+			}
+			if(sourceType==null){
+				return;
+			}
+			api.getPicture({
+			    sourceType: sourceType,
+			    encodingType: 'jpg',
+			    mediaValue: 'pic',
+			    destinationType: 'base64',
+			    quality: 50
+			}, function(ret, err) {
+			    if (ret) {
+			    	if(ret.base64Data!=''){
+				    	$('#image-list').prepend(
+		        			 '<div class="image-item space">'+
+							 '	<div class="image-close" onclick="goDelete(this)">X</div>'+
+							 //'	<input type="hidden" name="base64Images" value="'+ret.base64Data+'"/>'+
+							 '	<img src="'+ret.base64Data+'" base64Images="'+ret.base64Data+'"/>'+
+							 '</div>');
+			    	}
+			    }
+			});
+		});
+	}
+	
+	/**
+	 * 打开选择人员窗口(接收人) 
+	 */
+	function fnSelectUsers(){
+		api.openWin({
+	        name: 'select_useunit',
+	        url: './select_useunit.html',
+			animation:{
+				type:'movein',
+				subType:'from_bottom'
+			}
+        });
+	}
+	
+	/**
+	 * 打开选择人员窗口 （短信接收人）
+	 */
+	function fnSelectSmsUsers(){
+		api.openWin({
+	        name: 'select_sms_useunit',
+	        url: './select_sms_useunit.html',
+			animation:{
+				type:'movein',
+				subType:'from_bottom'
+			}
+        });
+	}	
+	/**
+	 * 设置已选人员 （接收人）
+	 */
+	function getSelectUsers(userIds,userNames){
+		var idsInput = $("input[name='infomationMapUserIds']").val();
+		var namesInput = $("input[name='infomationMapUserNames']").val();
+		var allIds =  "";
+		var allNames = namesInput + "," + userNames;		
+		if(idsInput == ""){
+			allIds =  userIds;
+			allNames = userNames;
+		}
+		else{
+			allIds =  idsInput + "," + userIds;
+			allNames = namesInput + "," + userNames;		
+		}
+		var idsArr = allIds.split(",");
+		var namesArr = allNames.split(",");
+		var idsTemp = [];
+		var namesTemp = [];
+		for(var i=0;i<idsArr.length;i++){
+			if(idsTemp.indexOf(idsArr[i]) == -1){
+				idsTemp.push(idsArr[i]);
+			}
+			if(namesTemp.indexOf(namesArr[i]) == -1){
+				namesTemp.push(namesArr[i]);
+			}
+		}
+		$("input[name='infomationMapUserIds']").val(idsTemp.toString());
+		$("input[name='infomationMapUserNames']").val(namesTemp.toString());
+		if(userIds!=null&&userIds!=''){
+			var nums = idsTemp.length;
+			$('#selectedUserBtn').addClass('mui-btn-primary');
+			$('#selectedUserBtn').html('已选用户('+nums+')');
+		}else{
+			$('#selectedUserBtn').removeClass('mui-btn-primary');
+			$('#selectedUserBtn').html('已选用户');
+		}
+	}
+	/**
+	 * 设置已选人员 （短信接收人）
+	 */
+	function getSelectSmsUsers(userIds,userNames){
+		var idsInput = $("input[name='infomationSmsAccepterIds']").val();
+		var namesInput = $("input[name='infomationSmsAccepterNames']").val();
+		var allIds =  "";
+		var allNames = namesInput + "," + userNames;		
+		if(idsInput == ""){
+			allIds =  userIds;
+			allNames = userNames;
+		}
+		else{
+			allIds =  idsInput + "," + userIds;
+			allNames = namesInput + "," + userNames;		
+		}
+		var idsArr = allIds.split(",");
+		var namesArr = allNames.split(",");
+		var idsTemp = [];
+		var namesTemp = [];
+		for(var i=0;i<idsArr.length;i++){
+			if(idsTemp.indexOf(idsArr[i]) == -1){
+				idsTemp.push(idsArr[i]);
+			}
+			if(namesTemp.indexOf(namesArr[i]) == -1){
+				namesTemp.push(namesArr[i]);
+			}
+		}		
+		$("input[name='infomationSmsAccepterIds']").val(idsTemp.toString());
+		$("input[name='infomationSmsAccepterNames']").val(namesTemp.toString());
+		if(userIds!=null&&userIds!=''){
+			var nums = idsTemp.length;
+			$('#selectedSmsUserBtn').addClass('mui-btn-primary');
+			$('#selectedSmsUserBtn').html('已选用户('+nums+')');
+		}else{
+			$('#selectedSmsUserBtn').removeClass('mui-btn-primary');
+			$('#selectedSmsUserBtn').html('已选用户');
+		}
+	}
+	
+	/**
+	 *  已选人员 (接收人)
+	 */
+	function delSelectUsers(userIds,userNames){
+		$("input[name='infomationMapUserIds']").val(userIds);
+		$("input[name='infomationMapUserNames']").val(userNames);
+		if(userIds!=null&&userIds!=''){
+			var nums = userIds.split(',').length;
+			$('#selectedUserBtn').addClass('mui-btn-primary');
+			$('#selectedUserBtn').html('已选用户('+nums+')');
+		}else{
+			$('#selectedUserBtn').removeClass('mui-btn-primary');
+			$('#selectedUserBtn').html('已选用户');
+		}
+	}
+	
+	/**
+	 *  已选人员 (短信接收人)
+	 */
+	function delSelectSmsUsers(userIds,userNames){
+		$("input[name='infomationSmsAccepterIds']").val(userIds);
+		$("input[name='infomationSmsAccepterNames']").val(userNames);
+		if(userIds!=null&&userIds!=''){
+			var nums = userIds.split(',').length;
+			$('#selectedSmsUserBtn').addClass('mui-btn-primary');
+			$('#selectedSmsUserBtn').html('已选用户('+nums+')');
+		}else{
+			$('#selectedSmsUserBtn').removeClass('mui-btn-primary');
+			$('#selectedSmsUserBtn').html('已选用户');
+		}
+	}			
+	/**
+	 * 查看已选用户列表 （接收人）
+	 */
+	function fnViewSelectedUsers(){
+		api.openWin({
+	        name: 'selected_user_view',
+	        url: './selected_user_view.html',
+	        pageParam:{
+	        	userIds:$("input[name='infomationMapUserIds']").val(),
+	        	userNames:$("input[name='infomationMapUserNames']").val()
+	        },
+			animation:{
+				type:'movein',
+				subType:'from_bottom'
+			}
+        });
+	}
+	/**
+	 * 查看已选用户列表 （短信接收人）
+	 */
+	function fnViewSelectedSmsUsers(){
+		api.openWin({
+	        name: 'selected_sms_user_view',
+	        url: './selected_sms_user_view.html',
+	        pageParam:{
+	        	userIds:$("input[name='infomationSmsAccepterIds']").val(),
+	        	userNames:$("input[name='infomationSmsAccepterNames']").val()
+	        },
+			animation:{
+				type:'movein',
+				subType:'from_bottom'
+			}
+        });
+	}	
+	function goDelete(_this){
+		$(_this).parent().remove();
+	}
+	
+	
+	function goSubmit(){
+		var gmms_url = $api.getStorage('gmms_url');
+		if($("input[name='infomationMapUserIds']").val()==''){
+			api.alert({
+			    title: '提示',
+			    msg: '请选择接收人!',
+			}, function(ret, err) {});
+			return;
+		}
+		if($("input[name='infomation.title']").val()==''){
+			api.alert({
+			    title: '提示',
+			    msg: '请输入主题!',
+			}, function(ret, err) {});
+			return;
+		}
+		
+		var fileSaveNameJson = "";
+		var fileUrlJson = "";
+		$("div[name=file]").each(function(){
+			var fileSaveName = $(this).attr("fileSaveName")
+			var fileUrl = $(this).attr("fileUrl"); 		
+			fileSaveNameJson += fileSaveName + ",";
+			fileUrlJson += fileUrl + ",";			
+		})
+		fileSaveNameJson = fileSaveNameJson.substring(0,fileSaveNameJson.length-1);
+		fileUrlJson = fileUrlJson.substring(0,fileUrlJson.length-1);
+		
+		var base64Images = "";
+		$("#image-list img").each(function(){
+			base64Images += $(this).attr("base64Images")+'@';
+		})
+		//console.log(base64Images)
+		$("input[name=base64Images]").val(base64Images);   		
+   		
+   		api.showProgress({
+   				    style: 'default',
+   				    animationType: 'fade',
+   				    title: '请稍后',
+   				    text: '正在保存数据...',
+   				    modal: true
+   				}); 			
+		var values = {
+			"infomation.sender.id" : $("input[name='infomation.sender.id']").val(),
+			"infomation.lesseeId" : $("input[name='infomation.lesseeId']").val(),
+			"infomation.type" : $("input[name='infomation.type']").val(),
+			"infomation.grade" : $("input[name='infomation.grade']").val(),
+			"infomationMapUserIds" : $("input[name='infomationMapUserIds']").val(),
+			"infomationMapUserNames" : $("input[name='infomationMapUserNames']").val(),
+			"infomation.title" : $("input[name='infomation.title']").val(),
+			"infomationSmsAccepterIds" : $("input[name='infomationSmsAccepterIds']").val()+",",
+			"infomationSmsAccepterNames" :$("input[name='infomationSmsAccepterNames']").val()+",",			
+			"infomation.content" : $("#textarea1").html(),
+			"base64Images" : $("input[name='base64Images']").val(),
+			"fileSaveNameJson": fileSaveNameJson,
+			"fileUrlJson":fileUrlJson			
+		}				
+		api.ajax({
+	        url:gmms_url+'/modules/mobile/infomation/infomation!saveInfomationOther.action',
+	        method:'post',
+	        data:{
+	        	values:values
+	        }
+        },function(json,err){
+        	api.hideProgress();
+        	if(json){
+	       		api.alert({
+	   				    title: '提示',
+	   				    msg: json.msg,
+	   				}, function(ret, err) {
+	   					if(json.success){
+	   						api.closeWin();
+	   					}
+	   				});
+	   			}
+	   		else{
+	       		api.toast({
+	   	                msg:err.msg
+	               });
+       		}       	
+        });		
+	}
+	
+	$.fn.serializeObject = function()    
+	{    
+	   var o = {};    
+	   var a = this.serializeArray();    
+	   $.each(a, function() {    
+	       if (o[this.name]) {    
+	           if (!o[this.name].push) {    
+	               o[this.name] = [o[this.name]];    
+	           }    
+	           o[this.name].push(this.value || '');    
+	       } else {    
+	           o[this.name] = this.value || '';    
+	       }    
+	   });
+	   console.log(JSON.stringify(o))    
+	   return o;    
+	};
+</script>
+</html>

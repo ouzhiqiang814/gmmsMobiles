@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>title</title>
+    <link rel="stylesheet" type="text/css" href="../../../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/mui.css"/>
+    <style>
+    	html,body {min-height: 100%;background-color: #efeff4;}
+    	.my-bottom{
+    		width:100%;
+    		position: absolute;
+    		bottom:0px;
+    	}
+    	.my-main{
+    	 	text-align:center;
+    		display:box;
+    		display:-moz-box; /* Firefox */
+			display:-webkit-box; /* Safari and Chrome */
+			-moz-box-pack:center;
+			-moz-box-align:center;
+			-webkit-box-pack:center;
+			-webkit-box-align:center;
+		}
+		.my-main div{
+			-moz-box-flex:1.0; /* Firefox */
+			-webkit-box-flex:1.0; /* Safari and Chrome */
+			box-flex:1.0;
+			text-align: center;
+		}
+		.my-main div button{width:95%;display: inline;}
+    </style>
+</head>
+<body>
+	<div class="my-bottom">
+		<form class="mui-input-group" style="background-color: #efeff4;margin-bottom:10px;">
+		<ul class="mui-table-view">
+			<li class="mui-input-row">
+				<label>取流通道:</label>
+				<select id="channel"></select>
+			</li>
+			<li class="mui-input-row">
+				<label>取流类型:</label>
+				<select id="streamType">
+					<option value="1">子码流</option>
+					<option value="0">主码流</option>
+				</select>
+			</li>
+		</ul>
+		</form>
+		<div class="my-main">
+			<div><button type="button" class="mui-btn mui-btn-primary mui-btn-block" onclick="fnStartPlay()">开始播放</button></div>
+			<div><button type="button" class="mui-btn mui-btn-danger mui-btn-block" onclick="fnStopPlay()">停止播放</button></div>
+		</div>
+	</div>
+</body>
+<script type="text/javascript" src="../../../script/api.js"></script>
+<script type="text/javascript" src="../../../script/mui.min.js"></script>
+<script type="text/javascript" src="../../../script/zepto.min.js"></script>
+<script type="text/javascript">
+	var video = null;
+	var param = null;
+	var isPlay = false;
+	apiready = function(){
+		param = api.pageParam;
+		video = api.require('video');
+		video.open({
+			x:0,
+			y:0,
+			w:api.frameWidth,
+			h:api.frameWidth*3/4,
+			fixedOn:api.frameName
+		});
+//		$('#streamType').val(param.streamType);
+		for(var i=1;i<=param.channelNum;i++){
+			$('#channel').append('<option value="'+i+'">通道'+i+'</option>');
+		}
+		window.setTimeout(function(){
+			fnLogin();
+		},1000);
+	};
+	
+	function fnLogin(){
+		//关闭已经打开的地图避免视频层被地图层遮挡
+		api.execScript({
+		    name:'gis_main',
+		    frameName:'gis_main_body',
+		    script: 'closebmap();'
+	    });
+		api.showProgress({
+		    title: '正在初始化',
+		    text: '请稍后...',
+		    modal: false
+		});
+		
+		video.login({
+			url:'http://'+param.serverIP+":81",
+			account:param.account,
+			password:param.password,
+			line:parseInt(param.lineNo)
+		},function(ret,err){
+			if(!ret.success){
+				api.alert({title:'提示',msg:ret.msg});
+			}
+			api.hideProgress();
+			fnStartPlay();
+		});
+	}
+	
+	function fnStartPlay(){
+		var channel = $('#channel').val();
+		var streamType = $('#streamType').val();
+		if(isPlay){
+			video.stop(function(ret,err){
+//				console.log('停止播放:'+JSON.stringify(ret));
+			});
+		}
+		api.showProgress({
+		    title: '正在取流',
+		    text: '请稍后...',
+		    modal: true
+		});
+		video.start({
+			deviceID:param.deviceId,
+			channel:channel,
+			streamType:parseInt(streamType)
+		},function(ret,err){
+			if(ret){
+				if(ret.success){
+					isPlay = true;
+				}else{
+					api.alert({title:'提示',msg:ret.msg});
+				}
+			}
+			api.hideProgress();
+		});
+		
+	}
+	
+	function fnStopPlay(){
+		if(isPlay){
+			video.stop(function(ret,err){
+//				console.log('停止播放:'+JSON.stringify(ret));
+			});
+			isPlay = false;
+		}
+	}
+	
+	function fnDestory(){
+		if(isPlay){
+			video.stop(function(ret,err){
+//				console.log('停止播放:'+JSON.stringify(ret));
+			});
+		}
+		video.destory();
+	}
+</script>
+</html>

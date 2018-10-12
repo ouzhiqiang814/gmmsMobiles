@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>title</title>
+    <link rel="stylesheet" type="text/css" href="../../css/api.css" />
+	<link rel="stylesheet" type="text/css" href="../../css/common.css" />
+    <style>
+    	#right_btn{
+			position:absolute;
+			right:10px;
+		    font-weight: normal;
+    		font-size: 18px;
+    		color:#fff;
+		}
+    </style>
+</head>
+<body>
+	<div id="wrap">
+		<div id="header">
+		    <div class='egret-img event-back'>
+		    	<img src="../../image/delete_btn.png"/>
+		    </div>
+		    <div id="right_btn" onclick="fnSelAll()">
+		    	全部人员
+		    </div>
+		    <h1>选择单位/部门</h1>
+		</div>
+		<div id="main">
+		</div>	
+	</div>
+</body>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/common.js"></script>
+<script type="text/javascript" src="../../script/zepto.min.js"></script>
+<script type="text/javascript">
+	apiready = function(){
+		fnReadyHeader2();
+		fnReadyKeyback();
+		fnFrame();
+	};
+	
+	function fnFrame(){
+	    api.openFrame({
+	        name: 'three_frame_sms_body_sub2',
+	        url: './three_frame_sms_body_sub2.html',
+	        bounces: false,
+	        rect: {
+	            x: 0,
+	            y: headerHeight,
+	            w: 'auto',
+	            h: 'auto'
+	        },
+	        pageParam:{isselect:true},
+	        vScrollBarEnabled: false
+	    });
+	}
+	
+	function fnSelAll(){
+		api.showProgress({
+        	title:'正在选择',
+        	msg:'请稍后...',
+        	modal:false
+        });
+		var gmms_url = $api.getStorage("gmms_url");
+		api.ajax({
+	        url:gmms_url+'/modules/mobile/security/common!listUser.action',
+	        method:'get',
+	        timeout:10,
+	        data:{
+	        	values:{useunitId:$api.getStorage('lesseeId')}
+	        }
+        },function(ret,err){
+        	api.hideProgress();
+        	if(ret){
+        		var idStr = '';
+				var nameStr = '';
+				$.each(ret,function(i,user){
+					idStr += user.id+',';
+					nameStr += user.name+',';
+				});
+				if(idStr!=''){
+					idStr = idStr.substring(0,idStr.length-1);
+					nameStr = nameStr.substring(0,nameStr.length-1);
+				}
+				api.execScript({
+					name:'transmitMessage',
+					frameName:'transmitMessage_body',
+			        script: "getSelectSmsUsers('"+idStr+"','"+nameStr+"');"
+		        });
+		        api.closeToWin({
+		        	name:'transmitMessage'
+		        });
+        	}else{
+        		api.toast({
+	                msg:err.msg
+                });
+        	}
+        });
+	}
+</script>
+</html>

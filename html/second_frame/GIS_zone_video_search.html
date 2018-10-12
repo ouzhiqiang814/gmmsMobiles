@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>title</title>
+    <link rel="stylesheet" type="text/css" href="../../css/api.css" />
+	<link rel="stylesheet" type="text/css" href="../../css/common.css" />
+	<link rel="stylesheet" type="text/css" href="../../css/mui.css" />
+    <style>
+    	#header{position: relative;background: #fff;border-bottom: 1px solid #ddd}
+    	.my-search{
+			float:left;
+			width:100%;
+		}
+		.mui-input-row.mui-search .mui-icon-clear {
+		    top: 13px;
+		}
+		.mui-search .mui-placeholder{
+			text-align:left;
+			left: 5px;
+			top:5px;
+			color:#8a8a8a;
+		}
+		.mui-search .mui-placeholder .mui-icon{color:#8a8a8a;}
+		.mui-search.mui-active:before
+		{
+		    font-size: 20px;
+		    right: auto;
+		    top:18px;
+		    left: 5px;
+		    display: block;
+		    margin-right: 0;
+		    color:#8a8a8a;
+		}
+		.title-middle{
+			position: absolute;
+			left:10px;
+			right:50px;
+			top:0;
+			bottom:0;
+		}
+    </style>
+</head>
+<body>
+	<div id="wrap">
+		<div id="my-header">
+			<div id="header">
+			    <div class="title-middle">
+			    	<div class="mui-input-row mui-search my-search">
+						<input id="my-search" type="search" class="mui-input-clear" placeholder="搜索"/>
+					</div>
+			    </div>
+			    <div id="top_other_btn" class='egret-img' style="right:5px;color:#fd0000;height: 45px;width:40px;">
+			    	取消
+			    </div>
+		    </div>
+		</div>
+	</div>
+</body>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/common.js"></script>
+<script type="text/javascript" src="../../script/mui.min.js"></script>
+<script type="text/javascript" src="../../script/zepto.min.js"></script>
+<script type="text/javascript">
+	apiready = function(){
+		var header = $api.byId('my-header');
+	    if (header) {
+	        $api.fixStatusBar(header);
+	        headerHeight = $api.offset(header).h;
+	    }
+	    initMyBack();
+	    fnOpenFrame();
+	    $('#my-search').on('blur',function(e){
+    		fnSearch();
+	    });
+	    $('#my-search').on('keyup',function(e){
+	    	if(e.keyCode==13){
+	    		fnSearch();
+	    	}
+	    });
+	    
+	    api.addEventListener({
+		    name:'viewappear'
+		}, function(ret, err){        
+		   	api.setStatusBarStyle({
+				style : 'dark'
+			});
+		});
+	};
+	
+	function fnSearch(){
+		var val = $('#my-search').val();
+		api.closeWin();
+		api.execScript({
+	        name:'GIS_zone_video',
+	        script: 'fnSearch(\''+val+'\');'
+        });
+        if(val!=''){
+	        //记录历史搜索
+	        var historySearch = $api.getStorage("HIS_SEARCH");
+	        if(historySearch==undefined||historySearch==null){
+	        	historySearch = new Array();
+	        }
+	        historySearch.push(val);
+	        historySearch = historySearch.unique();
+	        $api.setStorage("HIS_SEARCH",historySearch);
+        }
+	}
+	
+	/**
+	 * 取消按钮
+	 */
+	function initMyBack(){
+		var keybacks = $api.domAll('.event-back');
+		var cancalBtn = $api.byId('top_other_btn');
+		cancalBtn.onclick = function() {
+            api.closeWin();
+        };
+		if(api.systemType!='ios'){
+		    api.addEventListener({
+		        name:'keyback'
+	        },function(ret,err){
+	    	 	api.closeWin();
+	        });
+	    }
+	    api.parseTapmode();
+	}
+	
+	function fnOpenFrame(){
+		//打开iframe
+		api.openFrame({
+	        name: 'GIS_zone_video_search_body',
+	        url: './GIS_zone_video_search_body.html',
+	        rect: {
+		        x:0,
+		        y:headerHeight,
+		        w:'auto',
+		        h:'auto'
+	        },
+	        bounces: false,
+	        vScrollBarEnabled:true
+        });
+	}
+	
+	//数组去重复
+	Array.prototype.unique = function(){
+	 	var res = [];
+	 	var json = {};
+	 	for(var i = 0; i < this.length; i++){
+	  		if(!json[this[i]]){
+		   		res.push(this[i]);
+		   		json[this[i]] = 1;
+	  		}
+	 	}
+	 	return res;
+	}
+</script>
+</html>

@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>title</title>
+		<link rel="stylesheet" type="text/css" href="../css/api.css"/>
+		<link rel="stylesheet" type="text/css" href="../css/common.css" />
+		<link rel="stylesheet" type="text/css" href="../css/icons-extra.css" />
+		<style>
+			/* 头部切换样式 */
+			.headerbar {
+				position: absolute;
+				text-align: center;
+				/*padding-top: 20px;*/
+				background-color: #1081DA;
+				width: 100%;
+				height: 45px;
+				line-height: 45px;
+			}
+			.titlebar {
+				display: none;
+			}
+			.activebar {
+				display: block;
+			}
+			.headerbar h1 {
+				font-size: 18px;
+				margin: 0em;
+				color: #FFFFFF;
+			}
+			.header-title {
+				position: absolute;
+				width: 100%;
+				line-height: 50px;
+				text-align: center;
+			}
+			.egret-img {
+				position: absolute;
+			}
+			.egret-img img {
+				height: 25px;
+				padding: 10px;
+			}
+			.egret-img em {
+				height: 25px;
+				padding: 10px;
+				color:#fff;
+			}
+			.egret-img span{
+				position: absolute;
+			    top: -10px;
+    			right: 10px;
+			    font-weight: bold;
+			    color:#E03F40;
+			}
+			.toRight {
+				right: 0;
+			}
+			/** 第四 屏 **/
+			.topBgbar {
+				position: absolute;
+				text-align: center;
+				background: url(../image/me_header.png) no-repeat;
+				background-size: 100% 100%;
+				width: 100%;
+				height: 32vh;
+			}
+			.egret-header-title-bg {
+				width:80px;
+				height: 80px;
+				border-radius: 50%;
+				margin: 0 auto;
+				margin-top: 30px;
+				background: url(../image/tx.png) no-repeat center;
+				background-size: 80px 80px;
+				-moz-background-size:80px 80px;
+				-webkit-background-size:80px 80px;
+				-o-background-size:80px 80px;
+			}
+			.egret-header-title-user {
+				margin-top: 5px;
+				color: #fff;
+				font-size: 18px;
+				width: 100%;
+				text-align: center;
+			}
+			.egret-header-title-role {
+				margin-top: 5px;
+				color: #fff;
+				font-size: 14px;
+				width: 100%;
+				text-align: center;
+				white-space: nowrap;
+				overflow: hidden;
+				text-overflow:ellipsis;
+			}
+			/* 底部切换按钮样式 */
+			#footer {
+				height: 50px; /*line-height: 50px;*/
+				background-color: #FFFFFF;
+				border-top: 1px solid #DDDFE3;
+			}
+			#footer ul {
+				display: -webkit-box;
+				display: -webkit-flex;
+				display: flex;
+				position: absolute;
+				width: 100%;
+			}
+			#footer li {
+				-webkit-box-flex: 1;
+				-webkit-flex: 1;
+				flex: 1; /*height: 40px;*/
+			}
+			/********************/
+			/* 底部按钮原始样式 */
+			/********************/
+			.bbtn01 {
+				background: url(../image/message_icon.png) no-repeat center 4px;
+			}
+			.bbtn02 {
+				background: url(../image/work_icon.png) no-repeat center 4px;
+			}
+			.bbtn03 {
+				background: url(../image/maillist.png) no-repeat center 4px; 
+			}
+			.bbtn04 {
+				background: url(../image/my_icon.png) no-repeat center 4px;
+			}
+			.bbtn05 {
+				background: url(../image/chart_bar.png) no-repeat center 4px;
+			}			
+			.bottom_btn {
+				background-size: 27px;
+				width: 100%;
+				height: 30px;
+			}
+			.bottom_label {
+				color: #A5A5A5;
+				width: 100%;
+				font-size: 10px;
+				padding-top: 2px;
+			}
+			/* 底部按钮激活样式 */
+			.activebtn0 {
+				background: url(../image/message_icon_sel.png) no-repeat center 4px;
+			}
+			.activebtn3 {
+				background: url(../image/maillist_sel.png) no-repeat center 4px;
+			}
+			.activebtn2 {
+				background: url(../image/work_icon_sel.png) no-repeat center 4px; 
+			}
+			.activebtn4 {
+				background: url(../image/my_icon_sel.png) no-repeat center 4px;
+			}
+			.activebtn1 {
+				background: url(../image/chart_bar_sel.png) no-repeat center 5px;
+			}			
+			.activebtn {
+				background-size: 27px;
+			}
+			.active_label {
+				color: #1081DA;
+			}
+			/*.bottomhover {background-color: #46494B;}*/
+			.badge {
+				font-size: 11px;
+				line-height: 1;
+				display: inline-block;
+				padding: 2px 4px;
+				color: #FFFFFF;
+				border-radius: 100px;
+				background-color: #dd524d;
+				position: relative;
+				left: 10px;
+				top: -1px;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="wrap">
+			<!-- 第一头部 -->
+			<div id="firstHeader" class="headerbar titlebar activebar">
+				<div class="header-title">
+					<h1>消息</h1>
+				</div>
+				<div class="egret-img">
+					<img src="../image/tmall_icon.png" alt="" onclick="doScanner();" >
+				</div>
+				<div class="egret-img" style="right:0;">
+					<img src="../image/shuaxin.png" alt="" onclick="doReloadMsg();" >
+				</div>
+			</div>
+			<!-- 第五头部 -->
+			<div id="fifthHeader" class="headerbar titlebar">
+				<div class="header-title">
+					<h1>图表</h1>
+				</div>
+			</div>			
+			<!-- 第二头部 -->
+			<div id="secHeader" class="headerbar titlebar">
+				<div class="header-title">
+					<h1>工作</h1>
+				</div>
+				<div class="egret-img" style="right:0;" onclick="doBusinessTodo()">
+					<em class="mui-icon-extra mui-icon-extra-notice"></em>
+					<span id="work-business-todo-span" style="font-size: 35px;display: none;">·</span>
+				</div>
+			</div>
+			<!-- 第三头部 -->
+			<div id="threeHeader" class="headerbar titlebar">
+				<div class="header-title">
+					<h1>通讯录</h1>
+				</div>
+			</div>
+			<!-- 第四头部 -->
+			<div id="forthHeader" class="topBgbar titlebar">
+				<div class="egret-header-title-bg"></div>
+				<div class="egret-header-title-user"></div>
+				<div class="egret-header-title-role"></div>
+			</div>
+			<div id="main"></div>
+			<div id="footer">
+				<ul>
+					<li tapmode="" onclick="switchframe('first_frame')">
+						<div class="bottom_btn bbtn01 activebtn activebtn0">
+							<span id='first_badge' class="badge" style='display:none;'></span>
+						</div>
+						<div class='bottom_label active_label'>消息</div>
+					</li>
+					<li tapmode="" onclick="switchframe('fifth_frame')">
+						<div class="bottom_btn bbtn05"></div>
+						<div class='bottom_label'>图表</div>
+					</li>
+					<li tapmode="" onclick="switchframe('second_frame')">
+						<div class="bottom_btn bbtn02 "></div>
+						<div class='bottom_label'>工作</div>
+					</li>					
+					<li tapmode="" onclick="switchframe('three_frame')">
+						<div class="bottom_btn bbtn03"></div>
+						<div class='bottom_label'>通讯录</div>
+					</li>
+					<li tapmode="" onclick="switchframe('forth_frame')">
+						<div class="bottom_btn bbtn04 "></div>
+						<div class='bottom_label'>我的</div>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript" src="../script/api.js"></script>
+	<script type="text/javascript" src="../script/zepto.min.js"></script>
+	<script type="text/javascript">
+		var firstHeader = $api.byId('firstHeader');
+		var secHeader = $api.byId('secHeader');
+		var threeHeader = $api.byId('threeHeader');
+		var forthHeader = $api.byId('forthHeader');
+		var fifthHeader = $api.byId('fifthHeader');
+		var firstHeaderOffset;
+		var forthHeaderOffset;
+		var main = $api.byId('main');
+		var mainPos = $api.offset(main);
+		var footer = $api.byId('footer');
+		var footerPos = $api.offset(footer);
+		var isFirstOpen = false;
+		var isSecondOpen = false;
+		var isThirdOpen = false;
+		var isForthOpen = false;
+		var isFifthOpen = false;
+		// 完成首页初始化
+		apiready = function() {
+			// 设置ios7的标题栏字体变亮，全局用一个就行了
+			api.setStatusBarStyle({
+				style : 'light'
+			});
+			firstHeader = $api.byId('firstHeader');
+			secHeader = $api.byId('secHeader');
+		    threeHeader = $api.byId('threeHeader');
+			forthHeader = $api.byId('forthHeader');
+			fifthHeader = $api.byId('fifthHeader');
+			
+    		$api.fixStatusBar(firstHeader);
+    		$api.fixStatusBar(secHeader);
+    		$api.fixStatusBar(threeHeader);
+    		$api.fixStatusBar(forthHeader);
+    		$api.fixStatusBar(fifthHeader);
+			
+			api.addEventListener({
+				name : 'keyback'
+			}, function(ret, err) {
+				//operation
+				api.closeWidget({
+				});
+			});
+			// TODO 一定记得修改
+			firstHeaderOffset = $api.offset(firstHeader);
+			main = $api.byId('main');
+			mainPos = $api.offset(main);
+			footer = $api.byId('footer');
+			footerPos = $api.offset(footer);
+			isFirstOpen = true;
+			openframeinstance('first_frame', firstHeaderOffset.h, true);
+			showuserinfo();
+			//获取token
+			fnGetToken();
+			
+		};
+		function showuserinfo() {
+			var userName = $api.getStorage('userName');
+			var roleNames = $api.getStorage('roleNames');
+			$('.egret-header-title-user').html(userName);
+			$('.egret-header-title-role').html(roleNames);
+		}
+
+		// 打开frame
+		function openframeinstance(frame, marginTop, isBounce) {
+			api.openFrame({
+				name : frame,
+				url : './' + frame + '/' + frame + '_body.html',
+				rect : {
+					x : 0,
+					y : marginTop,
+					w : 'auto',
+					h : api.frameHeight - marginTop - footerPos.h
+				},
+				bounces : isBounce,
+				vScrollBarEnabled : false,
+				hScrollBarEnabled : false,
+				pageParam:{headerHeight:marginTop},
+				delay : 200,
+				animation:{
+					type:'fade'
+				}
+			});
+		}
+
+		// ===================================
+		// 响应底部按钮的切换frame
+		// ===================================
+		function switchframe(type) {
+			switch (type) {
+				case 'first_frame':
+					randomSwitchBtn('first_frame', 0);
+					hideAllFrame();
+					if (isFirstOpen) {
+						showframe('first_frame');
+					} else {
+						openframeinstance('first_frame', firstHeaderOffset.h, true);
+						isFirstOpen = true;
+					}
+					break;
+				case 'fifth_frame':
+		            randomSwitchBtn('fifth_frame', 1);
+		            hideAllFrame();
+		            if (isFifthOpen) {
+		                showframe('fifth_frame');
+		            }
+		            else {
+		                openframeinstance('fifth_frame', firstHeaderOffset.h, false);
+		                isFifOpen = true;
+		            }
+		            break;		
+				case 'three_frame':
+		            randomSwitchBtn('three_frame', 3);
+		            hideAllFrame();
+		            if (isThirdOpen) {
+		                showframe('three_frame');
+		            }
+		            else {
+		                openframeinstance('three_frame', firstHeaderOffset.h, false);
+		                isThirdOpen = true;
+		            }
+		            break;
+				case 'second_frame':
+					randomSwitchBtn('second_frame', 2);
+					hideAllFrame();
+					if (isSecondOpen) {
+						showframe('second_frame');
+						//加载待办事务数目 
+						api.execScript({
+							frameName : 'second_frame',
+							script : 'fnLoadBusinessNum();'
+						});
+					} else {
+						openframeinstance('second_frame', firstHeaderOffset.h, true);
+						isSecondOpen = true;
+					}
+					break;
+				case 'forth_frame':
+					randomSwitchBtn('forth_frame', 4);
+					hideAllFrame();
+					if (isForthOpen) {
+						showframe('forth_frame');
+					} else {
+						forthHeaderOffset = $api.offset(forthHeader);
+						openframeinstance('forth_frame', forthHeaderOffset.h, false);
+						isForthOpen = true;
+					}
+					break;	
+											
+				default:
+					break;
+			}
+		}
+
+		// 随意切换按钮
+		function randomSwitchBtn(name, index) {
+			var lis = $api.domAll('.bottom_btn');
+			var i = 0, len = lis.length;
+			var curLi = lis[index];
+			for (i; i < len; i++) {
+				var thisLi = lis[i];
+				if (thisLi == curLi) {
+					$api.addCls(thisLi, 'activebtn');
+					$api.addCls(thisLi, 'activebtn' + index);
+					continue;
+				} else {
+					if ($api.hasCls(thisLi, 'activebtn')) {
+						$api.removeCls(thisLi, 'activebtn');
+						$api.removeCls(thisLi, 'activebtn' + i);
+					}
+				}
+			}
+			var lis = $api.domAll('.bottom_label');
+			var i = 0, len = lis.length;
+			var curLi = lis[index];
+			for (i; i < len; i++) {
+				var thisLi = lis[i];
+				if (thisLi == curLi) {
+					$api.addCls(thisLi, 'active_label');
+					continue;
+				} else {
+					if ($api.hasCls(thisLi, 'active_label')) {
+						$api.removeCls(thisLi, 'active_label');
+					}
+				}
+			}
+			// 切换头部
+			var lis = $api.domAll('.titlebar');
+			var i = 0, len = lis.length;
+			var curLi = lis[index];
+			for (i; i < len; i++) {
+				var thisLi = lis[i];
+				if (thisLi == curLi) {
+					$api.addCls(thisLi, 'activebar');
+					continue;
+				} else {
+					if ($api.hasCls(thisLi, 'activebar')) {
+						$api.removeCls(thisLi, 'activebar');
+					}
+				}
+			}
+		}
+
+		// 隐藏所有的一级frame
+		function hideAllFrame() {
+			api.setFrameAttr({
+				name : 'first_frame',
+				hidden : true
+			});
+			api.setFrameAttr({
+				name : 'second_frame',
+				hidden : true
+			});
+		    api.setFrameAttr({
+		        name: 'three_frame',
+		        hidden: true
+		    });
+			api.setFrameAttr({
+				name : 'forth_frame',
+				hidden : true
+			});
+			api.setFrameGroupAttr({
+				name:'three_frame_group',
+				hidden:true
+			});
+			api.setFrameAttr({
+				name : 'fifth_frame',
+				hidden : true
+			});			
+		}
+
+		// 展示指定的frame
+		function showframe(type) {
+			api.setFrameAttr({
+				name : type,
+				hidden : false
+			});
+			if(type=='three_frame'){
+				api.setFrameGroupAttr({
+					name:'three_frame_group',
+					hidden:false
+				});
+			}
+		}
+
+		/*扫一扫 二维码扫描*/
+		function doScanner() {
+			var FNScanner = api.require('FNScanner');
+			FNScanner.openScanner({
+				sound : 'widget://res/bi.wav',
+				autorotation : true,
+			}, function(ret, err) {
+				if (ret) {
+					if (ret.eventType == 'success') {
+						alert(JSON.stringify(ret.content));
+					}
+				} else {
+					alert(JSON.stringify(err));
+				}
+			});
+		}
+
+		/*设置未读数*/
+		function setBadgeValue(totalReadNum) {
+			if(totalReadNum>0){
+				$('#first_badge').attr("style", "display:");
+				$('#first_badge').html(totalReadNum);
+			}
+			var ajpush = api.require('ajpush');
+			ajpush.setBadge({
+			    badge:totalReadNum
+			});
+		}
+
+		function getBadgeValue() {
+			return $('#first_badge').html();
+		}
+
+		/*设置未读数*/
+		function setBadgeMinusValue(readNum) {
+			var totalReadNum = parseInt(getBadgeValue());
+			if ((totalReadNum - readNum) == 0){
+				$('#first_badge').attr("style", "display:none;");
+			}else{
+				$('#first_badge').html(totalReadNum - readNum);
+			}
+			var ajpush = api.require('ajpush');
+			ajpush.setBadge({
+			    badge:totalReadNum - readNum
+			});
+		}
+		
+		function doReloadMsg(){
+			api.execScript({
+				frameName:'first_frame',
+	            script: 'doReloadMsg();'
+            });
+		}
+		
+		function doBusinessTodo(){
+			api.openWin({
+				name : 'business_todo',
+				url : './second_frame/business_todo.html',
+				delay : 200,
+				bounces : false,
+				animation:{
+					type:'movein'
+				}
+			});
+		}
+		
+		function fnShowBusinessTodoSpan(isShow){
+			if(isShow){
+				$('#work-business-todo-span').show();
+			}else{
+				$('#work-business-todo-span').hide();
+			}
+		}
+		
+		
+		function fnGetToken(){
+			var user = $api.getStorage("user");
+			api.ajax({
+		        url:'http://125.77.254.250:9090/oauth/token',
+		        method:'post',
+		        data:{
+		        	values:{
+		        		grant_type : 'password',
+						client_id : 'ssoclient',
+						client_secret : 'ssosecret',
+						username:user.loginName,
+						password:'6'
+		        	}
+		        },
+		        timeout:10
+	        },function(ret,err){
+	        	if(ret){
+	        		console.log(JSON.stringify(ret));
+	        		$api.setStorage("ACCESS_TOKEN",ret.access_token);
+	        	}else{
+	        		console.log(JSON.stringify(err));
+	        	}
+	        });
+		}
+	</script>
+</html>

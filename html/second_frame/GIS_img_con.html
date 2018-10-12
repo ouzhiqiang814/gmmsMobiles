@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+	<title>首页</title>
+	<link rel="stylesheet" type="text/css" href="../../css/api.css" />
+	<link rel="stylesheet" type="text/css" href="../../css/common.css" />
+	<link rel="stylesheet" type="text/css" href="../../css/GIS_img_con.css" />
+	<link rel="stylesheet" type="text/css" href="../../css/iconfont.css"/>
+	<style>
+		html, body {
+			background: #FFFFFF;
+			overflow: hidden;
+		}
+		.empty {
+			text-align: center;
+			margin-top: 20px;
+			font-size: 16px;
+		}
+		.refresh_btn {
+			width: 35px;
+			height: 35px;
+			position: absolute;
+			top: 20px;
+			right: 8px;
+			background: #fff;
+			border-radius: 4px;
+		}
+		.traffic {
+			position: relative;
+		}
+		.colorTab {
+			background: #23499b;
+		}
+		.line-s {
+			width: 1px;
+			background: #EFEFEF;
+		}
+		.box_center{
+		  padding:10px;
+		  font-size:15px;
+	      padding-bottom: 0;
+		}
+		.center_one{
+			padding:10px;
+			border-bottom:1px solid #CCCCCC;
+		}
+		.center_one span{
+		    float: right;
+			color: #8e8e8e;
+			text-align: right;
+		    width: 70%;
+		    white-space: nowrap;
+		    text-overflow: ellipsis;
+		    overflow: hidden;
+		}
+		.bmap{background-color:#ddd;width:100%;}
+		.bmap img{width:100%;height:100%;}
+		
+		.play-box {
+		 	text-align:center;
+		 	position: absolute;top:0;left:0;right:0;bottom: 0;
+	 	    background: rgba(49, 48, 48, 0.43);
+		}
+		.play-box img{
+			position:absolute;
+			top:50%;
+			left:50%;
+			margin-top:-25px;
+			margin-left:-25px;
+		}
+		.play-table{
+			background: #000;width:100%;color:#fff;
+		}
+		.play-table tr td{
+			padding:5px;
+		}
+	</style>
+</head>
+<body>
+	<div id="wrap">
+		<div id='sliderimage' class='swipeimage'>
+			<div class="play-box">
+				<img src="../../image/play2.png"/>
+			</div>
+		</div>
+		<div class="box_center">
+			<div class="center_one">
+				摄像机:<span id="vidiconname"></span>
+			</div>
+			<div class="center_one">
+				状态:<span id="status"></span>
+			</div>
+			<div class="center_one">
+				坐标:<span id="latlng"></span>
+			</div>
+		</div>
+		<div class="bmap">
+		</div>
+	</div>
+</body>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/swipe.js"></script>
+<script type="text/javascript" src="../../script/zepto.min.js"></script>
+<script type="text/javascript" src="../../script/GIS_img_con.js"></script>
+</html>

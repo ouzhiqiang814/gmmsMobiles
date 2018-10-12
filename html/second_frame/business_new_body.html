@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>title</title>
+    <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/mui.min.css"/>
+    <style>
+    	html,body {min-height: 100%;background-color: #efeff4;}
+    	.title {
+			margin: 20px 15px 10px;
+			color: #6d6d72;
+			font-size: 15px;
+		}
+		h5{    
+    		background: #fff;
+    		margin: 0;
+    		padding: 12px 8px 8px 8px;
+    	}
+    </style>
+</head>
+<body>
+	<div class="mui-content" id="itemList">
+		<br/>
+		<h5>新建事务<san class="mui-pull-right" style="color:#ddd;">发起工作流审批</san></h5>
+        <ul id="business_list" class="mui-table-view mui-grid-view mui-grid-9" style="background: #fff;">
+        </ul>
+		<div id="business_loading" style="text-align: center;margin-top:30px;">
+    		<span class="mui-spinner"></span>
+    	</div>
+	</div>
+</body>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/mui.min.js"></script>
+<script type="text/javascript" src="../../script/zepto.min.js"></script>
+<script type="text/javascript">
+	mui.init();
+	apiready = function(){
+		//加载新建事务列表
+		fnLoadAddBusiness(false);
+		//初始化下拉刷新
+		fnInitPull();
+	};
+	
+	// 刷新
+	function fnInitPull() {
+		api.setRefreshHeaderInfo({
+		 	bgColor: '#efeff4',
+	        dropColor:'#9BA2AC'
+		},function(){
+			fnLoadAddBusiness(true);
+		});
+	};
+	//加载新建事务列表
+	function fnLoadAddBusiness(isLoad){
+		var ctype = api.connectionType;
+		if(ctype.toLowerCase()=='unknown'||ctype.toLowerCase()=='none'){
+			api.toast({
+			    msg: '暂无网络',
+			    duration: 2000,
+			    location: 'bottom'
+			});
+			if(isLoad){
+				api.refreshHeaderLoadDone(); //刷新结束
+			}
+			$('#business_loading').hide();
+		}else{
+			$('#business_loading').show();
+			var gmms_url = $api.getStorage('gmms_url');
+			var userId = $api.getStorage('userId');
+			var lesseeId = $api.getStorage('lesseeId');
+			api.ajax({
+		        url:gmms_url+'modules/mobile/business/business-deal!queryPermissionItemForApp.action',
+		        method: 'post',
+		        timeout:10,
+			    data: {
+			        values: {userId:userId,lesseeId:lesseeId}
+			    }
+	        },function(ret,err){
+	        	if(ret){
+	        		var itemListStr = '';
+        			$.each(ret.itemList,function(j,item){
+						itemListStr +=
+							'<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3">'+
+							'	<a href="javascript:fnAddBusiness('+item.id+',\''+item.itemName+'\')">'+
+			                '    <img src="'+gmms_url+'js/jcarousel/images/flat/'+item.icon+'"/>'+
+			                '    <div class="mui-media-body">'+item.itemName+'</div></a>'+
+			                '</li>';
+        			});
+	        		$('#business_list').html(itemListStr);
+	        	}else{
+	        		api.toast({
+	                    msg:err.msg,
+	                    duration: 2000,
+    					location: 'bottom'
+                    });
+	        	}
+	        	$('#business_loading').hide();
+	        	if(isLoad){
+					api.refreshHeaderLoadDone(); //刷新结束
+				}
+	        });
+        }
+	}
+	
+	function fnAddBusiness(itemId,itemName){
+		api.openWin({
+			name : 'business_new_add',
+			url : './business_new_add.html',
+			delay : 200,
+			bounces : false,
+			pageParam:{
+				itemId:itemId,
+				itemName:itemName
+			},
+			animation:{
+				type:'movein'
+			}
+		});
+	}
+</script>
+</html>

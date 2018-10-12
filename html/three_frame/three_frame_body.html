@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>title</title>
+    <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/mui.min.css"/>
+</head>
+<body>
+	<div class="mui-content">
+		<div>
+			<div id="segmentedControl" class="mui-segmented-control mui-segmented-control-inverted">
+				<a class="mui-control-item mui-active" tabIndex=0>公司成员</a>
+				<a class="mui-control-item" tabIndex=1>组织架构</a>
+			</div>
+		</div>
+	
+	</div>
+</body>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/mui.min.js"></script>
+<script type="text/javascript" src="../../script/zepto.min.js"></script>
+<script type="text/javascript">
+	mui.init({
+		swipeBack: false
+	});
+	apiready = function(){
+		fnOpenFramegroup();
+		
+		$('#segmentedControl a').on('tap',function(){
+			var tabIndex = $(this).attr('tabIndex');
+			api.setFrameGroupIndex({
+			    name: 'three_frame_group',
+			    index: tabIndex
+			});
+		});
+	};
+	function fnSetTabActive(index){
+		$('#segmentedControl a').removeClass('mui-active');
+		$('#segmentedControl a').each(function(){
+			if($(this).attr('tabIndex')==index){
+				$(this).addClass('mui-active');
+			}
+		});
+	}
+	
+	function fnOpenFramegroup(){
+		api.openFrameGroup({
+	        name: 'three_frame_group',
+	        rect: {
+		        x: 0,
+		        y: api.pageParam.headerHeight+40,
+		        w: 'auto',
+		        h: api.frameHeight-40
+		    },
+		    frames: [{
+		        name: 'three_frame_body_sub1',
+		        url: './three_frame_body_sub1.html',
+		        pageParam:{useunitId:$api.getStorage("lesseeId")}
+		    }, {
+		        name: 'three_frame_body_sub2',
+		        url: './three_frame_body_sub2.html'
+		    }]
+        },function(ret,err){
+        	fnSetTabActive(ret.index);
+        });
+	}
+</script>
+</html>

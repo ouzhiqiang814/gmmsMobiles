@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>title</title>
+    <link rel="stylesheet" type="text/css" href="../../../../css/api.css" />
+	<link rel="stylesheet" type="text/css" href="../../../../css/common.css" />
+	<link rel="stylesheet" type="text/css" href="../../../../css/mui.min.css"/>
+	 <style>
+	 	.mui-title{
+	 		font-size:20px;
+	 	}
+	 	.updatatime_box{
+	 		text-align: center;
+			font-size: 13px;
+			color: #dddddd;
+			margin-top: -15px;
+	 	}
+	 	.header_1{
+	 		background-color: #fff;
+	 		padding-top: 30px;
+	 	}
+	 	.header_2{
+	 		background-color: #fff;
+	 		padding-top: 30px;
+	 		margin-top:30px;
+	 		padding-bottom:10px;
+	 	}
+	 	.title_box{
+	 		height:60px;
+	 	}	 	
+	 	.span_1{
+	 		height:18px;
+	 		width: 10px;
+	 		background-color:#00cc00;
+	 		margin-bottom:-3px;
+	 		margin-left:20px;
+	 	}
+	 	.span_2{
+	 		float:right;
+	 	}
+	 	.mui-table-view{
+	 		color:#5d9cec;
+	 		font-size: 14px;
+	 	}
+	 	.title{
+	 		color:#000;
+	 		font-size: 14px;
+	 	}
+	 	.smText{
+	 		display: flex;
+	 		flex-direction: column;
+	 		text-align:center;
+	 	}
+	 	.smText_box{
+	 		display: flex;
+			flex-direction: row;
+			justify-content: space-around
+	 	}
+	 	.span_3{
+	 		height:18px;
+	 		width: 7px;
+	 		background-color:#00cc00;
+	 		margin-bottom:-3px;
+	 		margin-left:0px;
+	 		margin-right:5px;
+	 	}
+	 	.smText_1{
+	 		color:#bcbcbc;
+	 	}
+	 	.bottom_percent{
+	 		text-align:center;
+	 	}
+	 	.line{
+			height: 80px;
+			font-size: 25px;
+			padding: 30px 30px;
+			font-weight: bold;	 	
+	 	}	 	
+	 </style>
+</head>
+<body>
+	<div class="mui-content">
+		<div id="content_1"  class="header_1">
+			<div class="title_box">
+				<h1 class="mui-title">执法投入统计</h1>	
+			</div>
+			<div class="updatatime_box">
+				<span class="updatatime_1"></span>
+			</div>
+			<ul class="mui-table-view">
+				<li class="mui-table-view-cell title middle_line_1">
+					<label></label>
+					<span>执法投入</span>
+				</li>
+				<li class="mui-table-view-cell line middle_line_2" style="color:#6dcbca;">
+					<label>执法人员</label>
+					<span class="span_2"></span>
+				</li>
+				<li class="mui-table-view-cell line middle_line_3" style="color:#4a90e2;">
+					<label>出警次数</label>
+					<span class="span_2"></span>
+				</li>
+				<li class="mui-table-view-cell line middle_line_4" style="color:#ffcc00;">
+					<label>巡查次数</label>
+					<span class="span_2"></span>
+				</li>
+				<li class="mui-table-view-cell line middle_line_5" style="color:#8bbc22;">
+					<label>巡查人次</label>
+					<span class="span_2"></span>
+				</li>																							
+			</ul>																			
+		</div>		
+	</div>
+</body>
+<script type="text/javascript" src="../../../../script/api.js"></script>
+<script type="text/javascript" src="../../../../script/common.js"></script>
+<script type="text/javascript" src="../../../../script/mui.min.js"></script>
+<script type="text/javascript" src="../../../../script/zepto.min.js"></script>
+<script type="text/javascript" src="../../../../script/echarts.min.js"></script>
+<script type="text/javascript">
+	apiready = function(){
+		getData()
+	};
+	
+	function getData(){
+		api.ajax({
+	        url:'http://125.77.254.250:8180/road/road-details/ajaxQueryEnforceInputTable/true',
+	        method:'get'
+        },function(ret,err){
+        	if(ret){
+        		$(".middle_line_1 label").html(ret.year + '年' + ret.month + '月');
+        		$(".updatatime_1").html('更新时间：' + ret.updateTime);
+        		$(".middle_line_1 span").html(ret.plaName+'超限案件统计');
+        		$(".middle_line_2 span").html(ret.overpersons+'人');
+        		$(".middle_line_3 span").html(ret.patroltimes+'次');
+        		$(".middle_line_4 span").html(ret.patrolpersons+'次')
+				$(".middle_line_5 span").html(ret.policetimes+'人/次');
+        	}
+        });
+	}
+</script>
+</html>

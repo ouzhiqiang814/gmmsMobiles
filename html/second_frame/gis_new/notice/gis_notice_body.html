@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>title</title>
+    <link rel="stylesheet" type="text/css" href="../../../../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../../css/mui.min.css"/>
+    <style>
+    	html,body{
+    		min-height:100%;
+    		background-color: #efeff4;
+    	}
+    	.mui-content>.mui-table-view:first-child{margin-top:0px;}
+    </style>
+</head>
+<body>
+	<div class="mui-content">
+		<ul id="data_list" class="mui-table-view">
+		</ul>
+		<div style="height:24px;width:100%;">
+	  		<div id="load_more" style="margin: 10px 0px;text-align: center;width:100%;"><span class="mui-spinner" style="vertical-align: bottom;"></span> 加载中...</div>
+	  	</div>
+	</div>
+</body>
+<script type="text/javascript" src="../../../../script/api.js"></script>
+<script type="text/javascript" src="../../../../script/mui.min.js"></script>
+<script type="text/javascript" src="../../../../script/zepto.min.js"></script>
+<script type="text/javascript" src="../../../../script/transform.js"></script>
+<script type="text/javascript">
+	var cur_pageNo = 1,cur_pageSize = 15,cur_total = 0;
+	var cur_plano = ''; 
+	var isPush = true;
+	var planInfo = {'':'','0001':'厦门大桥','0002':'海沧大桥','0003':'集美大桥','0004':'杏林大桥','0005':'翔安隧道','GS10':'厦漳高速厦门段','GS20':'厦蓉高速厦门段'};
+	apiready = function(){
+		if(api.pageParam.type=='monitor'){
+			//重大事故播报
+			fnQueryAccident(true);
+		}
+		if(api.pageParam.type=='road'){
+			//路政超限播报
+			fnQueryExact(true);
+		}
+		if(api.pageParam.type=='mainten'){
+			//路政超限播报
+			fnQueryMainten(true);
+		}
+		fnInitPull();
+		fnInitPushRefresh();
+	};
+	
+	function fnShowLoading(txt){
+		$('#load_more').html('<span class="mui-spinner" style="vertical-align: bottom;"></span> '+(txt==null||txt==undefined)?'加载中...':txt);
+		$('#load_more').show();
+	}
+	
+	function fnShowLoaded(txt){
+		$('#load_more').html((txt==null||txt==undefined)?'加载更多':txt);
+		$('#load_more').show();
+	}
+	
+	function fnReloadData(plano){
+		cur_plano = plano;
+		cur_pageNo = 1;
+		if(api.pageParam.type=='monitor'){
+			//重大事故播报
+			fnQueryAccident(true);
+		}
+		if(api.pageParam.type=='road'){
+			//路政超限播报
+			fnQueryExact(true);
+		}
+		if(api.pageParam.type=='mainten'){
+			//路政超限播报
+			fnQueryMainten(true);
+		}
+	}
+	
+	function fnInitPull(){
+		api.setRefreshHeaderInfo({
+		 	bgColor: '#efeff4',
+	        dropColor:'#9BA2AC'
+		},function(){
+			cur_pageNo = 1;
+			if(api.pageParam.type=='monitor'){
+				//重大事故播报
+				fnQueryAccident(false);
+			}
+			if(api.pageParam.type=='road'){
+				//路政超限播报
+				fnQueryExact(false);
+			}
+			if(api.pageParam.type=='mainten'){
+				//路政超限播报
+				fnQueryMainten(false);
+			}
+		});
+	}
+	
+	// 下拉加载更多
+	function fnInitPushRefresh() {
+		api.addEventListener({
+			name: 'scrolltobottom',
+			extra: {
+	      		threshold: 0
+	    	}
+	  	}, function(ret, err) {
+	  		if(isPush)
+	  			return;
+	  		if(cur_total>$('#data_list li').length){
+	  			cur_pageNo++;
+	  			if(api.pageParam.type=='monitor'){
+					//重大事故播报
+					fnQueryAccident(true);
+				}
+				if(api.pageParam.type=='road'){
+					//路政超限播报
+					fnQueryExact(true);
+				}
+				if(api.pageParam.type=='mainten'){
+					//路政超限播报
+					fnQueryMainten(true);
+				}
+	  		}
+	  	});
+	};
+	
+	/**
+	 * 分页查询重大事故播报 
+	 */
+	function fnQueryAccident(isload){
+		isPush = true;
+		if(isload){
+			fnShowLoading();
+			if(cur_pageNo==1){
+				$('#data_list').empty();
+				$('#data_list').hide();
+			}
+		}
+		
+		var reportUrl = $api.getStorage("report_url");
+		api.ajax({
+	        url:reportUrl+'gims/gis-new/queryAccidentByPage',
+	        timeout:10,
+	        data:{
+	        	values:{plaName:planInfo[cur_plano],pageNo:cur_pageNo,pageSize:cur_pageSize}
+	        }
+        },function(ret,err){
+        	if(ret&&ret.errcode==0&&ret.total>0){
+        		cur_total = ret.total;
+        		var htmlStr = '';
+        		$.each(ret.rows,function(i,data){
+        			htmlStr += 
+        			'<li class="mui-table-view-cell mui-media">'+
+					'	<a href="javascript:;">'+
+					'		<img class="mui-media-object mui-pull-left" src="../../../../image/work/DD72.png">'+
+					'		<div class="mui-media-body">'+
+								data.name+'<span class="mui-pull-right" style="color:#ccc;font-size:14px;">'+data.occurDate+' '+data.occurTime+'</span>'+
+					'			<p>'+data.scene+'</p>'+
+					'		</div>'+
+					'	</a>'+
+					'</li>';
+        		});
+        		if(cur_pageNo==1){
+					$('#data_list').html(htmlStr);
+				}else{
+        			$('#data_list').append(htmlStr);
+        		}
+        		$('#data_list').show();
+        		if(cur_total>$('#data_list li').length){
+        			fnShowLoaded('加载更多');
+        		}else{
+        			fnShowLoaded('没有了');
+        		}
+        	}else{
+        		$('#data_list').hide();
+        		fnShowLoaded('暂无数据');
+        	}
+        	isPush = false;
+        	if(!isload&&cur_pageNo==1){
+    			api.refreshHeaderLoadDone(); //刷新结束
+    		}
+        });
+	}
+	
+	/**
+	 *  分页查询最新的车辆超限播报 
+	 */
+	function fnQueryExact(isload){
+		isPush = true;
+		if(isload){
+			fnShowLoading();
+			if(cur_pageNo==1){
+				$('#data_list').empty();
+				$('#data_list').hide();
+			}
+		}
+		var reportUrl = $api.getStorage("report_url");
+		api.ajax({
+	        url:reportUrl+'gims/gis-new/queryExactByPage',
+	        timeout:10,
+	        data:{
+	        	values:{plano:cur_plano,pageNo:cur_pageNo,pageSize:cur_pageSize}
+	        }
+        },function(ret,err){
+        	if(ret&&ret.errcode==0&&ret.total>0){
+        		cur_total = ret.total;
+        		var htmlStr = '';
+        		$.each(ret.rows,function(i,data){
+        			htmlStr += 
+        			'<li class="mui-table-view-cell mui-media">'+
+					'	<a href="javascript:;">'+
+					'		<img class="mui-media-object mui-pull-left" src="../../../../image/work/DD72.png">'+
+					'		<div class="mui-media-body">'+
+								data.planame+'<span class="mui-pull-right" style="color:#ccc;font-size:14px;">'+(new Date(data.casetime)).Format("yyyy-MM-dd hh:mm") +'</span>'+
+					'			<p>'+data.plateno+' '+data.axisnum+'轴'+data.vehiclekind+'车货总量'+(data.vehicleweight/1000).toFixed(2)+'吨</p>'+
+					'		</div>'+
+					'	</a>'+
+					'</li>';
+        		});
+        		if(cur_pageNo==1){
+					$('#data_list').html(htmlStr);
+				}else{
+        			$('#data_list').append(htmlStr);
+        		}
+        		$('#data_list').show();
+        		if(cur_total>$('#data_list li').length){
+        			fnShowLoaded('加载更多');
+        		}else{
+        			fnShowLoaded('没有了');
+        		}
+        	}else{
+        		$('#data_list').hide();
+        		fnShowLoaded('暂无数据');
+        	}
+        	isPush = false;
+        	if(!isload&&cur_pageNo==1){
+    			api.refreshHeaderLoadDone(); //刷新结束
+    		}
+        });
+	}
+	
+	/**
+	 * 分页获取施工播报信息(待处理) 
+	 */
+	function fnQueryMainten(isload){
+		isPush = true;
+		if(isload){
+			fnShowLoading();
+			if(cur_pageNo==1){
+				$('#data_list').empty();
+				$('#data_list').hide();
+			}
+		}
+		var reportUrl = $api.getStorage("report_url");
+		api.ajax({
+	        url:reportUrl+'gims/gis-new/queryMaintenByPage',
+	        timeout:10,
+	        data:{
+	        	values:{plaName:planInfo[cur_plano],pageNo:cur_pageNo,pageSize:cur_pageSize}
+	        }
+        },function(ret,err){
+        	if(ret&&ret.errcode==0&&ret.total>0){
+        		cur_total = ret.total;
+        		var htmlStr = '';
+//      		$.each(ret.rows,function(i,data){
+//      			htmlStr += 
+//      			'<li class="mui-table-view-cell mui-media">'+
+//					'	<a href="javascript:;">'+
+//					'		<img class="mui-media-object mui-pull-left" src="../../../../image/work/DD72.png">'+
+//					'		<div class="mui-media-body">'+
+//								data.planame+'<span class="mui-pull-right" style="color:#ccc;font-size:14px;">'+(new Date(data.casetime)).Format("yyyy-MM-dd hh:mm") +'</span>'+
+//					'			<p class="mui-ellipsis">'+data.plateno+' '+data.axisnum+'轴'+data.vehiclekind+'车货总量'+(data.vehicleweight/1000).toFixed(2)+'吨</p>'+
+//					'		</div>'+
+//					'	</a>'+
+//					'</li>';
+//      		});
+        		if(cur_pageNo==1){
+					$('#data_list').html(htmlStr);
+				}else{
+        			$('#data_list').append(htmlStr);
+        		}
+        		$('#data_list').show();
+        		if(cur_total>$('#data_list li').length){
+        			fnShowLoaded('加载更多');
+        		}else{
+        			fnShowLoaded('没有了');
+        		}
+        	}else{
+        		$('#data_list').hide();
+        		fnShowLoaded('暂无数据');
+        	}
+        	isPush = false;
+        	if(!isload&&cur_pageNo==1){
+    			api.refreshHeaderLoadDone(); //刷新结束
+    		}
+        });
+	}
+</script>
+</html>

@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>title</title>
+    <link rel="stylesheet" type="text/css" href="../../../css/api.css" />
+	<link rel="stylesheet" type="text/css" href="../../../css/common.css" />
+	<link rel="stylesheet" type="text/css" href="../../../css/mui.min.css"/>
+	 <style>
+/*	 	.mui-active{
+	 		background-color:#007aff!important;
+	 		color:#FFFFFF!important;
+	 	}*/
+	 	.content{
+	 		background-color:#fff;
+	 		padding-bottom:30px;
+	 	}
+	 	.placeHandle{
+	 		text-align:center;
+	 		background-color: #c8c7cc;
+			border: 1px solid #c8c7cc;
+	 	}
+	 	.mui-title{
+	 		font-size:20px;
+	 	}
+	 	.updatatime_box{
+	 		text-align: center;
+			font-size: 13px;
+			color: #dddddd;
+			margin-top: -15px;
+	 	}
+	 	.title_box{
+	 		height:60px;
+	 		margin-top:15px;
+	 	}
+	 	#quarter{
+	 		color:#007aff;
+	 		height:40px;
+	 		margin-top: 20px;
+	 	}
+	 	#quarter .mui-active{
+	 		background-color:#007aff!important;
+	 		color:#FFFFFF!important;
+	 	}
+	 	.querter_check{
+	 		border:1px solid #007aff!important;
+	 		height: 30px!important;
+			line-height: 30px!important;
+	 	}
+	 	.querter_left{
+	 		margin-right:-5px;
+	 	}
+	 	.span_1{
+	 		height:18px;
+	 		width: 10px;
+	 		background-color:#00cc00;
+	 		margin-bottom:-3px;
+	 		margin-left:20px;
+	 	}
+	 	.span_2{
+	 		float:right;
+	 	}
+	 	.mui-table-view{
+	 		color:#5d9cec;
+	 		font-size: 14px;
+	 	}
+	 	.title{
+	 		color:#000;
+	 		font-size: 14px;
+	 	}
+	 	.echarts_line{
+	 		height:100px;
+	 		width:100%;
+	 		margin-bottom:10px;
+	 		display: flex;
+			flex-direction: row;	 		
+	 	}
+	 	#main2{
+			width: 100%;
+			display: flex;
+			flex-direction: row;
+			flex-wrap: wrap;	 	
+	 	}
+	 	.echarts_line_del{
+	 		height: 100px;
+	 		width: 33%;
+	 	}
+		.mui-table-view:before{
+			background-color: #fff;
+		}
+		.mui-table-view:after{
+			background-color: #fff;
+		}
+		.mui-table-view-cell:after{
+			background-color: #fff;
+		}
+		.mui-table-view .mui-active{
+			background-color: #fff;
+		}	 		 		 		 			 		 	
+	 </style>
+</head>
+<body>	
+	<div class="mui-content">
+		<div class="content">
+			<ul class="mui-table-view">
+				<li class="mui-table-view-cell placeHandle">
+					<a href="#placeList">
+						<label id="placeText">全部区域</label>
+						<span class="mui-icon mui-icon-arrowdown"></span>
+						<input type="hidden" id="place"/>
+					</a>
+				</li>
+			</ul>
+			<div class="title_box">
+				<h1 class="mui-title">零星工程验收情况</h1>	
+			</div>
+			<div class="updatatime_box">
+				<span class="updatatime_1"></span>
+			</div>	
+			<div id="quarter" class="mui-scroll-wrapper mui-slider-indicator mui-segmented-control mui-segmented-control-inverted">
+			    <div class="mui-scroll" id="headerCheck" style="width:100%;">
+			        <a class="mui-control-item querter_check querter_left mui-active" type="month">月度</a>
+			        <a class="mui-control-item querter_check" type="quarter">季度</a>	    
+			    </div>
+			</div>
+			<ul class="mui-table-view">
+				<li class="mui-table-view-cell title middle_line_1">
+					<label></label>
+					<span></span>
+				</li>				
+				<li class="mui-table-view-cell middle_line_2">
+					<span class="span_1"></span>
+					<label>工程任务数</label>
+					<span class="span_2"></span>
+				</li>
+				<li class="mui-table-view-cell middle_line_3">
+					<span class="span_1"></span>
+					<label>工程验收数</label>
+					<span class="span_2"></span>
+				</li>				
+			</ul>
+			<div id="main1" style="width: 100%;"></div>
+			<div id="main2"></div>								
+		</div>
+	</div>
+	
+	<div id="placeList" class="mui-popover mui-popover-bottom mui-popover-action ">
+	    <!-- 可选择菜单 -->
+	    <ul class="mui-table-view">
+	    </ul>
+	</div>	
+</body>
+<script type="text/javascript" src="../../../script/api.js"></script>
+<script type="text/javascript" src="../../../script/common.js"></script>
+<script type="text/javascript" src="../../../script/mui.min.js"></script>
+<script type="text/javascript" src="../../../script/zepto.min.js"></script>
+<script type="text/javascript" src="../../../script/echarts.min.js"></script>
+<script type="text/javascript">
+	var charts_url = null;
+	charts_url = $api.getStorage("charts_url");
+	apiready = function(){		
+		getPlaceList()			
+	};
+
+	//获取地点菜单
+	function getPlaceList(){
+		var placeData = {};var placeData1 = {};
+		api.ajax({
+	        url:charts_url+'/report/account-list/getZones',
+	        method:'get',
+		    timeout:30
+        },function(ret,err){
+        	placeData = {
+        		place : [],
+        		id : [],
+        	}
+        	if(ret){
+        		for(var i=0;i<ret.length;i++){
+        			placeData.place.push(ret[i].name);
+        			placeData.id.push(ret[i].id);
+        		}
+        		getPlaceList_text(placeData)
+        	}
+        	else{
+	        	placeData = {
+	        		place : '',
+	        		id : '',
+	        	}
+	    		api.toast({
+		            msg:"链接出现错误，暂时无法查询区域数据，请稍后重试！",
+		            duration:3000,
+		            location:'bottom'
+	            });	
+	            getPlaceList_text(placeData) 	        	
+        	}
+        	
+        });	
+	}
+	//地点菜单加载
+	function getPlaceList_text(data){
+		var str = '';
+		if(data.place.length != 0){
+			for(var i=0;i<data.place.length;i++){
+				str += '<li class="mui-table-view-cell"><a href="#" ikey="'+data.id[i]+'">'+data.place[i]+'</a></li>'
+			}
+			$("#placeList ul").empty();
+			$("#placeList ul").append(str);
+			$("#place").val(data.id[0]);
+			$("#placeText").html(data.place[0]);
+			var place = $("#place").val();
+			var type = $("#quarter .mui-active").attr('type');
+			var placeText = $("#placeText").html();				
+			getData(place,type,placeText);
+			getPieData(place,type,placeText);
+						
+			mui('#placeList').on('tap','a',function(){
+				var ikey = $(this).attr('ikey');
+				var text = $(this).html();
+				$("#place").val(ikey);
+				$("#placeText").html(text);
+				mui('#placeList').popover('toggle');
+				var pl = $("#place").val();
+				var ty = $("#quarter .mui-active").attr('type');
+				var pt = $("#placeText").html();						
+				getData(pl,ty,pt);
+				getPieData(pl,ty,pt);
+			})
+			mui('#quarter').on('tap','a',function(){
+				var t = $(this).attr('type');
+				var p = $("#place").val();
+				var pt = $("#placeText").html();
+				getData(p,t,pt);
+				getPieData(p,t,pt);				
+			})			
+		}
+		else{
+			$("#placeList ul").empty();
+			mui.alert("获取区域失败，无法选择区域！");return;
+			mui('#placeList').popover('hide');
+		}
+
+	}
+
+	//下载数据
+	function getData(pl,ty,pt){
+		var place = pl;
+		var type = ty;
+		var lineData = {},pieData = {};
+		api.ajax({
+	        url:charts_url+'/report/account-list/ajaxAccountListCheckBar?isMobile=true&isDetail=true&tab='+type+'&zone_id='+place,
+	        method:'get',
+		    timeout:30	        
+        },function(ret,err){       	
+			lineData = {
+				time : '',
+				place : '',
+				upDataTime : '',
+				taskCount : '',
+				checkCount : '',
+				xAxis : [],
+				finishedCheck : [],
+				unfinishedCheck : []
+			}        	
+        	if(ret){
+        		lineData.time = ret.year +'年'+ ret.month +'月';
+        		lineData.place = pt;
+        		lineData.upDataTime = ret.updateTime;
+        		lineData.taskCount = ret.taskCount +'条';
+        		lineData.checkCount = ret.checkCount +'条';
+        		for(var i=0;i<ret.xDatas.length;i++){
+        			lineData.xAxis.push(ret.xDatas[i]);
+        			lineData.finishedCheck.push(ret.checkDatas[i]);
+        			lineData.unfinishedCheck.push(ret.unCheckDatas[i]);
+        		}
+        	}
+        	else{
+				lineData = {
+					time : '',
+					place : '',
+					upDataTime : '',
+					taskCount : '0条',
+					checkCount : '0条',
+					xAxis : '',
+					finishedCheck : '',
+					unfinishedCheck : ''
+				}
+	    		api.toast({
+		            msg:"链接出现错误，暂时无法查询零星工程验收数据，请稍后重试！",
+		            duration:3000,
+		            location:'bottom'
+	            });		            				        		
+        	}
+			var heightMain = 100;
+			if(lineData.xAxis.length == 0 || lineData.xAxis.length == 1){
+				$("#main1").css('height',heightMain+'px');
+			}
+			else{
+				var q = (lineData.xAxis.length)*50+heightMain;
+				$("#main1").css('height',q+'px');
+			} 
+			getData_bar_echarts(lineData);        	
+        });
+	}
+	
+	function getPieData(place,type,placeText){	
+		var url = 'http://172.16.53.225:9080/report/account-list/ajaxQueryAccoutListCheckPie?isMobile=true&isDetail=true&tab=month&zone_id=0'
+		api.ajax({
+	        url:charts_url+'/report/account-list/ajaxQueryAccoutListCheckPie?isMobile=true&isDetail=true&tab='+type+'&zone_id='+place,
+	        method:'get',
+		    timeout:30	        
+        },function(ret,err){
+        	if(ret){
+				$("#main2").empty();
+				var strHtml = '';
+				for(var k=0;k<ret.xDatas.length;k++){
+					pieData = {};
+					strHtml = '';
+					strHtml = '<div id="main2_'+k+'" class="echarts_line_del"></div>';
+					$("#main2").append(strHtml);
+					if(type == "month"){
+						pieData = {
+							time : ret.year+'年'+ret.month+'月',
+							place : placeText,
+							tData : ret.checkDatas[k],
+							fData : ret.unCheckDatas[k],
+							contentId : 'main2_'+ k,
+							text : ret.xDatas[k]
+						}
+						getData_pie_echarts(pieData);						
+					}
+					else{
+						pieData = {
+							time : ret.year+'年 第' +ret.currentQuarter+'季度',
+							place : placeText,
+							tData : ret.checkDatas[k],
+							fData : ret.unCheckDatas[k],
+							contentId : 'main2_'+ k,
+							text : ret.xDatas[k]
+						}
+						getData_pie_echarts(pieData);						
+					}					
+				}     		
+        	}
+        	else{
+	    		api.toast({
+		            msg:"链接出现错误，暂时无法查询零星工程验收数据，请稍后重试！",
+		            duration:3000,
+		            location:'bottom'
+	            });				        		
+        	}        	
+        });		
+	}
+
+	//验收柱状图加载
+	function getData_bar_echarts(data){
+		var myChart = echarts.init(document.getElementById('main1'));
+		var option = {};
+		
+		$(".middle_line_1 label").html(data.time + ' ' + data.place +' 零星工程验收');
+		$(".middle_line_2 .span_2").html(data.taskCount);
+		$(".middle_line_3 .span_2").html(data.checkCount);
+		$(".updatatime_1").html('更新时间：'+data.upDataTime);
+		
+		option = {
+		    tooltip : {
+		        trigger: 'item',
+		        formatter: "{a} <br/>{b} : {c} 条",
+		    },
+		    legend: {
+		        data: ['已验收', '未验收']
+		    },
+		    grid: {
+		        left: '3%',
+		        right: '4%',
+		        bottom: '3%',
+		        containLabel: true
+		    },
+		    xAxis:  {
+		        type: 'value'
+		    },
+		    yAxis: {
+		        type: 'category',
+		        data: data.xAxis 
+		    },
+		    series: [
+		        {
+		            name: '已验收',
+		            type: 'bar',
+		            stack: '总量',
+		            label: {
+		                normal: {
+		                    show: false,
+		                    position: 'insideRight'
+		                }
+		            },
+		            data: data.finishedCheck
+		        },
+		        {
+		            name: '未验收',
+		            type: 'bar',
+		            stack: '总量',
+		            label: {
+		                normal: {
+		                    show: false,
+		                    position: 'insideRight'
+		                }
+		            },
+		            data: data.unfinishedCheck
+		        }
+		    ],
+		    color:['#8bbc22','#b52cc7']
+		};	
+		myChart.setOption(option); 	
+	}
+
+	//验收饼状图加载
+	function getData_pie_echarts(data){
+		var myChart = echarts.init(document.getElementById(data.contentId));
+		var option = {};
+		
+		$(".middle_line_1 label").html(data.time + ' ' + data.place +' 零星工程验收');
+		option = {
+		    series: [ {
+		            type: 'pie',
+		            center: ['50%', '50%'],
+		            radius: ['90%', '95%'],
+		            name :'验收率',
+		            hoverAnimation:false,
+		            tooltip: {
+		                trigger: 'item',
+		                formatter: "{a} <br/>{b} : {c} ({d}%)"
+		            },
+		            label: {
+		                normal: {
+		                    position: 'center'
+		                }
+		            },
+		            data: [{
+		                value: data.tData,
+		                name: '完成验收',
+		                itemStyle: {
+		                    normal: {
+		                        color: '#3366ff'
+		                    }
+		                },
+		                label: {
+		                    normal: {
+		                        formatter: '{d} %',
+		                        textStyle: {
+		                            color: '#3366ff',
+		                            fontSize: 16
+		
+		                        }
+		                    }
+		                }
+		            }, {
+		                value: data.fData,
+		                name: '未完成验收',
+		                tooltip: {
+		                    show: true
+		                },
+		                itemStyle: {
+		                    normal: {
+		                        color: '#dddddd'
+		                    }
+		                },
+		                label: {
+		                    normal: {
+		                        textStyle: {
+		                            color: '#666',
+		                             fontSize: 12
+		                        },
+		                        formatter: '\n'+ data.text +'\n验收率',
+		                    }
+		                }
+		            }]
+		        }
+		    ]
+		};
+		myChart.setOption(option);				
+	}
+
+</script>
+</html>

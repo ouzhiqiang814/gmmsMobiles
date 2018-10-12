@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>车辆作业照片</title>
+    <link rel="stylesheet" type="text/css" href="../../../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/common.css" />
+</head>
+<body>
+	<div id="wrap">
+		<div id="header">
+		    <div class='egret-img event-back'>
+		    	<img src="../../../image/back_btn.png"/>
+		    </div>
+		    <h1>车辆作业照片</h1>
+		</div>
+		<div id="main">
+		</div>	
+	</div>
+</body>
+<script type="text/javascript" src="../../../script/api.js"></script>
+<script type="text/javascript" src="../../../script/common.js"></script>
+<script type="text/javascript">
+	apiready = function(){
+		fnReadyHeader2();
+		fnReadyKeyback();
+		fnFrame();
+	};
+	function fnFrame(){
+		var param = api.pageParam;
+		var frameName = api.winName + '_body';
+	    api.openFrame({
+	        name: frameName,
+	        url: './' + frameName + '.html',
+	        bounces: true,
+	        pageParam:{carId:api.pageParam.carId},
+	        rect: {
+	            x: 0,
+	            y: headerHeight,
+	            w: 'auto',
+	            h: 'auto'
+	        },
+	        bounces: true,
+        	vScrollBarEnabled:true
+	    });
+	   
+	}
+</script>
+</html>

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>车辆现场</title>
+    <link rel="stylesheet" type="text/css" href="../../css/api.css" />
+	<link rel="stylesheet" type="text/css" href="../../css/common.css" />
+</head>
+<body>
+	<div id="wrap">
+		<div id="header">
+		    <div class='egret-img event-back'>
+		    	<img src="../../image/back_btn.png"/>
+		    </div>
+		    <h1>车辆现场</h1>
+		</div>
+		<div id="main">
+		</div>	
+	</div>
+</body>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/common.js"></script>
+<script type="text/javascript">
+	apiready = function(){
+		fnReadyHeader2();
+		if(api.systemType!='ios'){
+			api.addEventListener({
+			    name:'viewappear'
+		    },function(ret,err){
+		    	api.execScript({
+					name:'GIS_con',
+					frameName:'GIS_bmap',
+			        script: 'closebmap();'
+		        });
+		    });
+	    }
+	    fnFrame();
+	    myback();
+	};
+	
+	function myback(){
+		var keybacks = $api.domAll('.event-back');
+	    for (var i = 0; i < keybacks.length; i++) {
+	        $api.attr(keybacks[i], 'tapmode', 'highlight');
+	        keybacks[i].onclick = function() {
+	            if(api.systemType!='ios'){
+		            api.execScript({
+			    		name:'GIS_con',
+						frameName:'GIS_bmap',
+				        script: 'openbmap();'
+			        });
+		        }
+		        api.closeWin();
+	        };
+	    }
+	    api.parseTapmode();
+	    if(api.systemType!='ios'){
+		    api.addEventListener({
+		        name:'keyback'
+	        },function(ret,err){
+	        	 api.execScript({
+		    		name:'GIS_con',
+					frameName:'GIS_bmap',
+			        script: 'openbmap();'
+		        });
+		        api.closeWin();
+	        });
+        }
+	}
+	function fnFrame(){
+		var frameName = api.winName + '_body';
+	    api.openFrame({
+	        name: frameName,
+	        url: './GIS_cars/' + frameName + '.html',
+	        bounces: false,
+	        rect: {
+	            x: 0,
+	            y: headerHeight,
+	            w: 'auto',
+	            h: 'auto'
+	        },
+	        vScrollBarEnabled: false
+	    });
+	    frameName = api.winName + '_bottom';
+	    api.openFrame({
+	        name: frameName,
+	        url: './GIS_cars/' + frameName + '.html',
+	        bounces: false,
+	        rect: {
+	            x: 0,
+	            y: api.winHeight-80,
+	            w: 'auto',
+	            h: 80
+	        },
+	        bgColor:'rgba(202, 202, 202, 0.5)',
+	        bounces: false,
+	        vScrollBarEnabled:false,
+	        hScrollBarEnabled:false
+	    });
+	}
+</script>
+</html>

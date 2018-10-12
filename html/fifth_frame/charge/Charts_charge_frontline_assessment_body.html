@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>title</title>
+    <link rel="stylesheet" type="text/css" href="../../../css/api.css" />
+	<link rel="stylesheet" type="text/css" href="../../../css/common.css" />
+	<link rel="stylesheet" type="text/css" href="../../../css/mui.min.css"/>
+	 <style>
+	 	.mui-title{
+	 		font-size:20px;
+	 	}
+	 	.updatatime_box{
+	 		text-align: center;
+			font-size: 13px;
+			color: #dddddd;
+			margin-top: -15px;
+	 	}
+	 	.time_place_box{
+			margin-top: 20px;
+			color: #73a9ee;
+			font-size: 15px;
+			text-align: center;
+			height:40px;	 	
+	 	}
+	 	.line_box{
+			display: flex;
+			flex-direction: row;
+			justify-content: space-around;
+			height: 65px;	 		
+	 	}
+	 	.line_head_image_box{
+	 		width:50px;
+	 		height:40px;
+	 		background: url(../../../image/charts/th.png) no-repeat;
+	 		background-size : 40px 40px;
+			line-height: 33px;
+			font-weight: 900;
+			text-align: center;
+			font-size: 16px;
+			color: darkgrey;
+			display: flex;
+			justify-content: space-between;
+			
+	 		
+	 	}
+	 	.line_head_image{
+	 		width:40px;
+	 		height: 40px;	 		
+	 	}
+	 	.line_middle_box{
+	 		display: flex;
+			flex-direction: column;
+	 	}
+	 	.line_middle_text{
+	 		color:#000000;
+	 	}
+	 	.line_middle_image{
+	 		width:20px;
+	 		height: 20px;	 		
+	 	}
+	 	.line_foot_text{
+	 		line-height: 40px;
+	 		color:#888888;
+	 	}
+	 	
+	 	
+	 	.header_1{
+	 		background-color: #fff;
+	 		padding-top: 30px;
+	 	}
+	 	.header_2{
+	 		background-color: #fff;
+	 		padding-top: 30px;
+	 		margin-top:30px;
+	 		padding-bottom:10px;
+	 	}
+	 	.title_box{
+	 		height:60px;
+	 	}	 	
+	 	.mui-table-view{
+	 		color:#5d9cec;
+	 		font-size: 14px;
+	 	}
+/*		.mui-table-view:before{
+			background-color: #fff;
+		}*/
+/*		.mui-table-view:after{
+			background-color: #fff;
+		}*/
+/*		.mui-table-view-cell:after{
+			background-color: #fff;
+		}*/
+		.mui-table-view .mui-active{
+			background-color: #fff;
+		}
+		.hide{
+			display: none;
+		}
+		.star_width{
+			width: 116px;
+		}
+		.backGround{
+			background-color: #dcdcdc;
+		}
+		.upDown{
+			margin-left:-35px;
+			font-size:20px;
+			line-height:32px;
+		}	 		
+	 </style>
+</head>
+<body>
+	<div class="mui-content">
+		<div id="content_1"  class="header_1">
+			<div class="title_box">
+				<h1 class="mui-title">员工绩效考核排行榜</h1>	
+			</div>
+			<div class="updatatime_box">
+				<span class="updatatime_1">更新时间：2017-08-25 23:59:59</span>
+			</div>
+			<div class="time_place_box">
+				<span class="time_place_1">2017年7月    海沧大桥管理中心</span>
+			</div>			
+			<ul class="mui-table-view hide">
+<!--				<li class="mui-table-view-cell line_box" id="first">
+					<div class="line_head_image_box">
+						<img src="../../../image/charts/first.png" class="line_head_image"/>
+					</div>					
+					<div class="line_middle_box">
+						<span class="line_middle_text">张三</span>
+						<span>
+							<img src="../../../image/charts/star.png" class="line_middle_image"/>
+							<img src="../../../image/charts/star.png" class="line_middle_image"/>
+							<img src="../../../image/charts/star.png" class="line_middle_image"/>
+							<img src="../../../image/charts/star.png" class="line_middle_image"/>
+							<img src="../../../image/charts/star.png" class="line_middle_image"/>
+						</span>
+					</div>
+					<div class="line_foot_text">97分</div>
+				</li>
+				<li class="mui-table-view-cell line_box" id="second">
+					<div class="line_head_image_box">
+						<img src="../../../image/charts/second.png" class="line_head_image"/>
+					</div>					
+					<div class="line_middle_box">
+						<span class="line_middle_text">李四</span>
+						<span>
+							<img src="../../../image/charts/star.png" class="line_middle_image"/>
+							<img src="../../../image/charts/star.png" class="line_middle_image"/>
+							<img src="../../../image/charts/star.png" class="line_middle_image"/>
+							<img src="../../../image/charts/star.png" class="line_middle_image"/>
+							<img src="../../../image/charts/star.png" class="line_middle_image"/>
+						</span>
+					</div>
+					<div class="line_foot_text">95分</div>
+				</li>
+				<li class="mui-table-view-cell line_box" id="third">
+					<div class="line_head_image_box">
+						<img src="../../../image/charts/third.png" class="line_head_image"/>
+					</div>					
+					<div class="line_middle_box">
+						<span class="line_middle_text">王五</span>
+						<span>
+							<img src="../../../image/charts/star.png" class="line_middle_image"/>
+							<img src="../../../image/charts/star.png" class="line_middle_image"/>
+							<img src="../../../image/charts/star.png" class="line_middle_image"/>
+							<img src="../../../image/charts/star.png" class="line_middle_image"/>
+							<img src="../../../image/charts/star.png" class="line_middle_image"/>
+						</span>
+					</div>
+					<div class="line_foot_text">93分</div>
+				</li>
+				<li class="mui-table-view-cell line_box" id="forht">					
+					<div class="line_head_image_box">
+						4
+					</div>	
+					<div class="line_middle_box">
+						<span class="line_middle_text">王五</span>
+						<span>
+							<img src="../../../image/charts/star.png" class="line_middle_image"/>
+							<img src="../../../image/charts/star.png" class="line_middle_image"/>
+							<img src="../../../image/charts/star.png" class="line_middle_image"/>
+							<img src="../../../image/charts/star.png" class="line_middle_image"/>
+							<img src="../../../image/charts/star.png" class="line_middle_image"/>
+						</span>
+					</div>
+					<div class="line_foot_text">90分</div>
+				</li>
+				<li class="mui-table-view-cell line_box" id="forht">					
+					<div class="line_head_image_box">
+						5
+					</div>	
+					<div class="line_middle_box">
+						<span class="line_middle_text">王五</span>
+						<span>
+							<img src="../../../image/charts/star.png" class="line_middle_image"/>
+							<img src="../../../image/charts/star.png" class="line_middle_image"/>
+							<img src="../../../image/charts/star.png" class="line_middle_image"/>
+							<img src="../../../image/charts/star.png" class="line_middle_image"/>
+							<img src="../../../image/charts/star.png" class="line_middle_image"/>
+						</span>
+					</div>
+					<div class="line_foot_text">90分</div>
+				</li>	-->																					
+			</ul>					
+		</div>					
+	</div>
+	<div id="code" style="display:none;"></div>
+	<div id="upDown" style="display:none;"></div>
+</body>
+<script type="text/javascript" src="../../../script/api.js"></script>
+<script type="text/javascript" src="../../../script/common.js"></script>
+<script type="text/javascript" src="../../../script/mui.min.js"></script>
+<script type="text/javascript" src="../../../script/zepto.min.js"></script>
+<script type="text/javascript" src="../../../script/echarts.min.js"></script>
+<script type="text/javascript">
+	var charts_url = null;
+	charts_url = $api.getStorage("charts_url");
+	apiready = function(){
+		getData();		
+	};
+
+	//员工绩效考核排行
+	function getData(){
+		var charts_url = "http://172.16.53.225:9001";
+		var rankData = {};
+		var str = '';		
+		var imgSrc = ['../../../image/charts/first.png','../../../image/charts/second.png','../../../image/charts/third.png']
+		api.ajax({
+	        url:charts_url + '/fee/gmms/performance/ajaxQueryPerformanceTable/false/true/true',
+	        method :'get',
+        },function(ret,err){
+        	if(ret){
+				$("#code").html(ret.resultList[5].medal);
+				var sixTh = $("#code").find('span').eq(0).html();							
+				for(var i=0;i<ret.resultList.length;i++){					
+					var rankImg = '';
+					if(i == 0){
+						rankImg = '<img src="'+ imgSrc[i] +'" class="line_head_image"/>';
+					}
+					else if(i == 1){
+						rankImg = '<img src="'+ imgSrc[i] +'" class="line_head_image"/>';
+					}
+					else if(i == 2){
+						rankImg = '<img src="'+ imgSrc[i] +'" class="line_head_image"/>';
+					}
+					else if(i>2&&i<5){
+						rankImg = '<span style="width:40px">'+ (i+1) +'</span>';
+					}
+					else{
+						if(sixTh == (i+1)){
+							rankImg = '<span style="width:40px">'+ (i+1) +'</span>';;
+						}
+						else{
+							rankImg = '<span style="width:40px">'+ sixTh +'</span>';
+						}						
+					}															
+					
+					$("#upDown").empty().append(ret.resultList[i].medal);
+					var upDown = '';
+					if($("#upDown").find('span').length == 1){
+						if($("#upDown").find('span').html() == '↑'){
+							upDown = '<span style="color:#76EE00;">↑</span>'
+						}
+						else{
+							upDown = '<span style="color:#EE0000;">↓</span>'
+						}						
+					}
+					else{
+						if($("#upDown").find('span').eq(1).html() == '↑'){
+							upDown = '<span style="color:#76EE00;">↑</span>'
+						}
+						else{
+							upDown = '<span style="color:#EE0000;">↓</span>'
+						}					
+					}
+
+					str = '<li class="mui-table-view-cell line_box" id="rank_'+i+'">'
+								+'<div class="line_head_image_box">'+ rankImg 
+									+'<div class="upDown">'+ upDown +'</div>'
+								+'</div>'								
+								+'<div class="line_middle_box">'
+									+'<span class="line_middle_text">'+ ret.resultList[i].name +'</span>'
+									+'<span class="star_width">'+ ret.resultList[i].star +'</span>'
+								+'</div>'
+								+'<div class="line_foot_text">'+ ret.resultList[i].scores +'分</div>'
+						   +'</li>';
+					$("#content_1 ul").append(str);
+					
+					if(ret.resultList[i].name == ret.currentUser){
+						if(i<5){
+							$('#rank_'+i).addClass('backGround')
+						}
+					}								   
+				}
+				
+				$("#content_1 ul .line_middle_box img").attr('src','../../../image/charts/star.png')
+													   .addClass('line_middle_image')
+													   .attr('style','');				
+
+				$("#content_1 ul").removeClass('hide');
+				$(".updatatime_1").html('更新时间：'+ret.updateTime);
+				$(".time_place_1").html(ret.year+'年'+ret.month+'月  '+ret.plaName);
+        	}
+        	else{
+				$("#content_1 ul").html("暂时无数据")
+				$(".updatatime_1").html('');
+				$(".time_place_1").html('');        		
+        	}
+        });
+	}	
+
+</script>
+</html>

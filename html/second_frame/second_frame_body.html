@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>title</title>
+    <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/mui.min.css"/>
+    <style>
+    	html,body {min-height: 100%;background: #efeff4;}
+    	h5{    
+    		background: #fff;
+    		margin: 0;
+    		padding: 12px 8px 8px 8px;
+    	}
+    	.mui-table-view-cell img{width: 48px;height:48px;}
+    	.my-mui-badge{
+    		font-size: 12px;
+		    line-height: 1;
+		    display: inline-block;
+		    padding: 3px 6px;
+		    color: #333;
+		    border-radius: 100px;
+		    background-color: rgba(0,0,0,.15);
+		    font-size: 10px;
+		    line-height: 1.4;
+		    position: absolute;
+		    top: 0px;
+		    right:0px;
+	        margin-left: -10px;
+		    color: #fff;
+		    background: red;
+    	}
+    	
+    	.mui-table-view-cell a .my-list-img{max-width:none;width:100px;height:80px;}
+    </style>
+</head>
+<body>
+	<div class="mui-content">
+		<br/>
+		<h5>公共应用</h5>
+        <ul class="mui-table-view mui-grid-view mui-grid-9" style="background: #fff;">
+            <li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3">
+            	<a href="javascript:openNewWindow('gis_main')">
+                    <img src="../../image/work/gis.png"/>
+                    <div class="mui-media-body">GIS总览</div></a></li>
+            <li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3">
+            	<a href="javascript:openNewWindow('report_main')">
+                    <img src="../../image/work/6C.png"/>
+                    <div class="mui-media-body">综合报表</div></a></li>
+            <li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3">
+            	<a href="javascript:openNewWindow('infomation')">
+                    <img src="../../image/work/email.png"/>
+                    <div class="mui-media-body">内部邮件</div></a></li>
+            <li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3">
+            	<a href="javascript:openNewWindow('business_new')">
+                    <img src="../../image/work/B2B2A.png"/>
+                    <div class="mui-media-body">发起工作</div></a></li>
+        </ul> 
+        <!--<br/>
+        <h5>专业应用</h5>
+        <ul class="mui-table-view mui-grid-view mui-grid-9" style="background: #fff;">
+        	<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3">
+            	<a href="javascript:">
+                    <img src="../../image/work/check.png"/>
+                    <div class="mui-media-body">路政巡查</div></a></li>
+            <li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3">
+            	<a href="javascript:">
+                    <img src="../../image/work/467BA.png"/>
+                    <div class="mui-media-body">养护巡查</div></a></li>
+            <li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3">
+            	<a href="javascript:">
+                    <img src="../../image/work/DA80.png"/>
+                    <div class="mui-media-body">绿化考评</div></a></li>
+            <li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3">
+            	<a href="javascript:">
+                    <img src="../../image/work/96DF.png"/>
+                    <div class="mui-media-body">技术验收</div></a></li>
+        </ul>-->
+        <br/>
+        <h5>公司大事记<san class="mui-icon mui-icon-refresh mui-pull-right" style="margin-top: -7px;" onclick="fnRefreshBigEvent()"></san></h5>
+        <ul class="mui-table-view" id="bigevent_list">
+			
+		</ul>
+		<ul class="mui-table-view" id="bigevent_list_more" style="display: none;">
+			<li class="mui-table-view-cell" style="text-align: center;color: #737373;">
+				<a href="javascript:fnQueryMoreBigEvent(this);">
+					<span id="bigevent_list_more_span" class="mui-spinner" style="margin-bottom: -5px;display: none;"></span>
+					加载中...
+				</a>
+			</li>
+		</ul>
+	</div>
+</body>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/mui.min.js"></script>
+<script type="text/javascript" src="../../script/zepto.min.js"></script>
+<script type="text/javascript" src="../../script/sh1.js"></script>
+<script type="text/javascript">
+	mui.init();
+	var CUR_pageNo = 1,CUR_pageSize = 3,CUR_total = 0;
+	apiready = function(){
+		//加载是否有代办事务
+		fnLoadBusinessNum();
+		fnLoadBigEventInfo(CUR_pageNo,CUR_pageSize);
+	};
+	
+	/**
+	 * 加载待办事务数目 
+	 */
+	function fnLoadBusinessNum(){
+		api.ajax({
+		    url:$api.getStorage("gmms_url")+'/modules/mobile/business/business-deal!countBusinessTodoForApp.action',
+		    method:'post',
+		    timeout:10,
+		    data:{
+		    	values:{userId:$api.getStorage("userId"),lesseeId:$api.getStorage('lesseeId')}
+		    }	    
+	    },function(ret,err){
+	    	if(ret&&ret.todoNum>0){
+	    		api.execScript({
+	    			name:'main',
+	                script: 'fnShowBusinessTodoSpan(true);'
+                });
+	    	}else{
+	    		api.execScript({
+	    			name:'main',
+	                script: 'fnShowBusinessTodoSpan(false);'
+                });
+	    	}
+	    });
+	}
+	
+	function fnRefreshBigEvent(){
+		CUR_pageNo = 1;
+		fnLoadBigEventInfo(CUR_pageNo,CUR_pageSize);
+	}
+	
+	function fnLoadBigEventInfo(pageNo,pageSize){
+		if(pageNo==1){
+			$('#bigevent_list li').remove();
+		}
+		$('#bigevent_list_more').show();
+		$('#bigevent_list_more li').html(
+				'<a href="javascript:">'+
+				'	<span class="mui-spinner" style="margin-bottom: -5px;"></span>'+
+				'	&nbsp;加载中...'+
+				'</a>');
+		api.ajax({
+		    url:$api.getStorage("gmms_url")+'/modules/infomation/big-event!ajaxQueryPageBigEventInfo.action',
+		    method:'post',
+		    timeout:10,
+		    data:{
+		    	values:{lesseeId:$api.getStorage('lesseeId'),pageNo:pageNo,pageSize:pageSize}
+		    }	    
+	    },function(ret,err){
+	    	if(ret&&ret.errcode==0&&ret.total>0){
+	    		CUR_total = ret.total;
+	    		var htmlStr = '';
+	    		$.each(ret.rows,function(i,data){
+	    			var picUrl = '../../image/noimage.gif';
+	    			if(data.fileId!=null){
+	    				picUrl = $api.getStorage("gmms_url")+'modules/upload/file-open!getFileStream.action?fileId='+data.fileId +'&smallImage=true&width=100&height=80';
+	    			}
+	    			htmlStr += 
+	    				'<li class="mui-table-view-cell mui-media" onclick="fnViewBigEvent('+data.id+')">'+
+						'	<a href="javascript:;">'+
+						'		<img class="mui-media-object mui-pull-left my-list-img" src="'+picUrl+'" onerror="this.src=\'../../image/noimage.gif\';">'+
+						'		<div class="mui-media-body">'+
+									data.name+
+						'			<p class="mui-ellipsis" style="height: 40px;white-space: initial;">'+
+									data.content+
+						'			</p>'+
+						'			<h5 class="mui-pull-right" style="padding: 5px 0 0 0;background: none;">'+data.eventDate+'</h5>'+
+						'		</div>'+
+						'	</a>'+
+						'</li>';
+	    		});
+	    		$('#bigevent_list').append(htmlStr);
+	    		
+	    		if(CUR_total>$('#bigevent_list li').length){
+	    			$('#bigevent_list_more li').html(
+						'<a href="javascript:fnQueryMoreBigEvent(this);">'+
+						'	加载更多'+
+						'</a>');
+	    		}else{
+	    			$('#bigevent_list_more').hide();
+	    		}
+	    	}else{
+	    		$('#bigevent_list').html('<li><img src="../../image/wait-more.png" width="100%"/></li>');
+	    		$('#bigevent_list_more').hide();
+	    	}
+	    });
+	}
+	
+	function fnQueryMoreBigEvent(_this){
+		if($('#bigevent_list li').length>=CUR_total){
+            $('#bigevent_list_more').hide();
+			return;
+		}
+		CUR_pageNo++;
+		fnLoadBigEventInfo(CUR_pageNo,CUR_pageSize);
+	}
+	
+	function fnViewBigEvent(eventId){
+		api.openWin({
+			name : 'bigevent_view',
+			url : './infomation/bigevent_view.html',
+			delay : 200,
+			bounces : false,
+			pageParam:{eventId:eventId},
+			animation:{
+				type:'movein'
+			}
+		});
+	}
+	
+	function openNewWindow(type) {
+		api.openWin({
+			name : type,
+			url : './' + type + '.html',
+			delay : 200,
+			bounces : false,
+			animation:{
+				type:'movein'
+			}
+		});
+	}
+</script>
+</html>

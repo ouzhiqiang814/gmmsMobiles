@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>title</title>
+    <link rel="stylesheet" type="text/css" href="../../../css/api.css"/>
+    <style>
+    	html,body {min-height: 100%;background-color:transparent;}
+    	.my-main{
+    	 	text-align:center;
+    		width:100%;height:100%;
+    		display:box;
+    		display:-moz-box; /* Firefox */
+			display:-webkit-box; /* Safari and Chrome */
+			-moz-box-pack:center;
+			-moz-box-align:center;
+			-webkit-box-pack:center;
+			-webkit-box-align:center;
+			margin-top:10px;			
+		}
+		.my-main div{
+			-moz-box-flex:1.0; /* Firefox */
+			-webkit-box-flex:1.0; /* Safari and Chrome */
+			box-flex:1.0;
+			text-align: center;
+		}
+				
+    	.my-radius{		    
+		    border-radius: 50%;
+		    /* Firefox */
+			display:-moz-box;
+			-moz-box-pack:center;
+			-moz-box-align:center;
+			/* Safari、Opera 以及 Chrome */
+		    display: -webkit-box;
+		    -webkit-box-pack: center;
+		    -webkit-box-align: center;		    
+		    text-align: center;
+		    border:1px solid #1081DA;
+		    color:#1081DA;
+		    background: #fff;
+		    margin:0 auto;
+		}
+		.radius-big{
+			width:65px;
+			height:65px;
+		}
+		.radius-big span{
+			white-space: normal;
+			font-weight: bold;
+		}
+		.radius-small{
+			width:50px;
+			height:50px;
+		}
+		.radius-small span{
+			font-size:16px;
+			padding:5px;
+			line-height: 16px;
+			white-space: normal;
+		}
+		.my-radius:active{
+			background: #e4e4e4;
+		}
+		.radius-actived{
+		    color:#fff;
+		    background: #1081DA;
+		}
+    </style>
+</head>
+<body>
+	<div class="my-main">
+		<div>
+			<div onclick="fnGetInfo(this,'3')" class="my-radius radius-small">
+				<span>保洁冲洗</span>
+			</div>
+		</div>
+		<div>
+		<div onclick="fnGetInfo(this,'2')" class="my-radius radius-small">
+			<span>保洁洗扫</span>
+		</div>
+		</div>
+		<div>
+		<div onclick="fnGetInfo(this,'')" class="my-radius radius-big radius-actived">
+			<span>总图</span>
+		</div>
+		</div>
+		<div>
+		<div onclick="fnGetInfo(this,'0')" class="my-radius radius-small">
+			<span>保洁巡检</span>
+		</div>
+		</div>
+		<div>
+		<div onclick="fnGetInfo(this,'1')" class="my-radius radius-small">
+			<span>绿化巡检</span>
+		</div>
+		</div>
+	</div>
+</body>
+<script type="text/javascript" src="../../../script/api.js"></script>
+<script type="text/javascript" src="../../../script/zepto.min.js"></script>
+<script type="text/javascript">
+	apiready = function(){
+		
+	};
+	
+	function fnGetInfo(_this,type){
+		$('.my-radius').removeClass('radius-actived');
+		$(_this).addClass('radius-actived');
+		api.execScript({
+			frameName:'jiandu_body',
+	        script: "fnQueryCars(1,'"+type+"');"
+        });
+	}
+</script>
+</html>

@@ -1,0 +1,206 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="copyright" content="www.apicloud.com" />
+<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+<title>我的</title>
+<link rel="stylesheet" type="text/css" href="../../css/api.css" />
+<link rel="stylesheet" type="text/css" href="../../css/common.css" />
+<link rel="stylesheet" type="text/css" href="../../css/mui.min.css">
+<style>
+html,body {min-height: 100%;}
+.hdivider {width: 100%; height: 1px;background-color: #e0e0e0;}
+
+ /*用flex重写框架*/ 
+.egret-flex-item {display: -webkit-box;-webkit-box-align:center;height: 3.6em; background-color: #FFFFFF;}
+/* 左部logo */
+.egret-flex-item-logo {max-width: 50px; min-width: 50px; margin-left: 0.5em; margin-right: 0.3em;-webkit-box-flex: 1; -webkit-box-align: center;}
+.egret-flex-item-logo img {height: 2.6em; width: 2.6em; -webkit-box-align: center;vertical-align: top;/*否则图片不会居中，底部仍然是会有空白*/}
+/* 中间文本信息 */
+.egret-flex-item-shelf {overflow: hidden; -webkit-box-flex:2; -webkit-box-align: center;}
+.egret-flex-item-shelf div {text-overflow: ellipsis; white-space: nowrap; overflow: hidden;}
+.egret-flex-item-shelf .egret-flex-item-shelf01 {font-size: 1.0em;}
+.egret-flex-item-shelf .egret-flex-item-shelf02 {font-size: 0.6em; color: #666; margin-top: 0.6em;}
+.egret-flex-item-shelf .egret-flex-item-redclassify {color: #E03F40; border: 1px solid #E03F40; font-size: inherit; padding: 0 0.1em; border-radius: 1px; margin-right: 5px;box-sizing: border-box;}
+
+/* 右部箭头 */
+.egret-flex-item-arrow {-webkit-box-flex: 1;max-width: 10px; min-width: 10px; margin-right: 10px;}
+.egret-flex-item-arrow img {width: 100%; max-width: 10px;}
+
+/* 悬浮 */
+.fmbtnhover {background: #D8D9DA ;}
+
+/* 重写 mui.css */
+.mui-table-view .mui-media-object
+{
+    line-height: 36px;
+
+    max-width: 36px;
+    height: 36px;
+}
+.mui-table-view-cell
+{
+    padding: 9px 15px;
+}
+.sub_title {
+	height: 36px; 
+	line-height: 36px;
+	font-size: 0.9em; 
+}
+
+/* 退出按钮 */
+#logoutBtn {
+    display: block;
+    color: #ffffff;
+    margin: 0 40px;
+    text-align: center;
+    border-radius: 5px;
+    height: 40px;
+    line-height: 40px;
+    margin-top: 20px;
+    background-color: #d33a31;
+}
+</style>
+</head>
+<body>
+
+<!--<div class="egret-flex-item" tapmode="fmbtnhover" onclick="openFM()">
+		<div class="egret-flex-item-logo">
+			<img src="../../image/scan_inventory_query.png" alt="" class="">
+		</div>
+		<div class="egret-flex-item-shelf">
+			<div class="egret-flex-item-shelf01">个人资料</div>
+		</div>
+		<div class="egret-flex-item-arrow">
+			<img src="../../image/cm2_list_icn_arr.png" alt="" class="">
+		</div>
+	</div>
+	<div class="hdivider"></div>
+	<br>
+	<div class="hdivider"></div>
+	<div class="egret-flex-item" tapmode="fmbtnhover" onclick="openDailymusic()">
+		<div class="egret-flex-item-logo">
+			<img src="../../image/scan_problem_repair.png" alt="" class="">
+		</div>
+		<div class="egret-flex-item-shelf">
+			<div class="egret-flex-item-shelf01">意见反馈</div>
+		</div>
+		<div class="egret-flex-item-arrow">
+			<img src="../../image/cm2_list_icn_arr.png" alt="" class="">
+		</div>
+	</div>
+	<div class="hdivider"></div>
+	<div class="egret-flex-item" tapmode="fmbtnhover" onclick="openDailymusic()">
+		<div class="egret-flex-item-logo">
+			<img src="../../image/my_setting.png" alt="" class="">
+		</div>
+		<div class="egret-flex-item-shelf">
+			<div class="egret-flex-item-shelf01">设置</div>
+		</div>
+		<div class="egret-flex-item-arrow">
+			<img src="../../image/cm2_list_icn_arr.png" alt="" class="">
+		</div>
+	</div>
+	<div class="hdivider"></div>
+	<div class="egret-flex-item" tapmode="fmbtnhover" onclick="openDailymusic()">
+		<div class="egret-flex-item-logo">
+			<img src="../../image/gzbx_icon.png" alt="" class="">
+		</div>
+		<div class="egret-flex-item-shelf">
+			<div class="egret-flex-item-shelf01">关于</div>
+		</div>
+		<div class="egret-flex-item-arrow">
+			<img src="../../image/cm2_list_icn_arr.png" alt="" class="">
+		</div>
+	</div>
+	<div class="hdivider"></div>-->
+	
+	<ul class="mui-table-view mui-table-view-chevron">
+		<li class="mui-table-view-cell mui-media" onclick="openWin('my_info');">
+			<a class="mui-navigate-right">
+				<img class="mui-media-object mui-pull-left" src="../../image/scan_inventory_query.png">
+				<div class="mui-media-body sub_title">
+					个人资料
+				</div>
+			</a>
+		</li>
+	</ul>
+	<br />
+	<ul class="mui-table-view mui-table-view-chevron">
+		<li class="mui-table-view-cell mui-media" onclick="openWin('advise');">
+			<a class="mui-navigate-right">
+				<img class="mui-media-object mui-pull-left" src="../../image/scan_problem_repair.png">
+				<div class="mui-media-body sub_title">
+					意见反馈
+				</div>
+			</a>
+		</li>
+		<li class="mui-table-view-cell mui-media" onclick="openWin('setting');">
+			<a class='mui-navigate-right' href="javascript:;">
+				<img class="mui-media-object mui-pull-left" src="../../image/my_setting.png">
+				<div class="mui-media-body sub_title">
+					设置
+				</div>
+			</a>
+		</li>
+		<li class="mui-table-view-cell mui-media" onclick="openWin('about');">
+			<a class="mui-navigate-right">
+				<img class="mui-media-object mui-pull-left" src="../../image/gzbx_icon.png">
+				<div class="mui-media-body sub_title">
+					关于
+				</div>
+			</a>
+		</li>
+	</ul>
+
+	<div id="logoutBtn" tapmode="" onclick="fnLoginout()">退出</div>
+	<br>
+</body>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/mui.min.js"></script>
+<script type="text/javascript">
+	function openWin (name) {
+		api.openWin({
+			name: name,
+			url: 'widget://html/forth_frame/' + name + '.html',
+			delay:200
+		});
+	}
+	
+	function fnLoginout(){
+		$api.setStorage("userId",'');
+		$api.setStorage("user", '');
+		alert('成功退出');
+		
+		fnLogin();
+	}
+	
+	//打开登录页面
+	function fnLogin(){
+		api.openWin({
+			name: 'login',
+			url: '../login.html',
+			rect: {
+			    x: 0,
+			    y: 0,
+			    w: 'auto',
+			    h: 'auto',
+				marginLeft:0,   //相对父 window 左外边距的距离
+			    marginTop:0,    //相对父 window 上外边距的距离
+			    marginBottom:0, //相对父 window 下外边距的距离
+			    marginRight:0   //相对父 window 右外边距的距离
+			},
+			bounces: false,
+			bgColor: 'rgba(0,0,0,0)',
+			vScrollBarEnabled: true,
+			hScrollBarEnabled: true,
+			slidBackEnabled : false
+		});
+	}
+	
+	apiready = function  () {
+		// api.parseTapmode();
+	}
+</script>
+</html>

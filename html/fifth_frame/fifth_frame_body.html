@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>title</title>
+    <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/mui.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/mui.min.css"/>
+    <style>
+    	html,body {min-height: 100%;background: #efeff4;}
+    	h5{margin:12px 8px 8px 8px;}
+    	.h-title{
+    		text-align:center;
+    		font-weight:bold;
+    		font-size:18px;
+    		color:#000;
+    	}
+    	.mui-card-header img{
+    		width: 20px!important;
+    		height:20px!important;
+    	}
+    	.mui-card-header .mui-media-body{
+    		margin-left:27px!important;
+    		margin-top:3px;
+    	}
+    	.mui-card-header p{
+			float: right;
+			margin-top: -20px;
+			margin-bottom: 0px;
+    	}
+    	.mui-table-view-cell label{
+    		font-size:14px;
+    	}
+    	.mui-table-view-cell span{
+    		float:right;
+    		margin-right:20px;
+    		color:#8f8f94;
+    	}
+
+    	.jurisdiction_area_handle_content{
+ 			display: flex;
+			flex-direction: row;
+			height:100px;
+    	}
+    	.maintain_echarts1{
+    		width: 35%;
+			min-width: 100px;
+    	}
+    	.maintain_text1{
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			width: 65%;
+			height:100%;
+    	}
+    	.maintain_text1_del{
+			display: flex;
+			flex-direction: row;
+			align-items: center;
+			height: 50%;
+    	}
+
+    	.jurisdiction_weak_content{
+			height: 120px;
+			display: flex;
+			flex-direction: row;
+    	}
+    	.jurisdiction_area_box{
+			width: 33%;
+			text-align: center;
+    	}
+    	.maintain_echarts2{
+    		height:100px;
+    	}
+    	.display-span{
+			display: flex;
+			flex-direction: row;
+    	}
+    	.display-img{
+			width: 20px;
+			height: 20px;
+			margin-right: 10px;
+    	}
+    	.display-span_1{
+    		margin-right:0px!important;
+    	}
+    </style>
+</head>
+<body>
+	<div class="mui-content">
+		<h5 class="h-title">办公</h5>
+		<div class="mui-card" id="personnel">
+			<div class="mui-card-header mui-card-media">
+				<img src="../../image/charts/personnel.png"/>
+				<div class="mui-media-body">人事</div>
+				<p></p>
+			</div>
+			<!--内容区-->
+			<div class="mui-card-content">
+				<ul class="mui-table-view">
+				    <li class="mui-table-view-cell">
+				        <a href="javascript:openNewWindow('work_personnel','work')" class="mui-navigate-right">
+				        	<label>公司现有员工</label>
+				        	<span name="work_personnel_all"></span>				        	
+				        </a>
+				    </li>
+				    <li class="mui-table-view-cell">
+				        <a href="javascript:openNewWindow('work_personnel','work')" class="mui-navigate-right">
+				        	<label>今日请假人数</label>
+				        	<span name="work_personnel_leave"></span>
+				        </a>
+				    </li>
+				</ul>
+			</div>
+		</div>
+		<div class="mui-card" id="purchase">
+			<div class="mui-card-header mui-card-media">
+				<img src="../../image/charts/purchase.png"/>
+				<div class="mui-media-body">采购</div>
+				<p></p>
+			</div>
+			<!--内容区-->
+			<div class="mui-card-content">
+				<ul class="mui-table-view">
+				    <li class="mui-table-view-cell">
+				        <a href="javascript:openNewWindow('work_purchase','work')" class="mui-navigate-right">
+				        	<label>累计采购总金额</label>
+				        	<span></span>
+				        </a>
+				    </li>
+				</ul>
+			</div>
+		</div>
+		<div class="mui-card" id="warehouse">
+			<div class="mui-card-header mui-card-media">
+				<img src="../../image/charts/warehouse.png"/>
+				<div class="mui-media-body">仓库</div>
+				<p></p>
+			</div>
+			<!--内容区-->
+			<div class="mui-card-content">
+				<ul class="mui-table-view">
+				    <li class="mui-table-view-cell">
+				        <a href="javascript:openNewWindow('work_warehouse','work')" class="mui-navigate-right">
+				        	<label>累计入库总金额</label>
+				        	<span name="work_warehouseIn"></span>
+				        </a>
+				    </li>
+				    <li class="mui-table-view-cell">
+				        <a href="javascript:openNewWindow('work_warehouse','work')" class="mui-navigate-right">
+				        	<label>累计出库总金额</label>
+				        	<span name="work_warehouseOut"></span>
+				        </a>
+				    </li>
+				</ul>
+			</div>
+		</div>
+
+		<h5 class="h-title">收费</h5>
+		<div class="mui-card" id="frontlineAssessment">
+			<div class="mui-card-header mui-card-media">
+				<img src="../../image/charts/charge.png"/>
+				<div class="mui-media-body">考核奖励排行</div>
+				<p></p>
+			</div>
+			<div class="mui-card-content">
+				<ul class="mui-table-view">
+					<li class="mui-table-view-cell">
+						<a href="javascript:openNewWindow('charge_frontline_assessment','charge')" class="mui-navigate-right">
+							<label>绩效考核排行</label>
+							<span class="display-span">
+								<img class="display-img" src="../../image/charts/first.png"/>
+								<span name="performance_frontline_assessment" class="display-span_1"></span>
+							</span>
+						</a>
+					</li>
+<!--					<li class="mui-table-view-cell">
+						<a href="javascript:openNewWindow('charge_frontline_assessment','charge')" class="mui-navigate-right">
+							<label>日常费源奖励排行</label>
+							<span class="display-span">
+								<img class="display-img" src="../../image/charts/first.png"/>
+								<span name="daily_frontline_assessment" class="display-span_1">李四</span>
+							</span>
+						</a>
+					</li>-->
+				</ul>
+			</div>
+		</div>
+		<div class="mui-card" id="centerCharge">
+			<div class="mui-card-header mui-card-media">
+				<img src="../../image/charts/moneyCenter.png"/>
+				<div class="mui-media-body">中心通行费征收</div>
+				<p></p>
+			</div>
+			<div class="mui-card-content">
+				<ul class="mui-table-view">
+				    <li class="mui-table-view-cell">
+				        <a href="javascript:openNewWindow('charge_center_charge','charge')" class="mui-navigate-right">
+				        	<label name="center_charge"></label>
+				        	<span></span>
+				        	<div class="jurisdiction_area_handle_content">
+				        		<div id="charge_echarts1_1" class="maintain_echarts1"></div>
+				        		<div class="maintain_text1">
+				        			<div class="maintain_text1_del" id="center_charge_1">
+				        				<span>年度征收目标</span>
+				        				<span class="span1"></span>
+				        			</div>
+				        			<div class="maintain_text1_del" id="center_charge_2">
+				        				<span>月累计征收实际</span>
+				        				<span class="span1"></span>
+				        			</div>
+				        		</div>
+				        	</div>
+				        </a>
+				    </li>
+				</ul>
+			</div>
+		</div>
+		<div class="mui-card" id="centerAssessment">
+			<div class="mui-card-header mui-card-media">
+				<img src="../../image/charts/chargeCenter.png"/>
+				<div class="mui-media-body">中心员工考核奖励排行</div>
+				<p></p>
+			</div>
+			<div class="mui-card-content">
+				<ul class="mui-table-view">
+					<li class="mui-table-view-cell">
+						<a href="javascript:openNewWindow('charge_center_assessment','charge')" class="mui-navigate-right">
+							<label>绩效考核排行</label>
+							<span class="display-span">
+								<img class="display-img" src="../../image/charts/first.png"/>
+								<span name="performance_center_assessment" class="display-span_1"></span>
+							</span>
+						</a>
+					</li>
+<!--					<li class="mui-table-view-cell">
+						<a href="javascript:openNewWindow('charge_center_assessment','charge')" class="mui-navigate-right">
+							<label>日常费源奖励排行</label>
+							<span class="display-span">
+								<img class="display-img" src="../../image/charts/first.png"/>
+								<span name="daily_center_assessment" class="display-span_1">李四</span>
+							</span>
+						</a>
+					</li>	-->
+				</ul>
+			</div>
+		</div>
+		<div class="mui-card" id="tollCharge">
+			<div class="mui-card-header mui-card-media">
+				<img src="../../image/charts/money.png"/>
+				<div class="mui-media-body">通行费征收</div>
+				<p></p>
+			</div>
+			<div class="mui-card-content">
+				<ul class="mui-table-view">
+				    <li class="mui-table-view-cell">
+				        <a href="javascript:openNewWindow('charge_toll_charge','charge')" class="mui-navigate-right">
+				        	<label>次费征收</label>
+				        	<span></span>
+				        	<div class="jurisdiction_area_handle_content">
+				        		<div id="charge_echarts2_1" class="maintain_echarts1"></div>
+				        		<div class="maintain_text1">
+				        			<div class="maintain_text1_del" id="toll_charge_fee_1">
+				        				<span>年度征收目标</span>
+				        				<span></span>
+				        			</div>
+				        			<div class="maintain_text1_del" id="toll_charge_fee_2">
+				        				<span>月累计征收实际</span>
+				        				<span></span>
+				        			</div>
+				        		</div>
+				        	</div>
+				        </a>
+				    </li>
+				    <li class="mui-table-view-cell">
+				        <a href="javascript:openNewWindow('charge_toll_charge','charge')" class="mui-navigate-right">
+				        	<label>年费征收</label>
+				        	<span></span>
+				        	<div class="jurisdiction_area_handle_content">
+				        		<div id="charge_echarts2_2" class="maintain_echarts1"></div>
+				        		<div class="maintain_text1">
+				        			<div class="maintain_text1_del" id="toll_charge_annual_fee_1">
+				        				<span>年度征收目标</span>
+				        				<span></span>
+				        			</div>
+				        			<div class="maintain_text1_del" id="toll_charge_annual_fee_2">
+				        				<span>月累计征收实际</span>
+				        				<span></span>
+				        			</div>
+				        		</div>
+				        	</div>
+				        </a>
+				    </li>
+				</ul>
+			</div>
+		</div>
+
+		<h5 class="h-title">路政</h5>
+		<div class="mui-card" id="highWaysTeam">
+			<div class="mui-card-header mui-card-media">
+				<img src="../../image/charts/highWays.png" />
+				<div class="mui-media-body">班组案件处理</div>
+				<p>截止2017年10</p>
+			</div>
+			<div class="mui-card-content">
+				<ul class="mui-table-view">
+				    <li class="mui-table-view-cell">
+				        <a href="javascript:openNewWindow('highways_team','highways')" class="mui-navigate-right">
+				        	<div class="jurisdiction_area_handle_content">
+				        		<div id="highways_echarts1" class="maintain_echarts1"></div>
+				        		<div class="maintain_text1">
+				        			<div class="maintain_text1_del" id="high_ways_team_1">
+				        				<span>超限案件</span>
+				        				<span></span>
+				        			</div>
+				        			<div class="maintain_text1_del" id="high_ways_team_2">
+				        				<span>路产案件</span>
+				        				<span></span>
+				        			</div>
+				        		</div>
+				        	</div>
+				        </a>
+				    </li>
+				</ul>
+			</div>
+		</div>
+		<div class="mui-card" id="highWaysCaptain">
+			<div class="mui-card-header mui-card-media">
+				<img src="../../image/charts/highWays.png" />
+				<div class="mui-media-body">区域案件处理</div>
+				<p>截止2017年10</p>
+			</div>
+			<div class="mui-card-content">
+				<ul class="mui-table-view">
+				    <li class="mui-table-view-cell">
+				        <a href="javascript:openNewWindow('highways_captain','highways')" class="mui-navigate-right">
+				        	<label  name="high_team_captain">厦门大桥</label>
+				        	<span></span>
+				        	<div class="jurisdiction_area_handle_content">
+				        		<div id="highways_echarts2" class="maintain_echarts1"></div>
+				        		<div class="maintain_text1">
+				        			<div class="maintain_text1_del" id="high_ways_captain_1">
+				        				<span>查处案件</span>
+				        				<span>89起</span>
+				        			</div>
+				        			<div class="maintain_text1_del" id="high_ways_captain_2">
+				        				<span>已结案件</span>
+				        				<span>89起</span>
+				        			</div>
+				        		</div>
+				        	</div>
+				        </a>
+				    </li>
+				</ul>
+			</div>
+		</div>
+		<div class="mui-card" id="highWaysCenter">
+			<div class="mui-card-header mui-card-media">
+				<img src="../../image/charts/highWays.png" />
+				<div class="mui-media-body">所有区域案件处理</div>
+				<p>截止2017年10</p>
+			</div>
+			<div class="mui-card-content">
+				<ul class="mui-table-view">
+				    <li class="mui-table-view-cell">
+				        <a href="javascript:openNewWindow('highways_center','highways')" class="mui-navigate-right">
+				        	<label  name="high_team_center">结案率</label>
+				        	<span></span>
+				        	<div class="jurisdiction_area_handle_content">
+				        		<div id="highways_echarts3" class="maintain_echarts1"></div>
+				        		<div class="maintain_text1">
+				        			<div class="maintain_text1_del" id="high_ways_center_1">
+				        				<span>查处案件</span>
+				        				<span>89起</span>
+				        			</div>
+				        			<div class="maintain_text1_del" id="high_ways_center_2">
+				        				<span>已结案件</span>
+				        				<span>89起</span>
+				        			</div>
+				        		</div>
+				        	</div>
+				        </a>
+				    </li>
+				</ul>
+			</div>
+		</div>
+
+
+		<h5 class="h-title">养护</h5>
+		<div class="mui-card" id="jurisdictionArea">
+			<div class="mui-card-header mui-card-media">
+				<img src="../../image/charts/jurisdictionArea.png"/>
+				<div class="mui-media-body">所辖区域养护情况</div>
+				<p></p>
+			</div>
+			<!--内容区-->
+			<div class="mui-card-content">
+				<ul class="mui-table-view">
+				    <li class="mui-table-view-cell">
+				        <a href="javascript:openNewWindow('maintain_jurisdiction_area','maintain')" class="mui-navigate-right">
+				        	<label>处理率</label>
+				        	<span name="jurisdiction_area_handle"></span>
+				        	<div class="jurisdiction_area_handle_content">
+				        		<div id="maintain_echarts1_1" class="maintain_echarts1"></div>
+				        		<div class="maintain_text1">
+				        			<div class="maintain_text1_del" id="jurisdiction_area_handle_1">
+				        				<span>发现病害</span>
+				        				<span></span>
+				        			</div>
+				        			<div class="maintain_text1_del" id="jurisdiction_area_handle_2">
+				        				<span>处理病害</span>
+				        				<span></span>
+				        			</div>
+				        		</div>
+				        	</div>
+				        </a>
+				    </li>
+				    <li class="mui-table-view-cell">
+				        <a href="javascript:openNewWindow('maintain_jurisdiction_area','maintain')" class="mui-navigate-right">
+				        	<label>按时完成率</label>
+				        	<span name="jurisdiction_area_finish"></span>
+				        	<div class="jurisdiction_area_handle_content">
+				        		<div id="maintain_echarts1_2" class="maintain_echarts1"></div>
+				        		<div class="maintain_text1">
+				        			<div class="maintain_text1_del" id="jurisdiction_area_finish_1">
+				        				<span>任务数</span>
+				        				<span></span>
+				        			</div>
+				        			<div class="maintain_text1_del" id="jurisdiction_area_finish_2">
+				        				<span>已完成数</span>
+				        				<span></span>
+				        			</div>
+				        		</div>
+				        	</div>
+				        </a>
+				    </li>
+				</ul>
+			</div>
+		</div>
+		<div class="mui-card" id="allArea">
+			<div class="mui-card-header mui-card-media">
+				<img src="../../image/charts/allArea.png"/>
+				<div class="mui-media-body">所有区域养护情况</div>
+				<p></p>
+			</div>
+			<!--内容区-->
+			<div class="mui-card-content">
+				<ul class="mui-table-view">
+				    <li class="mui-table-view-cell">
+				        <a href="javascript:openNewWindow('maintain_all_area','maintain')" class="mui-navigate-right">
+				        	<label>处理率</label>
+				        	<span name="all_area_handle"></span>
+				        	<div class="jurisdiction_area_handle_content">
+				        		<div id="maintain_echarts2_1" class="maintain_echarts1"></div>
+				        		<div class="maintain_text1">
+				        			<div class="maintain_text1_del" id="all_area_handle_1">
+				        				<span>发现病害</span>
+				        				<span></span>
+				        			</div>
+				        			<div class="maintain_text1_del" id="all_area_handle_2">
+				        				<span>处理病害</span>
+				        				<span></span>
+				        			</div>
+				        		</div>
+				        	</div>
+				        </a>
+				    </li>
+				    <li class="mui-table-view-cell">
+				        <a href="javascript:openNewWindow('maintain_all_area','maintain')" class="mui-navigate-right">
+				        	<label>按时完成率</label>
+				        	<span name="all_area_finish"></span>
+				        	<div class="jurisdiction_area_handle_content">
+				        		<div id="maintain_echarts2_2" class="maintain_echarts1"></div>
+				        		<div class="maintain_text1">
+				        			<div class="maintain_text1_del" id="all_area_finish_1">
+				        				<span>任务数</span>
+				        				<span></span>
+				        			</div>
+				        			<div class="maintain_text1_del" id="all_area_finish_2">
+				        				<span>已完成数</span>
+				        				<span></span>
+				        			</div>
+				        		</div>
+				        	</div>
+				        </a>
+				    </li>
+				</ul>
+			</div>
+		</div>
+		<div class="mui-card" id="jurisdictionWeak">
+			<div class="mui-card-header mui-card-media">
+				<img src="../../image/charts/jurisdictionWeak.png"/>
+				<div class="mui-media-body">所辖区域弱电故障处理情况</div>
+				<p></p>
+			</div>
+			<!--内容区-->
+			<div class="mui-card-content">
+				<ul class="mui-table-view">
+				    <li class="mui-table-view-cell">
+				        <a href="javascript:openNewWindow('maintain_jurisdiction_weak','maintain')" class="mui-navigate-right">
+				        	<label></label>
+				        	<div class="jurisdiction_weak_content">
+				        		<div class="jurisdiction_area_box">
+				        			<div id="maintain_echarts3_1" class="maintain_echarts2"></div>
+				        			<div class="maintain_text2_del">故障处理率</div>
+				        		</div>
+				        		<div class="jurisdiction_area_box">
+				        			<div id="maintain_echarts3_2" class="maintain_echarts2"></div>
+				        			<div class="maintain_text2_del">响应及时率</div>
+				        		</div>
+				        		<div class="jurisdiction_area_box">
+				        			<div id="maintain_echarts3_3" class="maintain_echarts2"></div>
+				        			<div class="maintain_text2_del">处理及时率</div>
+				        		</div>
+				        	</div>
+				        </a>
+				    </li>
+				</ul>
+			</div>
+		</div>
+		<div class="mui-card" id="allWeak">
+			<div class="mui-card-header mui-card-media">
+				<img src="../../image/charts/allWeak.png"/>
+				<div class="mui-media-body">所有区域弱电故障处理情况</div>
+				<p></p>
+			</div>
+			<!--内容区-->
+			<div class="mui-card-content">
+				<ul class="mui-table-view">
+				    <li class="mui-table-view-cell">
+				        <a href="javascript:openNewWindow('maintain_all_weak','maintain')" class="mui-navigate-right">
+				        	<!--<label></label>-->
+				        	<div class="jurisdiction_weak_content">
+				        		<div class="jurisdiction_area_box">
+				        			<div id="maintain_echarts4_1" class="maintain_echarts2"></div>
+				        			<div class="maintain_text2_del">故障处理率</div>
+				        		</div>
+				        		<div class="jurisdiction_area_box">
+				        			<div id="maintain_echarts4_2" class="maintain_echarts2"></div>
+				        			<div class="maintain_text2_del">响应及时率</div>
+				        		</div>
+				        		<div class="jurisdiction_area_box">
+				        			<div id="maintain_echarts4_3" class="maintain_echarts2"></div>
+				        			<div class="maintain_text2_del">处理及时率</div>
+				        		</div>
+				        	</div>
+				        </a>
+				    </li>
+				</ul>
+			</div>
+		</div>
+		<div class="mui-card" id="projectAcceptance">
+			<div class="mui-card-header mui-card-media">
+				<img src="../../image/charts/projectAcceptance.png"/>
+				<div class="mui-media-body">零星工程验收</div>
+				<p></p>
+			</div>
+			<!--内容区-->
+			<div class="mui-card-content">
+				<ul class="mui-table-view">
+				    <li class="mui-table-view-cell">
+				        <a href="javascript:openNewWindow('maintain_project_acceptance','maintain')" class="mui-navigate-right">
+				        	<!--<label></label>-->
+				        	<!-- <span name="jurisdiction_area_handle"></span> -->
+				        	<div class="jurisdiction_area_handle_content">
+				        		<div id="maintain_echarts5_1" class="maintain_echarts1"></div>
+				        		<div class="maintain_text1">
+				        			<div class="maintain_text1_del" id="project_acceptance_handle">
+				        				<span>验收任务数</span>
+				        				<span></span>
+				        			</div>
+				        			<div class="maintain_text1_del" id="project_acceptance_finished">
+				        				<span>已完成验收数</span>
+				        				<span></span>
+				        			</div>
+				        		</div>
+				        	</div>
+				        </a>
+				    </li>
+				</ul>
+			</div>
+		</div>
+	</div>
+</body>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/mui.min.js"></script>
+<script type="text/javascript" src="../../script/zepto.min.js"></script>
+<script type="text/javascript" src="../../script/echarts.min.js"></script>
+<script type="text/javascript" src="../../script/fifth_frame_body.js"></script>
+</html>

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>title</title>
+    <link rel="stylesheet" type="text/css" href="../../../css/api.css" />
+    <link rel="stylesheet" type="text/css" href="../../../css/mui.min.css" />
+    <style>
+    	html, body {
+			width: 100%;
+			height: 100%;
+		 	background: transparent;
+		}
+		body{
+			display: flex;
+	    	align-items:center;
+	    	justify-content:center;
+	    	width:100%;
+	    	height:100%;
+	    	text-align:center;
+		}
+		.img-main{
+			width:90%;position: relative;
+		}
+		.close-btn{margin-top:20px;text-align: center;}
+		.close-btn span{font-size:50px;color:#ff4a4a;}
+		#eventInfo{width:100%;background: #fff;overflow: hidden;}
+		#eventInfo img{width:100%;}
+		.info-desc{margin:5px;}
+    </style>
+</head>
+<body>
+	<!-- 报警事件信息 -->
+	<div class="img-main">
+		<div id="eventInfo">
+			<img src="../../../image/imgloading.jpg" style="width:100%;"/>
+			<h5 class="info-desc"></h5>
+		</div>
+		<div class="close-btn">
+			<span onclick="fnHideFrame()" class="mui-icon mui-icon-close-filled"></span>
+		</div>
+	</div>
+</body>
+<script type="text/javascript" src="../../../script/api.js"></script>
+<script type="text/javascript" src="../../../script/zepto.min.js"></script>
+<script type="text/javascript">
+	
+	apiready = function(){
+		var pageParam = api.pageParam;
+		var infoType = pageParam.type;
+		$('.center').hide();
+		if(infoType=='eventInfo'){
+			$('#eventInfo').show();
+			var type = pageParam.data.type;
+			var eventInfo = pageParam.data.eventInfo;
+			var picurl = '';
+			var desc = '';
+			switch(type){
+			case 1:
+				picurl = eventInfo.imgurl;
+				desc = eventInfo.referencenocaption+'('+eventInfo.eventtype2+')';
+				break;
+			case 2:
+				picurl = 'http://172.20.50.50:9080/Alarm/'+eventInfo.plano+'/'+eventInfo.picname2.replace(/\\/g,"\/");
+				desc = eventInfo.eventdesc+'(安保事件)';
+				break;
+			case 3:
+				picurl = 'http://172.20.50.71:8000/'+eventInfo.pathphoto.replace(/\\/g,"\/");
+				desc = eventInfo.cameraname+'(入侵事件)';
+			}
+			if(picurl!=''){
+				fnCacheImage(picurl);
+			}
+			$('#eventInfo .info-desc').html(desc);
+		}
+	};
+	
+	//图片缓存
+	function fnCacheImage(imgUrl){
+		api.imageCache({
+		    url: imgUrl,
+		    policy:'cache_else_network'		    
+		}, function(ret, err) {
+		    var url = ret.url;
+		    if(url!=imgUrl){
+		    	$('#eventInfo img').attr('src',url);
+		    }else{
+		    	$('#eventInfo img').attr('src','../../../image/noimage.png');
+		    }
+		});
+	}
+
+	function fnHideFrame(){
+        api.closeFrame({
+        	name:api.frameName
+        });
+	}
+</script>
+</html>

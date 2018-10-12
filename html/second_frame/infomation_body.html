@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>title</title>
+    <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/mui.min.css"/>
+    <style>
+    	html,body{
+    		min-height:100%;
+    		background-color: #efeff4;
+    	}
+    	.mui-card:active{background-color:#ddd;}
+    </style>
+</head>
+<body>
+  	<div class="mui-content" id="infomation_list">
+  		<!--<div class="mui-card">
+			<div class="mui-card-content">
+				<div class="mui-card-content-inner">
+					<div style="width:100%;overflow: hidden;"><p class="mui-pull-left">姚锐 发送了一笔</p><p class="mui-pull-right">1天前</p></div>
+					<p style="margin-bottom:0;color:#333;">姚锐于2017年04月13日向您发送了一则【普通通知】，主题："Fw：班子扩大会议纪要平【2017】12号绯闻情妇氛围气氛完全few去few去分为分为气氛完全"请查阅</p>
+				</div>
+			</div>
+			<div class="mui-card-footer">
+				<span class="mui-badge mui-badge-danger mui-pull-left">未阅</span>
+				<p class="mui-pull-right" style="margin-bottom:0;">阅读全文</p>
+			</div>
+		</div>-->
+  	</div>
+  	<div style="height:24px;width:100%;">
+  		<div id="load_more" style="margin-bottom:10px;text-align: center;width:100%;"><span class="mui-spinner" style="vertical-align: bottom;"></span> 加载中...</div>
+  	</div>
+</body>
+<script id="template" type="text/template">
+	{{~ it:data }}
+	<div class="mui-card" infoId="{{=data.infomationId}}">
+		<div class="mui-card-content">
+			<div class="mui-card-content-inner">
+				<div style="width:100%;overflow: hidden;"><p class="mui-pull-left"><span style="color: #507DAF;">{{=data.sender}}</span> 发送了一笔</p><p class="mui-pull-right">{{=data.sendTime}}</p></div>
+				<p style="margin-bottom:0;color:#333;">{{=data.sender}}于{{=data.sendTimef}}日向您发送了一则【{{=data.infoType}}】，主题："{{=data.title}}"请查阅</p>
+			</div>
+		</div>
+		<div class="mui-card-footer">
+			{{? data.openFlag=='0'}}
+			<span class="mui-badge mui-badge-danger mui-pull-left">未阅</span>
+			{{?? }}
+			<span class="mui-badge mui-badge-success mui-pull-left">已阅</span>
+			{{? }}
+			<p class="mui-pull-right" style="margin-bottom:0;">阅读全文</p>
+		</div>
+	</div>
+	{{~}}
+</script>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/mui.min.js"></script>
+<script type="text/javascript" src="../../script/doT.min.js"></script>
+<script type="text/javascript" src="../../script/zepto.min.js"></script>
+<script type="text/javascript" src="../../script/CDateTime.js"></script>
+<script type="text/javascript">
+	var infomation_list,dot;
+	var pageNo = 1;
+	var pageSize = 10;
+	var totalRows = 0;
+	var isPush = true;
+	var searchTxt = null;
+	var curType = 3;
+	var gmms_url = null;
+	apiready = function(){
+		gmms_url = $api.getStorage("gmms_url");
+		fnInit();
+		fnLoadInfomation(false,'down');
+		fnInitPull();
+		fnInitPushRefresh();
+		//列表点击事件
+		mui('#infomation_list').on('tap','.mui-card',function(){
+			var infomationId = $(this).attr('infoId');
+			api.openWin({
+				name: '消息查看',
+				url: '../first_frame/infomation_view.html',
+				pageParam: {
+			        id: infomationId
+			    }
+			});
+			var _this = $(this);
+			window.setTimeout(function(){
+				var badgeSpan = _this.find("div[class='mui-card-footer']").find('span');
+				if(badgeSpan.hasClass('mui-badge-danger')){
+					badgeSpan.removeClass('mui-badge-danger');
+					badgeSpan.addClass('mui-badge-success');
+					badgeSpan.html('已阅');
+				}
+			},1000);
+		});
+	};
+	
+	function fnInit(){
+		infomation_list = $api.byId('infomation_list');
+		var template = $api.byId('template');
+    	dot = doT.template(template.innerHTML);
+	}
+	
+	// 刷新
+    function fnInitPull() {
+		api.setRefreshHeaderInfo({
+		 	bgColor: '#efeff4',
+	        dropColor:'#9BA2AC'
+		},function(){
+			fnLoadInfomation(true,'down');
+		});
+	};
+	// 下拉加载更多
+	function fnInitPushRefresh() {
+		api.addEventListener({
+			name: 'scrolltobottom',
+			extra: {
+	      		threshold: 0
+	    	}
+	  	}, function(ret, err) {
+	  		if(!isPush)
+	  			return;
+	  		if($('#infomation_list').find('.mui-card').length>=totalRows){
+	  			api.toast({
+	          		msg: '没有更多了',
+	          		duration: 2000,
+	          		location: 'bottom'
+	        	});
+	        	isPush = false;
+	        	$('#load_more').hide();
+	  		}else{
+	  			fnLoadInfomation(false,'up');
+	  		}
+	  	});
+	};
+	
+	function setType(type){
+		curType = type;
+	}
+	
+	function setSearchTxt(txt){
+		searchTxt = txt;
+	}
+	
+	//查询列表
+	function fnLoadInfomation(isLoad,upordown){
+		var ctype = api.connectionType;
+		if(ctype.toLowerCase()=='unknown'||ctype.toLowerCase()=='none'){
+			api.toast({
+			    msg: '暂无网络',
+			    duration: 2000,
+			    location: 'bottom'
+			});
+			if(isLoad){
+				api.refreshHeaderLoadDone(); //刷新结束
+			}
+			return;
+		}
+		if(!isLoad){
+			$('#load_more').show();
+		}
+		if(upordown=='down'){
+			pageNo = 1;
+			isPush = true;
+			infomation_list.innerHTML = '';
+		}
+		
+		var userId = $api.getStorage('userId');
+		api.ajax({
+	        url:gmms_url+'/modules/mobile/infomation/infomation!queryInfomation.action',
+	        method: 'post',
+	        timeout:10,
+		    data: {
+		        values: {type:curType,userId:userId,pageNo:pageNo,pageSize:pageSize,searchTxt:searchTxt}
+		    }
+        },function(ret,err){
+        	if(ret){
+        		totalRows = ret.total;
+        		$.each(ret.rows,function(i,data){
+        			data.sendTimef = data.sendTime.substring(0,10);
+        			data.sendTimef = data.sendTimef.replace('-','年').replace('-','月');
+        			data.sendTime = tranTime(data.sendTime);
+        			if(data.infoType==undefined||data.infoType==null){
+        				data.infoType = '普通通知';
+        			}
+        		});
+        		if(upordown=='down'){
+        			infomation_list.innerHTML = dot(ret.rows);
+        		}else{
+        			infomation_list.innerHTML += dot(ret.rows);
+        		}
+        	}else{
+        		api.toast({
+                    msg:err.msg,
+                    duration: 2000,
+					location: 'bottom'
+                });
+                isPush = false;
+        	}
+        	if(isLoad){
+				api.refreshHeaderLoadDone(); //刷新结束
+			}else{
+				$('#load_more').hide();
+			}
+			pageNo++;
+        });
+		
+	}
+</script>
+</html>

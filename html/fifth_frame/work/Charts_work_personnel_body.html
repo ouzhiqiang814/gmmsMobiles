@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>title</title>
+    <link rel="stylesheet" type="text/css" href="../../../css/api.css" />
+	<link rel="stylesheet" type="text/css" href="../../../css/common.css" />
+	<link rel="stylesheet" type="text/css" href="../../../css/mui.min.css"/>
+	 <style>
+	 	.mui-active{
+	 		background-color:#007aff!important;
+	 		color:#FFFFFF!important;
+	 	}
+	 </style>
+</head>
+<body>
+	<div class="mui-content">
+		<div id="content_1" style="background-color: #fff;padding-top: 30px;">
+			<div style="text-align: center;">
+				<h4>人事统计</h4>
+			</div>
+			<div id="personnel_all" style="text-align: center;color:#5d9cec;font-size: 14px;font-weight:normal;">
+				<h4>公司现有员工 1000 人</h4>
+			</div>
+			<div class="mui-scroll-wrapper mui-slider-indicator mui-segmented-control mui-segmented-control-inverted" style="color:#007aff">
+			    <div class="mui-scroll" id="headerCheck" style="width:100%;">
+			        <a class="mui-control-item mui-active" type="1">
+			           	 员工学历
+			        </a>
+			        <a class="mui-control-item" type="2">
+			                                     员工统计
+			        </a>	    
+			    </div>
+			</div>		
+			<div id="main1" style="width:100%;height:350px;"></div>		
+		</div>
+		<div id="content_2" style="background-color: #fff;margin-top: 40px;padding-top: 30px;">
+			<div style="text-align: center;">
+				<h4>请假统计</h4>
+			</div>
+			<div id="personnel_all" style="text-align: center;color:#5d9cec;font-size: 14px;font-weight:normal;">
+				<h4>公司今日请假 13 人</h4>
+			</div>		
+			<div id="main2" style="width:100%;height:350px;"></div>			
+		</div>
+
+	</div>
+</body>
+<script type="text/javascript" src="../../../script/api.js"></script>
+<script type="text/javascript" src="../../../script/common.js"></script>
+<script type="text/javascript" src="../../../script/mui.min.js"></script>
+<script type="text/javascript" src="../../../script/zepto.min.js"></script>
+<script type="text/javascript" src="../../../script/echarts.min.js"></script>
+<script type="text/javascript">
+	var charts_url = null;
+	var option1_1 = {};
+	var option1_2 = {};
+	var option2 = {};
+	
+	apiready = function(){
+		mui("#headerCheck").on('tap','a',function(){
+			var type = $(this).attr('type');
+			choiceCharts(type)
+		})		
+		getAllData()			
+	};
+
+	//下载数据
+	function getAllData(){
+		charts_url = $api.getStorage("charts_url");
+		var personnelPie = {},personnelBar = {},personnelLeavePie = {};
+//		api.ajax({
+//	        url:''
+//      },function(ret,err){
+//      	//coding...
+//      });
+
+		personnelPie = {
+			legend : ['高中','大专','本科','硕士','博士'],
+			values : [335,1569,554,214,356]
+		};
+		personnelDataPie(personnelPie);
+		
+		personnelBar = {
+			yAxis : ['技术部','养护部','机电部','综合部','采购部','路产部','财务部','厦门大桥','海沧大桥','集美大桥','杏林大桥','高速公路收费管理区','年费管理中心','收费管理部','资产管理部'],
+			xAxis : [60,122,156,12,6,60,9,23,15,19,63,18,32,53,19]
+		};
+		personnelDataBar(personnelBar);
+		
+		personnelLeavePie = {
+			legend : ['路产部','综合部','机电部','财务部','养护部'],
+			values : [1,2,3,5,2]
+		};
+		personnelLeaveDataPie(personnelLeavePie);
+	}
+
+	//生成人员学历数据信息
+	function personnelDataPie(data){
+		var myChart1 = echarts.init(document.getElementById('main1'));
+		var str = [];
+		for(var i=0;i<data.legend.length;i++){
+		  str.push({value:data.values[i],name:data.legend[i]})  
+		}		
+		option1_1 = {
+		    tooltip : {
+		        trigger: 'item',
+		        formatter: "{a} <br/>{b} : {c}人 ({d}%)"
+		    },
+		    legend: {
+		        orient: 'vertical',
+		        right: 10,
+		        top:50,
+		        data: data.legend
+		    },
+		    series : [
+		        {
+		            name: '员工学历',
+		            type: 'pie',
+		            radius : '55%',
+		            center: ['40%', '40%'],
+		            data:str,		
+		        }
+		    ],
+		    color:['#ed5555','#fc8d52','#ffce55','#ec87bf','#48cfae']		
+		}
+		myChart1.setOption(option1_1)	
+	}
+	
+	//生成员工学历数据信息
+	function personnelDataBar(data){
+		option1_2 = {
+		    tooltip : {
+		        trigger: 'axis'
+		    },
+		    grid:{
+		    	left:'15%'
+		    },
+		    formatter: "{a} <br/>{b} : {c}人",
+		    calculable : true,
+		    yAxis : [
+		        {
+		            type : 'category',
+		            data : data.yAxis
+		        }
+		    ],
+		    xAxis : [
+		        {
+		            type : 'value'
+		        }
+		    ],
+		    series : [
+		        {
+		            name:'员工统计',
+		            type:'bar',
+		            data:data.xAxis,
+		           itemStyle: {
+		                normal: {
+		                    color: function(params) {
+		                        var colorList = [
+		                          '#C1232B','#B5C334','#FCCE10','#E87C25','#27727B',
+		                          '#FE8463','#9BCA63','#FAD860','#F3A43B','#60C0DD',
+		                          '#D7504B','#C6E579','#F4E001','#F0805A','#26C0C0'
+		                        ];
+		                        return colorList[params.dataIndex]
+		                    },
+		                }
+		            }
+		        }
+		    ]			
+		}	
+	}
+	
+	//生成请假人员统计名单数据信息
+	function personnelLeaveDataPie(data){
+		var myChart2 = echarts.init(document.getElementById('main2'));
+		var str = [];
+		for(var i=0;i<data.legend.length;i++){
+		  str.push({value:data.values[i],name:data.legend[i]})  
+		}
+		option2 = {
+		    tooltip : {
+		        trigger: 'item',
+		        formatter: "{a} <br/>{b} : {c}人 ({d}%)"
+		    },
+		    legend: {
+		        orient: 'vertical',
+		        right: 10,
+		        top:50,
+		        data: data.legend
+		    },
+		    series : [
+		        {
+		            name: '员工学历',
+		            type: 'pie',
+		            radius : '55%',
+		            center: ['40%', '40%'],
+		            data:str,
+		           itemStyle: {
+		                normal: {
+		                    color: function(params) {
+		                        var colorList = [
+		                          '#C1232B','#B5C334','#FCCE10','#E87C25','#27727B',
+		                          '#FE8463','#9BCA63','#FAD860','#F3A43B','#60C0DD',
+		                          '#D7504B','#C6E579','#F4E001','#F0805A','#26C0C0'
+		                        ];
+		                        return colorList[params.dataIndex]
+		                    },
+		                }
+		            }		            
+		
+		        }
+		    ],	
+		}
+			
+		myChart2.setOption(option2);						
+	}
+
+	//选择图表
+	function choiceCharts(type){
+		
+		if(type == 1){
+			$("#main1").empty();
+			var myChart1 = echarts.init(document.getElementById('main1'));
+			myChart1.setOption(option1_1); 
+		}
+		else if(type == 2){
+			$("#main1").empty();
+			var myChart1 = echarts.init(document.getElementById('main1'));		
+			myChart1.setOption(option1_2);
+		} 	
+	}
+
+
+	
+	
+	function errDataForCharts1(){
+
+		var myChart1 = echarts.init(document.getElementById('main1'));
+		var option1 = {};						   
+			option1 = {
+			    title: {
+			        text: '物资采购',
+			        left:'center'
+			    },
+			    tooltip : {
+			        trigger: 'axis',
+			        axisPointer: {
+			            type: 'cross',
+			            label: {
+			                backgroundColor: '#6a7985'
+			            }
+			        },
+			        formatter : "{b}<br/>{c} 万元"
+			    },
+			    grid: {
+			        left: '3%',
+			        right: '4%',
+			        bottom: '3%',
+			        containLabel: true
+			    },
+			    xAxis : [
+			        {
+			            type : 'category',
+			            boundaryGap : true,
+			            data : ""
+			        }
+			    ],
+			    yAxis : [
+			        {
+			            type : 'value',
+			            name : '采购金额（万元）'
+			        }
+			    ],
+			    series : [
+			        {
+			            type:'line',
+			            data:""
+			        }
+			    ],
+			    color:["#0099ff"]
+			};
+			myChart1.setOption(option1);   
+	}
+	
+</script>
+</html>

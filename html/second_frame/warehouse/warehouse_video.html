@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>title</title>
+    <link rel="stylesheet" type="text/css" href="../../../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/common.css" />
+</head>
+<body>
+	<div id="wrap">
+		<div id="header">
+		    <div class='egret-img event-back'>
+		    	<img src="../../../image/back_btn.png"/>
+		    </div>
+		    <h1>实时视频</h1>
+		</div>
+		<div id="main">
+		</div>	
+	</div>
+</body>
+<script type="text/javascript" src="../../../script/api.js"></script>
+<script type="text/javascript" src="../../../script/common.js"></script>
+<script type="text/javascript">
+	apiready = function(){
+		fnReadyHeader2();
+		fnInitPage();
+	    fnFrame();
+	};
+	
+	function fnInitPage(){
+		api.addEventListener({
+		    name:'viewappear'
+	    },function(ret,err){
+	        if(api.pageParam.parentWin!=undefined&&api.pageParam.parentWin=='warehouse_alarm'){
+	        	api.execScript({
+					name:'warehouse_alarm',
+					frameName:'warehouse_alarm_body',
+			        script: 'fnCloseVideoPlayer();'
+		        });
+	        }
+	    });
+	    var keybacks = $api.domAll('.event-back');
+	    for (var i = 0; i < keybacks.length; i++) {
+	        $api.attr(keybacks[i], 'tapmode', 'highlight');
+	        keybacks[i].onclick = function() {
+	             //登出和释放资源
+                api.execScript({
+                    frameName: api.winName + '_body',
+                    script: 'destory();'
+                });
+                api.closeWin();
+	        };
+	    }
+	    api.parseTapmode();
+	    if(api.systemType!='ios'){
+		    api.addEventListener({
+		        name:'keyback'
+	        },function(ret,err){
+		        //登出和释放资源
+                api.execScript({
+                    frameName: api.winName + '_body',
+                    script: 'destory();'
+                });
+		        api.closeWin();
+	        });
+        }
+	}
+	
+	function fnFrame(){
+		var frameName = api.winName + '_body';
+	    api.openFrame({
+	        name: frameName,
+	        url: './' + frameName + '.html',
+	        bounces: false,
+	        pageParam:{houseId:api.pageParam.houseId},
+	        rect: {
+	            x: 0,
+	            y: headerHeight,
+	            w: 'auto',
+	            h: 'auto'
+	        },
+	        vScrollBarEnabled: false
+	    });
+	}
+</script>
+</html>

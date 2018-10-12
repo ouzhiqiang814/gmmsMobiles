@@ -1,0 +1,145 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="copyright" content="www.apicloud.com" />
+<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+<title>内部消息</title>
+<link rel="stylesheet" type="text/css" href="../../css/api.css" />
+<link rel="stylesheet" type="text/css" href="../../css/common.css" />
+<link rel="stylesheet" type="text/css" href="../../css/mui.min.css" />
+<style>
+	#my-header{    
+		background: #1081da;
+	}
+	#my-tab{
+		background: #f3f3f3;
+		padding: 5px;
+		box-shadow: 0px 0px 1px 0px #adadad;
+	}
+	.mui-search:before{margin-top:-10px;}
+</style>
+</head>
+<body>
+	<div id="wrap">
+		<div id="my-header">
+			<div id="header" style="position: relative;">
+			    <div class='egret-img event-back'>
+			    	<img src="../../image/back_btn.png" style="webkit-box-sizing: content-box;box-sizing: content-box;"/>
+			    </div>
+			    <div id="top_other_btn" class='egret-img' style="right:0px;">
+			    	<img src="../../image/add_btn.png" style="webkit-box-sizing: content-box;box-sizing: content-box;"/>
+			    </div>
+			    <h1 style="line-height: 2.4;">内部消息</h1>
+		    </div>
+		    <div id="my-tab">
+			    <div class="mui-input-row mui-search">
+					<input type="search" id="search_txt" class="mui-input-clear" placeholder="搜索" style="margin-bottom: 0;"/>
+				</div>
+			</div>
+		</div>
+		
+		<nav id="mui_bar" class="mui-bar mui-bar-tab">
+			<a val="3" class="mui-tab-item mui-active">
+				<span class="mui-icon mui-icon-email"></span>
+				<span class="mui-tab-label">电子邮件</span>
+			</a>
+			<a val="1" class="mui-tab-item">
+				<span class="mui-icon mui-icon-chatbubble"></span>
+				<span class="mui-tab-label">通知</span>
+			</a>
+			<a val="2" class="mui-tab-item">
+				<span class="mui-icon mui-icon-chatboxes"></span>
+				<span class="mui-tab-label">通告</span>
+			</a>
+	  	</nav>
+	</div>
+</body>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/common.js"></script>
+<script type="text/javascript" src="../../script/mui.min.js"></script>
+<script type="text/javascript" src="../../script/zepto.min.js"></script>
+<script type="text/javascript">
+apiready = function (){
+	var header = $api.byId('my-header');
+    if (header) {
+        $api.fixStatusBar(header);
+        headerHeight = $api.offset(header).h;
+    }
+	fnReadyKeyback();
+	fnReadyAdd();
+    fnFrame();
+    
+    $('#search_txt').on('keyup',function(e){
+		if(e.keyCode==13){//android搜索键
+			$(this).blur();
+		}
+	});
+	$('#search_txt').on('blur',function(){
+		api.execScript({
+			frameName:api.winName + '_body',
+	        script: "setSearchTxt('"+$('#search_txt').val()+"');"
+        });
+     	api.execScript({
+			frameName:api.winName + '_body',
+	        script: "fnLoadInfomation(false,'down');"
+        });
+	});
+	
+	$('.mui-tab-item').on('tap',function(){
+		if($(this).hasClass('mui-active')){
+			return;
+		}
+		var type = $(this).attr('val');
+		api.execScript({
+			frameName:api.winName + '_body',
+	        script: "setType('"+type+"');"
+        });
+        $('#search_txt').val('');
+        api.execScript({
+			frameName:api.winName + '_body',
+	        script: "setSearchTxt('');"
+        });
+        api.execScript({
+			frameName:api.winName + '_body',
+	        script: "fnLoadInfomation(false,'down');"
+        });
+	});
+}
+//新增内部邮件
+function fnReadyAdd(){
+	var addbtn = $api.byId('top_other_btn');
+ 	addbtn.onclick = function() {
+ 		api.openWin({
+         	name: 'infomation_add',
+         	url: './infomation/infomation_add.html',
+         	delay : 200,
+			bounces : false,
+			animation:{
+				type:'movein'
+			}
+         });
+    };
+	api.parseTapmode();
+}
+
+function fnFrame() {
+	var height = api.winHeight-$api.offset($api.byId('my-header')).h-$api.offset($api.byId('mui_bar')).h;
+	if(api.systemType=='ios'){
+		height = height-2;
+	}
+	api.openFrame({
+	    name: api.winName + '_body',
+	    url: './infomation_body.html',
+	    rect: {
+		    x:0,
+		    y:headerHeight+1,
+		    w:'auto',
+		    h:height
+	    },
+	    bounces: true,
+	    vScrollBarEnabled: false
+    });
+};
+</script>
+</html>

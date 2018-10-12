@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>title</title>
+    <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/mui.min.css"/>
+    <style>
+    	html,body{
+    		min-height:100%;
+    		background-color: #efeff4;
+    	}
+    	.p-hide{
+		    overflow: hidden;
+		    height: 20px;
+		    white-space: nowrap;
+		    text-overflow: ellipsis;
+		}
+		.p-show{
+			overflow: hidden;
+		    height: auto;
+		}
+		.hide{
+			display:none;
+		}
+    </style>
+</head>
+<body>
+	<div class="mui-content" id="infomation_body">
+			
+   	</div>
+</body>
+<script id="template" type="text/template">
+{{? it.info }}
+<div class="mui-card">
+	<div class="mui-card-header">{{=it.info.sendTime}}<div class="mui-slider-right">{{=it.info.sender.name}}</div></div>
+		<div class="mui-card-content">
+			<div class="mui-card-content-inner">
+				<p><b>主题：</b><span id="theme">{{=it.info.title }}</span></p>
+				<p><b>接收人：</b><span style="float: right;font-weight: bold;" onclick="goOpen(this)">展开</span></p>
+				<p id="acceptName" class="p-hide">
+				<span style="display: none" id="parentId">{{=it.info.id}}</span>
+				{{=it.accepters}}
+				</p>
+				<p><b>内容：</b><span id="substance">{{=it.info.content}}</span></p>
+				{{? it.files }}
+				<p><b>附件：</b></p>
+				<ul class="mui-table-view mui-table-view-chevron" style="background-color: #f7f7f7">
+					{{~ it.files:file }}
+					<li class="mui-table-view-cell">
+						<a href="#" onclick="goViewFile('{{=file.fileId}}','{{=file.fileSaveName}}')" class="mui-navigate-right" id="enclosure">
+							{{? file.fileSaveName.indexOf('.xls')>-1 }}
+							<img src="../../image/fileType/xls.png">
+							{{? }}
+							{{? file.fileSaveName.indexOf('.doc')>-1 }}
+							<img src="../../image/fileType/doc.png">
+							{{? }}
+							{{? file.fileSaveName.indexOf('.pdf')>-1 }}
+							<img src="../../image/fileType/pdf.png">
+							{{? }}
+							{{? file.fileSaveName.indexOf('.txt')>-1 }}
+							<img src="../../image/fileType/txt.png">
+							{{? }}
+							{{? file.fileSaveName.indexOf('.jpg')>-1||file.fileSaveName.indexOf('.jpeg')>-1||file.fileSaveName.indexOf('.png')>-1 }}
+							<img src="../../image/fileType/jpg.png">
+							{{? }}
+							{{? file.fileSaveName.indexOf('.gif')>-1 }}
+							<img src="../../image/fileType/gif.png">
+							{{? }}
+							{{? file.fileSaveName.indexOf('.ppt')>-1 }}
+							<img src="../../image/fileType/ppt.png">
+							{{? }}
+							{{? file.fileSaveName.indexOf('.rar')>-1||file.fileSaveName.indexOf('.zip')>-1 }}
+							<img src="../../image/fileType/zip.png">
+							{{? }} 
+							{{=file.fileSaveName}}
+						</a>
+					</li>
+					{{~ }}
+				</ul>
+				{{? }}
+			</div>
+		</div>			
+	</div>
+    <div class="mui-button-row hide" style="margin-top: 15px;" id="transmitMessage">
+        <button type="button" class="mui-btn mui-btn-primary"  style="width:80%;" onclick="transmitMessage()">邮件转发</button>
+    </div>	
+</div>
+{{?? }}
+<p style="margin-top:10px;text-align: center;">数据丢失</p>
+{{? }}
+</script>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/mui.min.js"></script>
+<script type="text/javascript" src="../../script/doT.min.js"></script>
+<script type="text/javascript" src="../../script/zepto.min.js"></script>
+<script type="text/javascript">
+	var infomation_body,dot;
+	var gmms_url = null;
+	var retJson = "";
+	apiready = function(){
+		gmms_url = $api.getStorage("gmms_url");
+		fnInit();
+		fnFindInfomation();
+		mui("#transmitMessage").on('tap','button',function(){
+			transmitMessage();
+		});		
+	};
+	function fnInit(){
+		infomation_body = $api.byId('infomation_body');
+		var template = $api.byId('template');
+    	dot = doT.template(template.innerHTML);
+	}
+	//加载信息
+	function fnFindInfomation(){
+		api.showProgress({
+			title:'加载中',
+			text:'请稍后...',
+			modal:false
+        });
+		var id = api.pageParam.id;
+		var userId = $api.getStorage("userId");
+		api.ajax({
+	        url:gmms_url+'/modules/mobile/infomation/infomation!viewInfomationForApp.action',
+	        method: 'post',
+	        timeout:10,
+		    data: {
+		        values: {id:id,userId:userId}
+		    }
+        },function(ret,err){
+        	api.hideProgress();
+        	retJson = ret;
+        	if(ret){
+        		ret.info.sendTime = (new Date(Number(ret.info.sendTime))).toLocaleString();
+        		infomation_body.innerHTML = dot(ret);
+        	}else{
+        		api.toast({
+                    msg:err.msg,
+                    duration: 2000,
+					location: 'bottom'
+                });
+        	}
+        	var hide = ret["info"]["type"];
+        	if(hide == 2){
+        		$api.addCls($api.byId('transmitMessage'), 'hide');
+        	}
+        	else{
+        		$api.removeCls($api.byId('transmitMessage'), 'hide');
+        	}        	
+        });
+	}
+	
+	function goOpen(_this){
+		if($(_this).html()=='展开'){
+			$('#acceptName').removeClass('p-hide');
+			$('#acceptName').addClass('p-show');
+			$(_this).html('收起');
+		}else{
+			$('#acceptName').removeClass('p-show');
+			$('#acceptName').addClass('p-hide');
+			$(_this).html('展开');
+		}
+	}
+	
+	//附件查看
+	function goViewFile(fileId,fileName){
+		var fileUrl = gmms_url+'/modules/upload/file-download!getFileStream.action?fileId='+fileId;
+		if(fileName.indexOf('.jpg')>-1||fileName.indexOf('.jpeg')>-1||fileName.indexOf('.png')>-1||fileName.indexOf('.gif')>-1){
+			var imageBrowser = api.require('imageBrowser');
+			imageBrowser.openImages({
+				showList:false,
+				activeIndex:0,
+				tapClose:false,
+			    imageUrls: fileUrl.split(',')
+			});
+		}else{
+			var docReader = api.require('docReader');
+			api.showProgress({
+				title:'下载文件',
+				text:'请稍后...',
+				modal:false
+	        });
+			api.download({
+			    url: fileUrl,
+			    savePath: api.cacheDir+'/'+fileName,
+			    report: true,
+			    cache: true,
+			    allowResume: true
+			}, function(ret, err) {
+			    if (ret.state == 1) {
+			    	api.hideProgress();
+			    	var filePath = ret.savePath;
+			    	console.log(filePath);
+			        docReader.open({
+					    path: filePath
+					}, function(rett, errr) {
+					    if (rett.status) {
+					        console.log(JSON.stringify(rett));
+					    } else {
+					        console.log(JSON.stringify(errr));
+					    }
+					});
+			    } else if(ret.state == 2){
+					api.toast({
+		                msg:'文件下载失败!'
+	                });
+	                console.log(JSON.stringify(err));
+			    }
+			});
+		}
+	}
+	
+	Date.prototype.toLocaleString = function() {
+      	return this.getFullYear() + "-" + ((this.getMonth() + 1)<10?'0'+(this.getMonth() + 1):(this.getMonth() + 1)) + "-" +
+      			(this.getDate()<10?'0'+this.getDate():this.getDate()) + " " +
+      			(this.getHours()<10?'0'+this.getHours():this.getHours()) + ":" +
+      			(this.getMinutes()<10?'0'+this.getMinutes():this.getMinutes());
+    };
+    
+    
+    //转发邮件
+    function transmitMessage(){
+		var parm = {}						
+		if(retJson["files"]){
+			var parm = {
+				userId:$api.getStorage("userId"),
+				lesseeId:$api.getStorage("lesseeId"),
+				type:retJson["info"]["type"],
+				title:retJson["info"]["title"],
+				content:retJson["info"]["content"],
+				id:retJson["info"]["id"],				
+				files:[],
+				fileId:retJson["info"]["attachids"],
+			}
+			for(var i=0;i<retJson["files"].length;i++){
+				var extendName = retJson["files"][i]["extendName"];
+				var fileSaveName = retJson["files"][i]["fileSaveName"];
+				var fileUrl = retJson["files"][i]["fileUrl"]
+				parm["files"].push({extendName:extendName,fileSaveName:fileSaveName,fileUrl:fileUrl});
+			}				
+		}
+		else{
+			var parm = {
+				userId:$api.getStorage("userId"),
+				lesseeId:$api.getStorage("lesseeId"),
+				type:retJson["info"]["type"],
+				title:retJson["info"]["title"],
+				content:retJson["info"]["content"],
+				id:retJson["info"]["id"]
+			}		
+		}
+    	api.openWin({
+	        name: 'transmitMessage',
+	        url: './transmitMessage.html',
+	        pageParam:parm
+        });
+    }
+</script>
+</html>

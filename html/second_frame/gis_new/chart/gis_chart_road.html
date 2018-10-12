@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>title</title>
+    <link rel="stylesheet" type="text/css" href="../../../../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../../css/mui.min.css"/>
+    <style>
+    	html,body {min-height: 100%;background-color: #efeff4;}
+    	.my-chart{
+    		width:100%;
+    		height:auto;
+    		overflow: hidden;
+    		text-align: center;
+    		margin:10px 0px;
+		    background: #fff;
+    		padding: 10px 0px;
+    	}
+    	.chart{height:220px;width:100%;}
+    	.chart-nodata1{
+    		background:url(../../../../image/gis/nochart-1.png);width:100%;height:100%;font-size: 26px;padding-top: 15%;
+    		background-position: center;
+    		background-size: cover;
+    		color: #ddd;
+    	}
+    	.chart-nodata2{
+    		background:url(../../../../image/gis/nochart-2.png);width:100%;height:100%;font-size: 26px;padding-top: 15%;
+    		background-position: center;
+    		background-size: cover;
+    		color: #ddd;
+    	}
+    </style>
+</head>
+<body>
+	<div class="mui-content">
+		<div class="my-chart">
+			<h4>当前四桥一隧路政案件统计</h4>
+			<h5 style="margin: 10px 0px;">时区：<span id="lzaj_times"></span></h5>
+			<div id="lzaj_chart" class="chart"></div>
+		</div>
+		<div class="my-chart">
+			<h4>当前四桥一隧共查处超限车辆</h4>
+			<h5 style="margin: 10px 0px;">时区：<span id="cxcl_times"></span></h5>
+			<div style="width: 100%;padding:5px 20px;color:rgb(93, 156, 236);overflow: hidden;">
+				<span class="mui-pull-left" style="position: relative;">
+					<em style="position:absolute;left:0;top:0;bottom:0;width:10px;background:#0dda0d;"></em>
+					&nbsp;&nbsp;&nbsp;超限车辆
+				</span>
+				<span class="mui-pull-right" id="cxcl_num">0辆</span>
+			</div>
+			<div id="cxcl_chart" class="chart"></div>
+		</div>
+	</div>
+</body>
+<script type="text/javascript" src="../../../../script/api.js"></script>
+<script type="text/javascript" src="../../../../script/mui.min.js"></script>
+<script type="text/javascript" src="../../../../script/zepto.min.js"></script>
+<script type="text/javascript" src="../../../../script/echarts.min.js"></script>
+<script type="text/javascript" src="../../../../script/transform.js"></script>
+<script type="text/javascript">
+	var lzaj_chart = null;
+	var cxcl_chart = null;
+	apiready = function(){
+		var datenow = new Date();
+		var bdate = new Date(datenow.getTime()-(24*60*60*1000)).Format('yyyy-MM-dd hh:mm');
+		var edate = new Date().Format('yyyy-MM-dd hh:mm');
+		$('#lzaj_times').html(bdate+' ~ '+edate);
+		$('#cxcl_times').html(bdate+' ~ '+edate);
+		window.setTimeout(function(){
+			countRoadCase();
+			countRoadExact();
+		},300);
+	};
+	
+	function fnRefresh(){
+		var datenow = new Date();
+		var bdate = new Date(datenow.getTime()-(24*60*60*1000)).Format('yyyy-MM-dd hh:mm');
+		var edate = new Date().Format('yyyy-MM-dd hh:mm');
+		$('#lzaj_times').html(bdate+' ~ '+edate);
+		$('#cxcl_times').html(bdate+' ~ '+edate);
+		countRoadCase();
+		countRoadExact();
+	}
+	
+	function countRoadCase(){
+		var reportUrl = $api.getStorage("report_url");
+		api.ajax({
+	        url:reportUrl+'gims/gis-new/countEmFile',
+	        timeout:10
+        },function(json,err){
+        	if(json&&json.errcode==0&&json.data!=null&&json.data.length>0){
+        		var cxdata = [],lcdata = [];
+				$.each(json.data,function(i,data){
+					if(data.plano=='0001'){
+						cxdata[0] = data.cx_case;
+						lcdata[0] = data.lc_case;
+					}
+					if(data.plano=='0002'){
+						cxdata[1] = data.cx_case;
+						lcdata[1] = data.lc_case;
+					}
+					if(data.plano=='0003'){
+						cxdata[2] = data.cx_case;
+						lcdata[2] = data.lc_case;
+					}
+					if(data.plano=='0004'){
+						cxdata[3] = data.cx_case;
+						lcdata[3] = data.lc_case;
+					}
+					if(data.plano=='0005'){
+						cxdata[4] = data.cx_case;
+						lcdata[4] = data.lc_case;
+					}
+				});
+				
+				var option = {
+					color:['#0160ad','#8bbc22'],					
+					legend: {
+				        data:['超限案件','路产案件']
+				    },
+				    xAxis : [
+			         	{
+			             	type : 'category',
+			             	axisLabel:{
+	   		                 	interval:0
+	   		                },
+			             	data : ['厦门大桥','集美大桥','海沧大桥','杏林大桥','翔安隧道']
+			         	}
+			     	],
+			     	yAxis : [
+			   	        {
+			   	        	show:false,
+			   	            type : 'value'
+			   	        }
+			   	    ],
+			   	 	grid: {
+			             left: '-5%',
+			             right: '1%',
+			             bottom: '5%',
+			             top:'20%',
+			             containLabel:true
+			     	},
+			   	 	series : [
+			   	        {
+			   	            name:'超限案件',
+			   	            type:'bar',
+			       	         label: {
+			                     normal: {
+			                         show: true,
+			                         position: 'top'
+			                     }
+			                 },
+			   	            data:cxdata
+			   	        },
+			   	     	{
+			   	            name:'路产案件',
+			   	            type:'bar',
+			       	         label: {
+			                     normal: {
+			                         show: true,
+			                         position: 'top'
+			                     }
+			                 },
+			   	            data:lcdata
+			   	        }
+			   	    ]
+				};
+				if(lzaj_chart==null){
+					lzaj_chart = echarts.init(document.getElementById('lzaj_chart'));
+				}
+				lzaj_chart.setOption(option);
+        	}else{
+        		document.getElementById('lzaj_chart').innerHTML = '<div class="chart-nodata1">暂无数据</div>';
+        	}
+        });
+	}
+	
+	function countRoadExact(){
+		var reportUrl = $api.getStorage("report_url");
+		api.ajax({
+	        url:reportUrl+'gims/gis-new/countExactByPlano',
+	        timeout:10
+        },function(json,err){
+        	if(json&&json.errcode==0&&json.data!=null&&json.data.length>0){
+        		var totalNum = 0;
+				var legend_data = [];
+				var series_data = [];
+				$.each(json.data,function(i,data){
+					legend_data.push(data.planame+'('+data.total+')');
+					series_data.push({value:data.total, name:data.planame+'('+data.total+')'});
+					totalNum += data.total;
+				});
+				$('#cxcl_num').html(totalNum+'辆');
+				var option = {
+				    tooltip : {
+				        trigger: 'item',
+				        formatter: "{a} <br/>{b}({d}%)"
+				    },
+				    color:['#005fa3','#7bbe33','#a40000','#ffca00','#ff0000'],
+				    legend: {
+				    	show:false,
+				        data: legend_data
+				    },
+				    series : [
+				        {
+				            name: '超限车辆',
+				            type: 'pie',
+				            radius : '65%',
+				            center: ['50%', '50%'],
+				            data:series_data,
+				            itemStyle: {
+				                emphasis: {
+				                    shadowBlur: 10,
+				                    shadowOffsetX: 0,
+				                    shadowColor: 'rgba(0, 0, 0, 0.5)'
+				                }
+				            }
+				        }
+				    ]	
+				}
+				if(cxcl_chart==null){
+					cxcl_chart = echarts.init(document.getElementById('cxcl_chart'));
+				}
+				cxcl_chart.setOption(option);
+        	}else{
+        		document.getElementById('cxcl_chart').innerHTML = '<div class="chart-nodata2">暂无数据</div>';
+        	}
+        });
+	}
+</script>
+</html>

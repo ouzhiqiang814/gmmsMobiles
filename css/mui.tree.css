@@ -1,0 +1,22 @@
+.my-down:after{
+	content: '\e581';
+}
+/**
+.my-up{
+	background-color: #eee;
+}
+*/
+.my-up:after{
+	content: '\e580';
+}
+.my-child{
+	display:none;
+	margin: 11px -15px -11px;
+}
+.my-child li{padding-left:30px;}
+
+.tree-item-icon{
+	position:absolute;
+    top: 0px;
+    padding: 10px 8px 10px 0px;
+}

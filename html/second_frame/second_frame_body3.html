@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>端API</title>
+		<link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+		<link rel="stylesheet" type="text/css" href="../../css/style.css"/>
+		<style>
+			.main-context{
+				overflow: hidden;
+				background: #f4f5f7;
+				width:100%;
+			}
+			.firstfloor {
+				display: flex;
+				flex-flow: row;
+			}
+			.firstfloor > div {
+					flex: 1;
+				text-align: center;
+				margin-top: 15px;
+				margin-bottom:15px;
+			}
+			.firstfloor > div > img {
+				width: 60%;
+			}
+			.secondfloor {
+				height: 50px;
+			}
+			.broadcast {
+				width: 100px;
+				padding: 20px;
+			}
+			.more {
+				float: right;
+				padding: 20px;
+				width: 70px;
+			}
+			.information {
+				padding-left: 10px;
+				padding-top: 15px;
+			}
+			.content {
+				font-size: 16px;
+				padding-left: 10px;
+			}
+			.time {
+				padding-left: 10px;
+				font-size: 12px;
+				color: #CCCCCC;
+			}
+			.h1 {
+				height: 1px;
+				margin-left: 15px;
+				background: #e9e7e7;
+				margin-right: 15px;
+				margin-top: 15px;
+			}
+			.read_span{
+				color:red;border-radius:50%;background-color:red;width:8px;height:8px;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="main-context">
+			<div class="firstfloor">
+				<div>
+					<img src="../../image/one.png" alt="" onclick="openNewWindow('GIS_con')">
+					<div>
+						GIS
+					</div>
+				</div>
+				<div>
+					<img src="../../image/two.png" alt="" onclick="openNewWindow('Report_data_query_con')">
+					<div>
+						业务报表
+					</div>
+				</div>
+				<div>
+					<img src="../../image/three.png" alt="" onclick="openNewWindow('business_new')">
+					<div>
+						新建事务
+					</div>
+				</div>
+			</div>
+			<div class="firstfloor">
+				<div>
+					<img src="../../image/four.png" alt="" onclick="openNewWindow('infomation')">
+					<div>
+						内部邮件
+					</div>
+				</div>			
+				 <div>
+					<img src="../../image/seven.png" alt="" onclick="openNewWindow('jiandu')">
+					<div>
+						车辆现场
+					</div>
+				</div>
+				<div>
+					<img src="../../image/eight.png" alt="" onclick="openNewWindow('warehouse')">
+					<div>
+						无人仓库
+					</div>
+				</div> 
+				<!--<div>
+					<img src="../../image/eight.png" alt="" onclick="openNewWindow('')">
+					<div>
+						作业抽检
+					</div>
+				</div>-->
+				<!--
+				<div>
+					<img src="../../image/five.png" alt="" onclick="openNewWindow('')">
+					<div>
+						会议纪要
+					</div>
+				</div>
+				<div>
+					<img src="../../image/six.png" alt="" onclick="openNewWindow('')">
+					<div>
+						文件查询
+					</div>
+				</div>-->			
+			</div>
+		</div>
+		<div class="secondfloor">
+			<img src="../../image/022.png" class="broadcast">
+			<img src="../../image/023.png" alt="" class="more" onclick="fnShowMoreNotice()">
+		</div>
+		<div id="my_notice_list" class="thirdfloor">
+			
+		</div>
+	</body>
+	<script type="text/javascript" src="../../script/api.js"></script>
+	<script type="text/javascript" src="../../script/zepto.min.js"></script>
+	<script type="text/javascript" src="../../script/second_frame_body.js"></script>
+</html>

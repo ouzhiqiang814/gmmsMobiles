@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>title</title>
+    <link rel="stylesheet" type="text/css" href="../../../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/mui.min.css"/>
+    <style>
+    	html,body{
+    		min-height:100%;
+    		background-color: #efeff4;
+    	}
+    	.mui-btn.mui-icon {
+		    font-size: 16px;
+		    line-height: 1.42;
+		}
+    	h5{margin-top:10px;}
+    	.row {
+		    width: 100%;
+		    background-color: #fff;
+		}
+    	.image-list {
+		    width: 100%;
+		    height: auto;
+		    background-size: cover;
+		    padding: 10px 10px;
+		    overflow: hidden;
+		}
+    	.image-item.space {
+		    border: none;
+		}
+		.image-item {
+		    width: 65px;
+		    height: 65px;
+		    background-size: 100% 100%;
+		    display: inline-block;
+		    position: relative;
+		    border-radius: 5px;
+		    margin-right: 10px;
+		    margin-bottom: 10px;
+		    border: solid 1px #e8e8e8;
+		    vertical-align: top;
+		}
+		.image-item .image-up {
+		    height: 65px;
+		    width: 65px;
+		    border-radius: 10px;
+		    padding-top: 1em;
+		    border: 1px solid #ccc;
+		    color: #ccc;
+		    display: inline-block;
+		    text-align: center;
+	        background: #fff;
+		}
+		.image-item .image-up::after {
+		    font-family: '微软雅黑';
+		    content: "+";
+		    font-size: 60px;
+		}
+		.image-item .image-close {
+		    position: absolute;
+		    display: inline-block;
+		    right: -6px;
+		    top: -6px;
+		    width: 20px;
+		    height: 20px;
+		    text-align: center;
+		    line-height: 20px;
+		    border-radius: 12px;
+		    background-color: #FF5053;
+		    color: #f3f3f3;
+		    border: solid 1px #FF5053;
+		    font-size: 9px;
+		    font-weight: 200;
+		    z-index: 1;
+		}
+		.image-item img{
+		    height: 65px;
+		    width: 65px;
+		    border-radius: 10px;
+		    line-height: 65px;
+		    border: 1px solid #ccc;
+		    color: #ccc;
+		    display: inline-block;
+		    text-align: center;
+		}
+    </style>
+</head>
+<body>
+	<div class="mui-content">
+		<form id="infomationForm" class="mui-content-padded">
+			<input  type="hidden" name="infomation.sender.id"/>
+			<input  type="hidden" name="infomation.lesseeId"/>
+			<input  type="hidden" name="base64Images"/>
+			<h5>消息类型:</h5>
+			<div id="type_btngroup">
+				<input type="hidden" name="infomation.type" value="3"/>
+				<button type="button" class="mui-btn mui-btn-primary" field="3">电子邮件</button>
+				<button type="button" class="mui-btn" field="1">通知</button>
+				<button type="button" class="mui-btn" field="2">公告</button>
+			</div>
+			<h5>等级:</h5>
+			<div id="grade_btngroup">
+				<input type="hidden" name="infomation.grade" value="1"/>
+				<button type="button" class="mui-btn mui-btn-primary" field="1">普通</button>
+				<button type="button" class="mui-btn" field="2">重要</button>
+			</div>
+			<h5>接收人:</h5>
+			<div id="users_btngroup">
+				<input type="hidden" name="infomationMapUserIds"/>
+				<input type="hidden" name="infomationMapUserNames"/>
+				<button type="button" class="mui-btn mui-icon mui-icon-plus">选择用户</button>
+				<button id="selectedUserBtn" type="button" class="mui-btn mui-icon mui-icon-contact">已选用户</button>
+			</div>
+			<h5><font color="red">*</font>主题:</h5>
+			<div class="mui-input-row">
+				<input type="text" name="infomation.title" placeholder="请输入主题"/>
+			</div>
+			<h5>内容:</h5>
+			<div class="mui-input-row">
+				<textarea id="textarea" rows="5" name="infomation.content" class="mui-input-clear question" placeholder="请输入内容"></textarea>
+			</div>
+			<h5>图片:</h5>
+			<div class="mui-input-row">
+				<div id='image-list' class="image-list">
+					<div class="image-item space">
+						<div class="image-up" onclick="fnSelImage()"></div>
+					</div>
+				</div>
+			</div>
+			<button type="button" onclick="goSubmit()" class="mui-btn mui-btn-block mui-btn-primary" style="padding: 10px 0;">保存</button>
+		</form>
+	</div>
+</body>
+<script type="text/javascript" src="../../../script/api.js"></script>
+<script type="text/javascript" src="../../../script/mui.min.js"></script>
+<script type="text/javascript" src="../../../script/zepto.min.js"></script>
+<script type="text/javascript">
+	apiready = function(){
+		mui('#type_btngroup').on('tap','button',function(){
+			$('#type_btngroup button').removeClass('mui-btn-primary');
+			$(this).addClass('mui-btn-primary');
+			$("input[name='infomation.type']").val($(this).attr('field'));
+		});
+		mui('#grade_btngroup').on('tap','button',function(){
+			$('#grade_btngroup button').removeClass('mui-btn-primary');
+			$(this).addClass('mui-btn-primary');
+			$("input[name='infomation.grade']").val($(this).attr('field'));
+		});
+		
+		mui('#users_btngroup').on('tap','button',function(){
+			if($(this).text().indexOf('选择用户')>-1){
+				fnSelectUsers();
+			}
+			if($(this).text().indexOf('已选用户')>-1){
+				if($("input[name='infomationMapUserIds']").val()==''){
+					api.alert({msg:'暂无选择的人员'});
+					return;
+				}
+				fnViewSelectedUsers();
+			}
+		});
+		
+		$("input[name='infomation.sender.id']").val($api.getStorage("userId"));
+		$("input[name='infomation.lesseeId']").val($api.getStorage("lesseeId"));
+	};
+	/**
+	 *选择照片 
+	 */
+	function fnSelImage(){
+		api.actionSheet({
+			cancelTitle:'取消',
+			buttons:['拍照','手机相册']
+		},function(ret,err){
+			var sourceType = null;
+			if(ret.buttonIndex==1){
+				sourceType = 'camera';
+			}
+			if(ret.buttonIndex==2){
+				sourceType = 'library';
+			}
+			if(sourceType==null){
+				return;
+			}
+			api.getPicture({
+			    sourceType: sourceType,
+			    encodingType: 'jpg',
+			    mediaValue: 'pic',
+			    destinationType: 'base64',
+			    quality: 50
+			}, function(ret, err) {
+			    if (ret) {
+			    	if(ret.base64Data!=''){
+				    	$('#image-list').prepend(
+		        			 '<div class="image-item space">'+
+							 '	<div class="image-close" onclick="goDelete(this)">X</div>'+
+							// '	<input type="hidden" name="base64Images" value="'+ret.base64Data+'"/>'+
+							 '	<img src="'+ret.base64Data+'" base64Images="'+ret.base64Data+'"/>'+
+							 '</div>');
+			    	}
+			    	//console.log(JSON.stringify(ret.base64Data))
+			    	//alert(JSON.stringify(ret.base64Data))
+			    }
+			});
+		});
+	}
+	
+	/**
+	 * 打开选择人员窗口 
+	 */
+	function fnSelectUsers(){
+		api.openWin({
+	        name: 'select_useunit',
+	        url: '../../three_frame/select_useunit.html',
+			animation:{
+				type:'movein',
+				subType:'from_bottom'
+			}
+        });
+	}
+	/**
+	 * 设置已选人员 
+	 */
+	function getSelectUsers(userIds,userNames){
+		var idsInput = $("input[name='infomationMapUserIds']").val();
+		var namesInput = $("input[name='infomationMapUserNames']").val();
+		var allIds =  "";
+		var allNames = namesInput + "," + userNames;		
+		if(idsInput == ""){
+			allIds =  userIds;
+			allNames = userNames;
+		}
+		else{
+			allIds =  idsInput + "," + userIds;
+			allNames = namesInput + "," + userNames;		
+		}
+		var idsArr = allIds.split(",");
+		var namesArr = allNames.split(",");
+		var idsTemp = [];
+		var namesTemp = [];
+		for(var i=0;i<idsArr.length;i++){
+			if(idsTemp.indexOf(idsArr[i]) == -1){
+				idsTemp.push(idsArr[i]);
+			}
+			if(namesTemp.indexOf(namesArr[i]) == -1){
+				namesTemp.push(namesArr[i]);
+			}
+		}
+		$("input[name='infomationMapUserIds']").val(idsTemp.toString());
+		$("input[name='infomationMapUserNames']").val(namesTemp.toString());		
+		if(userIds!=null&&userIds!=''){
+			var nums = idsTemp.length;
+			$('#selectedUserBtn').addClass('mui-btn-primary');
+			$('#selectedUserBtn').html('已选用户('+nums+')');
+		}else{
+			$('#selectedUserBtn').removeClass('mui-btn-primary');
+			$('#selectedUserBtn').html('已选用户');
+		}
+	}
+	
+	/**
+	 *  已选人员 
+	 */
+	function delSelectUsers(userIds,userNames){
+		$("input[name='infomationMapUserIds']").val(userIds);
+		$("input[name='infomationMapUserNames']").val(userNames);
+		if(userIds!=null&&userIds!=''){
+			var nums = userIds.split(',').length;
+			$('#selectedUserBtn').addClass('mui-btn-primary');
+			$('#selectedUserBtn').html('已选用户('+nums+')');
+		}else{
+			$('#selectedUserBtn').removeClass('mui-btn-primary');
+			$('#selectedUserBtn').html('已选用户');
+		}
+	}		
+	
+	/**
+	 * 查看已选用户列表 
+	 */
+	function fnViewSelectedUsers(){
+		api.openWin({
+	        name: 'selected_user_view',
+	        url: './selected_user_view.html',
+	        pageParam:{
+	        	userIds:$("input[name='infomationMapUserIds']").val(),
+	        	userNames:$("input[name='infomationMapUserNames']").val()
+	        },
+			animation:{
+				type:'movein',
+				subType:'from_bottom'
+			}
+        });
+	}
+	
+	function goDelete(_this){
+		$(_this).parent().remove();
+	}
+	
+	
+	function goSubmit(){
+		var gmms_url = $api.getStorage('gmms_url');
+		if($("input[name='infomationMapUserIds']").val()==''){
+			api.alert({
+			    title: '提示',
+			    msg: '请选择接收人!',
+			}, function(ret, err) {});
+			return;
+		}
+		if($("input[name='infomation.title']").val()==''){
+			api.alert({
+			    title: '提示',
+			    msg: '请输入主题!',
+			}, function(ret, err) {});
+			return;
+		}
+		var base64Images = "";
+		$("#image-list img").each(function(){
+			base64Images += $(this).attr("base64Images")+'@';
+		})
+		//console.log(base64Images)
+		$("input[name=base64Images]").val(base64Images);
+		//$("#infomationForm").serializeObject();
+		//alert($("input[name=base64Images]").length)
+		api.showProgress({
+		    style: 'default',
+		    animationType: 'fade',
+		    title: '请稍后',
+		    text: '正在保存数据...',
+		    modal: true
+		});
+		api.ajax({
+	        url:gmms_url+'/modules/mobile/infomation/infomation!saveInfomationRBA.action',
+	        method:'post',
+	        data:{
+	        	values:$("#infomationForm").serializeObject() //自动将form表单封装成json  
+	        }
+        },function(json,err){
+        	api.hideProgress();
+        	if(json){
+        		api.alert({
+				    title: '提示',
+				    msg: json.msg,
+				}, function(ret, err) {
+					if(json.success){
+						api.closeWin();
+					}
+				});
+        	}else{
+        		api.toast({
+	                msg:err.msg
+                });
+        	}
+        });
+	}
+	
+	$.fn.serializeObject = function()    
+	{    
+	   var o = {};    
+	   var a = this.serializeArray();    
+	   $.each(a, function() {    
+	       if (o[this.name]) {    
+	           if (!o[this.name].push) {    
+	               o[this.name] = [o[this.name]];    
+	           }    
+	           o[this.name].push(this.value || '');    
+	       } else {    
+	           o[this.name] = this.value || '';    
+	       }    
+	   }); 
+	   //console.log(JSON.stringify(o))   
+	   return o;   
+	};
+</script>
+</html>

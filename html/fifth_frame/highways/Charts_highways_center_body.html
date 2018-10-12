@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>title</title>
+    <link rel="stylesheet" type="text/css" href="../../../css/api.css" />
+	<link rel="stylesheet" type="text/css" href="../../../css/common.css" />
+	<link rel="stylesheet" type="text/css" href="../../../css/mui.min.css"/>
+	 <style>
+	 	.mui-title{
+	 		font-size:20px;
+	 	}
+	 	.updatatime_box{
+	 		text-align: center;
+			font-size: 13px;
+			color: #dddddd;
+			margin-top: -15px;
+	 	}
+	 	.header_1{
+	 		background-color: #fff;
+	 		padding-top: 30px;
+	 	}
+	 	.header_2{
+	 		background-color: #fff;
+	 		padding-top: 30px;
+	 		margin-top:30px;
+	 		padding-bottom:10px;
+	 	}
+	 	.title_box{
+	 		height:60px;
+	 	}	 	
+	 	.span_1{
+	 		height:18px;
+	 		width: 10px;
+	 		background-color:#00cc00;
+	 		margin-bottom:-3px;
+	 		margin-left:20px;
+	 	}
+	 	.span_2{
+	 		float:right;
+	 	}
+	 	.mui-table-view{
+	 		color:#5d9cec;
+	 		font-size: 14px;
+	 	}
+	 	.title{
+	 		color:#000;
+	 		font-size: 14px;
+	 	}
+	 	.smText{
+	 		display: flex;
+	 		flex-direction: column;
+	 		text-align:center;
+	 	}
+	 	.smText_box{
+	 		display: flex;
+			flex-direction: row;
+			justify-content: space-around
+	 	}
+	 	.span_3{
+	 		height:18px;
+	 		width: 7px;
+	 		background-color:#00cc00;
+	 		margin-bottom:-3px;
+	 		margin-left:0px;
+	 		margin-right:5px;
+	 	}
+	 	.smText_1{
+	 		color:#bcbcbc;
+	 	}
+	 	.bottom_percent{
+	 		text-align:center;
+	 	}
+		.mui-table-view:before{
+			background-color: #fff;
+		}
+		.mui-table-view:after{
+			background-color: #fff;
+		}
+		.mui-table-view-cell:after{
+			background-color: #fff;
+		}
+		.mui-table-view .mui-active{
+			background-color: #fff;
+		}
+		.border{
+			background-color: #c8c7cc;
+			height: 2px;
+			width:90%;
+			margin:0 auto;
+			margin-top:20px;
+		}	 		 	
+	 </style>
+</head>
+<body>
+	<div class="mui-content">
+		<div id="content_1"  class="header_1">
+			<div class="title_box">
+				<h1 class="mui-title">路政案件查处情况</h1>	
+			</div>
+			<div class="updatatime_box">
+				<span class="updatatime_1"></span>
+			</div>
+			<ul class="mui-table-view" id="line_1">
+				<li class="mui-table-view-cell title middle_line1_1">
+					<label></label>
+					<span>案件处理结案情况</span>
+				</li>
+				<li class="mui-table-view-cell middle_line1_2">
+					<span class="span_1"></span>
+					<label>查处案件</label>
+					<span class="span_2"></span>
+				</li>
+				<li class="mui-table-view-cell middle_line1_3">
+					<span class="span_1"></span>
+					<label>已结案件</label>
+					<span class="span_2"></span>
+				</li>												
+			</ul>				
+			<div id="main1" style="width:100%;height:350px;"></div>
+			<div class="border"></div>
+			<ul class="mui-table-view" id="line_1_1">
+				<li class="mui-table-view-cell title middle_line1_1_1">
+					<label></label>
+					<span>结案率</span>
+				</li>												
+			</ul>										
+		</div>
+		<div id="content_2"  class="header_2">
+			<div class="title_box">
+				<h1 class="mui-title">罚款赔偿统计</h1>	
+			</div>
+			<div class="updatatime_box">
+				<span class="updatatime_2"></span>
+			</div>
+			<ul class="mui-table-view" id="line_2">
+				<li class="mui-table-view-cell title middle_line2_1">
+					<label></label>
+					<span>罚款赔偿统计情况</span>
+				</li>
+				<li class="mui-table-view-cell middle_line2_2">
+					<span class="span_1"></span>
+					<label>罚款、赔偿总金额</label>
+					<span class="span_2"></span>
+				</li>
+				<li class="mui-table-view-cell middle_line2_3">
+					<span class="span_1"></span>
+					<label>罚款金额</label>
+					<span class="span_2"></span>
+				</li>
+				<li class="mui-table-view-cell middle_line2_4">
+					<span class="span_1"></span>
+					<label>赔偿金额</label>
+					<span class="span_2"></span>
+				</li>																
+			</ul>				
+			<div id="main2_1" style="width:100%;height:350px;"></div>
+			<div id="main2_2" style="width:100%;height:350px;"></div>							
+		</div>
+		<div id="content_3"  class="header_2">
+			<div class="title_box">
+				<h1 class="mui-title">超限车辆统计</h1>	
+			</div>
+			<div class="updatatime_box">
+				<span class="updatatime_3"></span>
+			</div>
+			<ul class="mui-table-view" id="line_3">
+				<li class="mui-table-view-cell title middle_line3_1">
+					<label></label>
+					<span>查处超限车辆统计</span>
+				</li>
+				<li class="mui-table-view-cell middle_line3_2">
+					<span class="span_1"></span>
+					<label>超限车辆</label>
+					<span class="span_2"></span>
+				</li>																
+			</ul>				
+			<div id="main3_1" style="width:100%;height:350px;"></div>
+			<div class="border"></div>
+			<ul class="mui-table-view" id="line_4">
+				<li class="mui-table-view-cell title middle_line4_1">
+					<label></label>
+					<span>查处超限车辆类型</span>
+				</li>
+				<li class="mui-table-view-cell middle_line4_2">
+					<span class="span_1"></span>
+					<label>检查车辆</label>
+					<span class="span_2"></span>
+				</li>
+<!--				<li class="mui-table-view-cell middle_line4_3">
+					<span class="span_1"></span>
+					<label>检测车辆</label>
+					<span class="span_2">460辆</span>
+				</li>-->
+				<li class="mui-table-view-cell middle_line4_4">
+					<span class="span_1"></span>
+					<label>超限车辆</label>
+					<span class="span_2"></span>
+				</li>																
+			</ul>			
+			<div id="main3_2" style="width:100%;height:350px;"></div>
+			<div id="main3_3" style="width:100%;height:200px;"></div>					
+		</div>							
+	</div>
+</body>
+<script type="text/javascript" src="../../../script/api.js"></script>
+<script type="text/javascript" src="../../../script/common.js"></script>
+<script type="text/javascript" src="../../../script/mui.min.js"></script>
+<script type="text/javascript" src="../../../script/zepto.min.js"></script>
+<script type="text/javascript" src="../../../script/echarts.min.js"></script>
+<script type="text/javascript">
+	var charts_url = null;
+	charts_url = $api.getStorage("charts_url");
+	apiready = function(){
+		getData();
+	};	
+	
+	function getData(){
+		restQuester('/road/em-fileInfo/ajaxEmFileInfoBar/true/true',getBar_1);//案件处理情况
+		restQuester('/road/em-fileInfo/ajaxEmFileFineFeeBar/true/true',getBarAndPie)//罚款赔偿统计
+		restQuester('/road/exact-info/ajaxExactVehicleTypeStatistics/all/true/true',getPie_2)//超限车辆统计
+		restQuester('/road/exact-info/ajaxQueryExactVehiclePie/true/true',getBar_2)//超限车辆统计
+		
+	}	
+	
+	function getBar_1(data){
+			if(data){
+				$("#line_1 .middle_line1_1 label").html(data.year + '年' + data.month + '月');
+				$("#line_1 .middle_line1_2 .span_2").html(data.totalCount + '件');
+				$("#line_1 .middle_line1_3 .span_2").html(data.closeCount + '件');
+				$(".updatatime_1").html("更新时间："+data.updateTime);
+				
+				var barData = {
+					id : 'main1',
+					legend: ['超限案件','路产案件'],
+					pi : '件',
+					xAxis : data.xAxis,
+					name_1 : '超限案件',
+					name_2 : '路产案件',
+					data_1 : data.exceedDatas,
+					data_2 : data.propertyDatas				
+				}
+
+				var str = '';
+				for(var i=0;i<data.xAxis.length;i++){
+					str += '<li class="mui-table-view-cell">'
+								+'<span class="span_1"></span>'
+								+'<label style="margin-left:5px;">' + data.xAxis[i] + '</label>'
+								+'<span class="span_2" style="color:#ff6a00">' + data.rateDatas[i] + '%</span>'
+							+'</li>'
+				}
+				$("#line_1_1").append(str)							
+			}
+			barGo(barData);
+	}
+	
+	function getBarAndPie(data){
+		if(data){
+			$("#line_2 .middle_line2_1 label").html(data.year + '年' + data.month + '月');
+			$("#line_2 .middle_line2_2 .span_2").html(data.totalFee + '元');
+			$("#line_2 .middle_line2_3 .span_2").html(data.totalForfeitFee + '元');
+			$("#line_2 .middle_line2_4 .span_2").html(data.totalComponentFee + '元');
+			$(".updatatime_2").html("更新时间："+data.updateTime);
+			
+			var barData = {
+				id : 'main2_2',
+				legend: ['本月罚款','本月赔偿'],
+				pi : '元',
+				xAxis : data.xAxis,
+				name_1 : '本月罚款',
+				name_2 : '本月赔偿',
+				data_1 : data.forfeitDatas,
+				data_2 : data.componentDatas				
+			} 
+			barGo(barData);
+			pieData = {
+				name : '罚款赔偿统计',
+				datas : ['赔偿','罚款'],
+				pi: '元',
+				data_1 : data.totalForfeitFee,
+				data_2 : data.totalComponentFee,
+				name_1 : '赔偿',
+				name_2 : '罚款',
+				id:'main2_1'
+			}
+			pie(pieData)						
+		}
+	}
+	
+	function barGo(data){
+		var myChart = echarts.init(document.getElementById(data.id));
+		
+		var option = {
+		    tooltip : {
+		        trigger: 'item',
+		        formatter: "{a} <br/>{b} : {c}"+data.pi,
+		    },
+		    legend: {
+		        data: data.legend
+		    },
+		    grid: {
+		        left: '3%',
+		        right: '4%',
+		        bottom: '3%',
+		        containLabel: true
+		    },
+		    xAxis:  {
+		        type: 'value'
+		    },
+		    yAxis: {
+		        type: 'category',
+		        data: data.xAxis 
+		    },
+		    series: [
+		        {
+		            name: data.name_1,
+		            type: 'bar',
+		            //stack: '总量',
+		            label: {
+		                normal: {
+		                    show: false,
+		                    position: 'insideRight'
+		                }
+		            },
+		            data: data.data_1
+		        },
+		        {
+		            name: data.name_2,
+		            type: 'bar',
+		            //stack: '总量',
+		            label: {
+		                normal: {
+		                    show: false,
+		                    position: 'insideRight'
+		                }
+		            },
+		            data: data.data_2
+		        }
+		    ],
+		    color:['#005eaa','#8bbc22']
+		};	
+		myChart.setOption(option); 			
+	}
+	
+	
+	function getPie_2(data){
+		if(data){
+			var pieData = {},pie = {};
+			$("#line_4 .middle_line4_1 label").html(data.year + '年' + data.month + '月');
+			$("#line_4 .middle_line4_1 span").html(data.plaName+'查处超限车辆类型分布');
+			$("#line_4 .middle_line4_2 .span_2").html(data.total+'辆');
+			$("#line_4 .middle_line4_4 .span_2").html(data.overCount+'辆');
+			
+			pieData = {
+				name : '查处超限车辆类型分布',
+				datas : [],
+				pi: '辆',
+				dataPie : [],
+				id:'main3_2'
+			}
+			
+			for(var i=0;i<data.resultList.length;i++){
+				pieData.datas.push(data.resultList[i].VehicleKind);
+				pieData.dataPie.push({value:data.resultList[i].count_ , name:data.resultList[i].VehicleKind})
+			}
+			
+			var num = 0;
+			if(data.overCount == 0){
+				num = 0;
+			}
+			else{
+				num = data.overCount / data.total;
+			}       		
+			num = (num*100).toFixed(2);				
+			pie = {
+				percent : num,
+				subtext : '超限车辆率',
+				id : 'main3_3'
+			}
+			echarts_2(pie);			
+			pie_1(pieData)				
+		}	
+	}	
+
+	function getBar_2(data){
+		if(data){
+			$("#line_3 .middle_line3_1 label").html(data.year + '年' + data.month + '月');
+			$("#line_3 .middle_line3_1 span").html(data.plaName+'查处超限车辆统计');
+			$(".updatatime_3").html("更新时间："+data.updateTime);
+			
+			var seriesData = [],yAxis = [],total = 0;
+			for(var i=0;i<data.resultList.length;i++){
+				total += data.resultList[i].count_;
+				yAxis.push(data.resultList[i].plaName);
+				seriesData.push(data.resultList[i].count_)				
+			}
+			$("#line_3 .middle_line3_2 .span_2").html(total+'辆');
+			
+			var myChart = echarts.init(document.getElementById('main3_1'));
+			var option = {
+			    tooltip : {
+			        trigger: 'item',
+			        formatter: "{a} <br/>{b} : {c} 辆",
+			    },
+			    grid: {
+			        left: '3%',
+			        right: '4%',
+			        bottom: '3%',
+			        containLabel: true
+			    },			    			
+			    xAxis:  {
+			        type: 'value'
+			    },
+			    yAxis: {
+			        type: 'category',
+			        data: yAxis
+			    },
+			    series: [
+			        {
+			            name: '查处超限车辆',
+			            type: 'bar',			        
+			            data: seriesData
+			        }
+			    ]			
+			}
+			myChart.setOption(option) 			
+		}
+	}
+
+	function getPie_1(data){
+		var pieData = {}
+		
+		if(data){
+			
+			$(".middle_line2_1 label").html(data.year + '年' + data.month + '月');
+			$(".middle_line2_2 .span_2").html(data.total + '件');
+			$(".updatatime_1").html("更新时间："+data.updateTime);
+			
+			pieData = {
+				name : '案件分布',
+				datas : ['超限案件','路产案件'],
+				pi: '件',
+				data_1 : data.exceedCount,
+				data_2 : data.propertyCount,
+				name_1 : '超限案件',
+				name_2 : '路产案件',
+				id:'main2'
+			}
+			pie(pieData)			
+		}
+	}
+	
+	//数据查询通用函数
+	function restQuester(url,callback){
+		var charts_url = 'http://172.16.53.225:9003'
+		api.ajax({
+			url : charts_url + url,
+			method : 'get',
+			timeout : 30
+		},function(ret,err){
+			if(ret){
+				callback(ret);
+			}
+			else{
+				api.toast({
+					msg:"链接出现错误，暂时无法查询数据，请稍后重试！",
+					duration:3000,
+					location:'bottom'
+				});
+				callback();
+			}
+		})
+	}
+
+	//饼图标准	
+	function pie(data){
+		var myChart = echarts.init(document.getElementById(data.id));		
+		var option = {
+		    tooltip : {
+		        trigger: 'item',
+		        formatter: "{a} <br/>{b} : {c}"+data.pi+" ({d}%)"
+		    },
+//		    legend: {
+//		        orient: 'vertical',
+//		        right: '3%',
+//		        top:'15%',
+//		        data: data.datas
+//		    },
+		    series : [
+		        {
+		            name: data.name,
+		            //hoverAnimation:false,
+		            type: 'pie',
+		            radius : '60%',
+		            center: ['50%', '50%'],
+		            data:[
+		                {value:data.data_1, name:data.name_1},
+		                {value:data.data_2, name:data.name_2}
+		            ],
+					itemStyle: {
+						normal: {
+								label:{ 
+									show: true,  
+									formatter: '{b} \n {c}'+data.pi, 
+								} 
+						},
+					},		            
+		        }
+		    ],
+		    color : ['#48cfae','#fb6e52']
+		};
+		myChart.setOption(option)						
+	}
+
+
+	//饼图标准	
+	function pie_1(data){
+		var myChart = echarts.init(document.getElementById(data.id));		
+		var option = {
+		    tooltip : {
+		        trigger: 'item',
+		        formatter: "{a} <br/>{b} : {c}"+data.pi+" ({d}%)"
+		    },
+//		    legend: {
+//		        orient: 'vertical',
+//		        right: '3%',
+//		        top:'15%',
+//		        data: data.datas
+//		    },
+		    series : [
+		        {
+		            name: data.name,
+		            //hoverAnimation:false,
+		            type: 'pie',
+		            radius : '55%',
+		            center: ['50%', '50%'],
+		            data:data.dataPie,
+					itemStyle: {
+						normal: {
+								label:{ 
+									show: true,  
+									formatter: '{b} \n {c}'+data.pi, 
+								} 
+						},
+					},		            
+		        }
+		    ],
+		};
+		myChart.setOption(option)						
+	}	
+
+	//加载统计图表2
+	function echarts_2(data){
+		percent = data.percent;
+		var myChart = echarts.init(document.getElementById(data.id));
+		var option = {
+		    title: {
+		        text: percent + '%',
+		        x: 'center',
+		        y: 'center',
+		        subtext:data.subtext,
+		        textStyle: {
+		            color: '#000000',
+		            fontSize: 14
+		        },
+		        subtextStyle:{
+		            fontSize :14
+		        },		        
+		    },
+		    animation: true,
+		    series: [{
+		        name: 'main',
+		        hoverAnimation:false,
+		        type: 'pie',
+		        center: ['50%', '50%'],
+		        radius: ['65%', '85%'],
+		        label: {
+		            normal: {
+		                show: false
+		            }
+		        },
+		        data: getData_1()
+		    }]
+		};
+		myChart.setOption(option)		
+	}
+	
+	//圆环样式1
+	function getData_1() {
+	    return [{
+	        value: (percent/100),
+	        itemStyle: {
+	            normal: {
+	                color: '#41c7db',
+	            }
+	        }
+	    }, {
+	        value: 1 - (percent/100),
+	        itemStyle: {
+	            normal: {
+	                color: '#dddddd'
+	            }
+	        }
+	    }];
+	}
+</script>
+</html>

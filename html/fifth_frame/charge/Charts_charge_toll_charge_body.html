@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>title</title>
+    <link rel="stylesheet" type="text/css" href="../../../css/api.css" />
+	<link rel="stylesheet" type="text/css" href="../../../css/common.css" />
+	<link rel="stylesheet" type="text/css" href="../../../css/mui.min.css"/>
+	 <style>
+	 	.mui-title{
+	 		font-size:20px;
+	 	}
+	 	.updatatime_box{
+	 		text-align: center;
+			font-size: 13px;
+			color: #dddddd;
+			margin-top: -15px;
+	 	}
+	 	.header_1{
+	 		background-color: #fff;
+	 		padding-top: 30px;
+	 	}
+	 	.header_2{
+	 		background-color: #fff;
+	 		padding-top: 30px;
+	 		margin-top:30px;
+	 		padding-bottom:10px;
+	 	}
+	 	.title_box{
+	 		height:60px;
+	 	}	 	
+	 	.span_1{
+	 		height:18px;
+	 		width: 10px;
+	 		background-color:#00cc00;
+	 		margin-bottom:-3px;
+	 		margin-left:20px;
+	 	}
+	 	.span_2{
+	 		float:right;
+	 	}
+	 	.mui-table-view{
+	 		color:#5d9cec;
+	 		font-size: 14px;
+	 	}
+	 	.title{
+	 		color:#000;
+	 		font-size: 14px;
+	 	}
+	 	.smText{
+	 		display: flex;
+	 		flex-direction: column;
+	 		text-align:center;
+	 	}
+	 	.smText_box{
+	 		display: flex;
+			flex-direction: row;
+			justify-content: space-around
+	 	}
+	 	.span_3{
+	 		height:18px;
+	 		width: 7px;
+	 		background-color:#00cc00;
+	 		margin-bottom:-3px;
+	 		margin-left:0px;
+	 		margin-right:5px;
+	 	}
+	 	.smText_1{
+	 		color:#bcbcbc;
+	 	}
+	 	.bottom_percent{
+	 		text-align:center;
+	 	}
+	 	#grade{
+	 		color:#007aff;
+	 		height:40px;
+	 		margin-top: 20px;
+	 	}
+	 	#grade .mui-active{
+	 		background-color:#007aff!important;
+	 		color:#FFFFFF!important;
+	 	}	 	
+	 	.querter_check{
+	 		border:1px solid #007aff!important;
+	 		height: 30px!important;
+			line-height: 30px!important;
+	 	}
+	 	.querter_left{
+	 		margin-right:-5px;
+	 	}
+	 	.title_head{
+	 		line-height:25px;
+	 	}
+	 	.timebox_head{
+	 		margin-top:5px;
+	 	}
+    	.all_weak_content{
+ 			display: flex;
+			flex-direction: row;
+			height:150px;
+			margin-bottom: 20px;   	
+    	}
+    	.maintain_echarts1{
+    		width: 50%;
+			min-width: 100px;
+    	}
+    	.maintain_text1{
+			display: flex;
+			flex-direction: column;			
+			align-items: center;
+			width: 50%;
+			height:100%;
+			color: #73a9ee;
+			padding-top:40px;
+			font-size: 15px;    	
+    	}
+    	.maintain_text1_del{
+			display: flex;
+			flex-direction: row;			
+			align-items: center;
+			justify-content: space-between; 
+			height: 30%;
+			width: 100%;   	
+    	}
+    	.span_1_1{
+			width: 7px;
+			margin-right:4px;
+    	}
+    	.span_2_1{
+    		margin-right:10px;
+    	}
+		.mui-table-view:before{
+			background-color: #fff;
+		}
+		.mui-table-view:after{
+			background-color: #fff;
+		}
+		.mui-table-view-cell:after{
+			background-color: #fff;
+		}
+		.mui-table-view .mui-active{
+			background-color: #fff;
+		}  	   		 		 		 	
+	 </style>
+</head>
+<body>
+	<div class="mui-content">
+		<div id="content_1"  class="header_1">
+			<div class="title_box">
+				<h1 class="mui-title">次费收入统计</h1>	
+			</div>
+			<div class="updatatime_box">
+				<span class="updatatime_1"></span>
+			</div>
+			<div class="time_place_total">
+			</div>
+			<ul class="mui-table-view">
+				<li class="mui-table-view-cell title middle_line_1">
+					<label id="title_1"></label>
+					<span> 四桥一隧完成进度</span>
+				</li>				
+			</ul>				
+			<div id="main1_1" style="width:100%;height:350px;"></div>
+			<ul class="mui-table-view">
+				<li class="mui-table-view-cell smText_box">
+					<label class="smText">
+						<span>
+							<span class="span_3"></span>
+							<span class="bottom_text_1" id="fact_fee"></span>							
+						</span>
+						<span class="smText_1">
+							累计实际收入
+						</span>
+					</label>
+					<span class="smText">
+						<span>
+							<span class="span_3"></span>
+							<span class="bottom_text_1" id="goal_fee"></span>
+						</span>
+						<span class="smText_1">
+							年度增收目标
+						</span>					
+					</span>
+				</li>								
+			</ul>
+			<ul class="mui-table-view">
+				<li class="mui-table-view-cell title middle_line_1">
+					<label id="title_2"></label>
+					<span> 四桥一隧月完成情况</span>
+				</li>				
+			</ul>
+			<div id="main1_2" style="width:100%;height:400px;"></div>				
+		</div>	
+		<div id="content_2"  class="header_2">
+			<div class="title_box">
+				<h1 class="mui-title">交通流量统计</h1>	
+			</div>
+			<div class="updatatime_box">
+				<span class="updatatime_2"></span>
+			</div>
+			<div id="grade" class="mui-scroll-wrapper mui-slider-indicator mui-segmented-control mui-segmented-control-inverted">
+			    <div class="mui-scroll" id="headerCheck" style="width:100%;">
+			        <a class="mui-control-item querter_check querter_left mui-active" type="0">全部</a>
+			        <a class="mui-control-item querter_check querter_left" type="1">进岛</a>	    
+			    	<a class="mui-control-item querter_check" type="2">出岛</a>	
+			    </div>
+			</div>					
+			<ul class="mui-table-view">
+				<li class="mui-table-view-cell title middle_line_1">
+					<label></label>
+					<span>四桥一隧</span>
+				</li>				
+				<li class="mui-table-view-cell middle_line_2">
+					<span class="span_1"></span>
+					<label>车流量</label>
+					<span class="span_2"></span>
+				</li>
+			</ul>				
+			<div id="main2" style="width:100%;height:300px;"></div>					
+		</div>		
+		<div id="content_3"  class="header_2">
+			<div class="title_box">
+				<h1 class="mui-title">年费收入统计</h1>	
+			</div>
+			<div class="updatatime_box">
+				<span class="updatatime_1"></span>
+			</div>
+			<div class="time_place_total">
+			</div>
+			<ul class="mui-table-view">
+				<li class="mui-table-view-cell title middle_line_1">
+					<label id="title_3"></label>
+					<span> 累计收费情况统计</span>
+				</li>				
+			</ul>				
+			<div id="main3_1" style="width:100%;height:350px;"></div>
+			<ul class="mui-table-view">
+				<li class="mui-table-view-cell smText_box">
+					<label class="smText">
+						<span>
+							<span class="span_3"></span>
+							<span class="bottom_text_1" id="fact_year_fee"></span>							
+						</span>
+						<span class="smText_1">
+							累计实际收入
+						</span>
+					</label>
+					<span class="smText">
+						<span>
+							<span class="span_3"></span>
+							<span class="bottom_text_1" id="goal_year_fee"></span>
+						</span>
+						<span class="smText_1">
+							年度增收目标
+						</span>					
+					</span>
+				</li>								
+			</ul>
+			<ul class="mui-table-view">
+				<li class="mui-table-view-cell title middle_line_1">
+					<label id="title_4"></label>
+					<span> 年费收入月完成情况</span>
+				</li>				
+			</ul>
+			<div id="main3_2" style="width:100%;height:400px;"></div>				
+		</div>					
+	</div>
+</body>
+<script type="text/javascript" src="../../../script/api.js"></script>
+<script type="text/javascript" src="../../../script/common.js"></script>
+<script type="text/javascript" src="../../../script/mui.min.js"></script>
+<script type="text/javascript" src="../../../script/zepto.min.js"></script>
+<script type="text/javascript" src="../../../script/echarts.min.js"></script>
+<script type="text/javascript">
+	var charts_url = null;
+	charts_url = $api.getStorage("charts_url");
+	apiready = function(){		
+		mui("#headerCheck").on('tap','a',function(){
+			var type = $(this).attr('type');
+			getTrafficFlow(type);
+		})
+		
+		getTimeFee();
+		getYearFee();
+		getTrafficFlow(0);
+				
+	};
+
+	//次费收入统计
+	function getTimeFee(){
+		var charts_url = 'http://125.77.254.250:8180';
+		var pieData = {},barData = {};
+		api.ajax({
+	        url:charts_url + '/fee/single/monthly-levy/ajaxQueryFeeCountBar?isMobile=true&isDetail=true',
+	        method : 'get',
+	        timeout:30
+        },function(ret,err){
+        	if(ret){
+        		pieData = {}
+        		pieData = {
+        			percent : ret.rate,
+        			upDataTime : ret.updateTime,
+        			time : ret.year + '年',
+        			yearGoal : ret.yearGoal + '元',
+        			yearTotal : ret.yearTotal + '元',
+        			id :　'main1_1'
+        		}
+        		
+        		barData = {}
+        		barData = {
+        			feeList : ret.feeList,
+        			yoyList : ret.yoyList,
+        			momList : ret.momList,
+        			time : ret.year +'年',
+        			id : 'main1_2',
+        			title :　'次费收入',
+        			ad : '元'
+        		}
+        	}
+        	else{
+        		pieData = {}
+        		pieData = {
+        			percent : 0,
+        			upDataTime : '',
+        			time : '',
+        			yearGoal : '0元',
+        			yearTotal : '0元',
+        			id :　'main1_1'
+        		}
+        		barData = {}
+        		barData = {
+        			feeList : '',
+        			yoyList : '',
+        			momList : '',
+        			time : '',
+        			id : 'main1_2',
+        			title :　'次费收入',
+        			ad : '元'
+        		}        		
+	    		api.toast({
+		            msg:"链接出现错误，暂时无法查询数据，请稍后重试！",
+		            duration:3000,
+		            location:'bottom'
+	            });	        		        		
+        	}
+        	$("#content_1 .updatatime_1").html('更新时间：'+pieData.upDataTime);
+        	$("#title_1").html(pieData.time);
+        	$("#fact_fee").html(pieData.yearTotal);
+        	$("#goal_fee").html(pieData.yearGoal);
+        	pieFun(pieData);
+        	
+        	$("#title_2").html(barData.time);
+        	barFun(barData);
+        }); 	
+	}
+
+	//年费收入统计
+	function getYearFee(){
+		var charts_url = 'http://125.77.254.250:8180';
+		var pieData = {},barData = {};
+		api.ajax({
+	        url:charts_url + '/fee/yearly/fee-income/ajaxQueryYearlyFeeCountBar?isMobile=true&isDetail=true',
+	        method : 'get',
+	        timeout:30
+        },function(ret,err){
+        	if(ret){
+        		pieData = {}
+        		pieData = {
+        			percent : ret.rate,
+        			upDataTime : ret.updateTime,
+        			time : ret.year + '年',
+        			yearGoal : ret.yearGoal + '万元',
+        			yearTotal : ret.yearTotal + '万元',
+        			id :　'main3_1'
+        		}
+        		
+        		barData = {}
+        		barData = {
+        			feeList : ret.feeList,
+        			yoyList : ret.yoyList,
+        			momList : ret.momList,
+        			time : ret.year +'年',
+        			id : 'main3_2',
+        			title :　'年费收入',
+        			ad : '万元'
+        		}
+        	}
+        	else{
+        		pieData = {}
+        		pieData = {
+        			percent : 0,
+        			upDataTime : '',
+        			time : '',
+        			yearGoal : '0元',
+        			yearTotal : '0元',
+        			id :　'main3_1'
+        		}
+        		barData = {}
+        		barData = {
+        			feeList : '',
+        			yoyList : '',
+        			momList : '',
+        			time : '',
+        			id : 'main3_2',
+        			title :　'年费收入',
+        			ad : '元'
+        		}        		
+	    		api.toast({
+		            msg:"链接出现错误，暂时无法查询数据，请稍后重试！",
+		            duration:3000,
+		            location:'bottom'
+	            });	        		        		
+        	}
+        	$("#content_3 .updatatime_1").html('更新时间：'+pieData.upDataTime);
+        	$("#title_3").html(pieData.time);
+        	$("#fact_year_fee").html(pieData.yearTotal);
+        	$("#goal_year_fee").html(pieData.yearGoal);
+        	pieFun(pieData);
+        	
+        	$("#title_4").html(barData.time);
+        	barFun(barData);
+        }); 	
+	}
+
+	//交通流量统计
+	function getTrafficFlow(type){
+		var charts_url = 'http://125.77.254.250:8180';
+		var pieData = {};
+		api.ajax({
+	        url:charts_url+'/fee/single/monthly-levy/ajaxQueryVtypeCountPie?isAdmin=true&isMobile=true&isDetail=true&direction='+type,
+        	method : 'get',
+        	timeout:30
+        },function(ret,err){
+        	if(ret){
+        		pieData = {
+        			upDataTime : ret.updateTime,
+        			time : ret.year + '年' + ret.month + '月',
+        			totalCount : ret.totalCount + '辆次',
+        			typeList : ret.typeList,
+        			countList : ret.countList
+        		}
+        	}
+        	else{
+        		pieData = {
+        			upDataTime : '',
+        			time : '',
+        			totalCount :'0辆次',
+        			typeList : '',
+        			countList : ''
+        		}
+	    		api.toast({
+		            msg:"链接出现错误，暂时无法查询数据，请稍后重试！",
+		            duration:3000,
+		            location:'bottom'
+	            });	        		        		
+        	}
+        	getTrafficFlow_pie(pieData)
+        });
+	}
+
+	//加载交通流量统计图表
+	function getTrafficFlow_pie(data){
+		var myChart = echarts.init(document.getElementById('main2'));
+		$("#content_2 .updatatime_2").html('更新时间：'+data.upDataTime);
+		$("#content_2 .middle_line_1 label").html(data.time);
+		$("#content_2 .middle_line_2 .span_2").html(data.totalCount);
+		var option = {
+		    tooltip : {
+		        trigger: 'item',
+		        formatter: "{a} <br/>{b} : {c}辆次 ({d}%)"
+		    },
+		    series : [
+		        {
+		            name: '交通流量统计',
+		            type: 'pie',
+		            radius : '75%',
+		            center: ['50%', '50%'],
+		            data:getPieFun(data),
+					itemStyle: {
+						normal: {
+							label:{ 
+								show: true,  
+								formatter: '{b} \n {c}', 
+							},
+		                    color: function(params) {
+		                        var colorList = [
+		                          '#C1232B','#B5C334','#FCCE10','#E87C25','#27727B',
+		                          '#FE8463','#9BCA63','#FAD860','#F3A43B','#60C0DD',
+		                          '#D7504B','#C6E579','#F4E001','#F0805A','#26C0C0'
+		                        ];
+		                        return colorList[params.dataIndex]
+		                    },							 
+						},					
+					},
+		        }	
+		    ]		    						
+		}
+		myChart.setOption(option);  
+	}
+
+	//饼状图
+	function pieFun(data){
+		percent = data.percent;
+		var myChart = echarts.init(document.getElementById(data.id));
+		var option = {
+		    title: {
+		        text: percent + '%',
+		        x: 'center',
+		        y: 'center',
+		        textStyle: {
+		            color: '#000000',
+		            fontSize: 16
+		        },
+		    },
+		    animation: true,
+		    series: [{
+		        name: 'main',
+		        hoverAnimation:false,
+		        type: 'pie',
+		        center: ['50%', '50%'],
+		        radius: ['70%', '80%'],
+		        label: {
+		            normal: {
+		                show: false
+		            }
+		        },
+		        data: getData_1()
+		    }]
+		};
+		myChart.setOption(option)		
+	}
+
+	//圆环样式
+	function getData_1() {
+	    return [{
+	        value: (percent/100),
+	        itemStyle: {
+	            normal: {
+	                color: '#41c7db',
+	            }
+	        }
+	    }, {
+	        value: 1 - (percent/100),
+	        itemStyle: {
+	            normal: {
+	                color: '#dddddd'
+	            }
+	        }
+	    }];
+	}
+	
+	//柱状图
+	function barFun(data){
+		var myChart = echarts.init(document.getElementById(data.id));
+		var option = {
+			tooltip : {
+				trigger: "item"
+			},
+		    grid: {
+		        left: '3%',
+		        right: '4%',
+		        bottom: '8%',
+		        containLabel: true
+		    },
+		    xAxis : [
+		        {
+		            type : 'category',
+		            data : [1,2,3,4,5,6,7,8,9,10,11,12],
+		            axisTick: {
+		                alignWithLabel: true
+		            }
+		        }
+		    ],
+		    yAxis : [
+		        {
+		            type : 'value'
+		        }
+		    ],
+		    series : dataFun(data),
+		    color : ["#999900"]		    					
+		}
+		myChart.setOption(option)	 	
+	}
+	
+	function dataFun(data){
+		var datas = [];
+		for(var i=0;i<data.feeList.length;i++){
+			datas.push({tooltip:{formatter:"<p style='text-align:center;margin-top:0px;margin-bottom:0px;color:#fff'>"+data.time+"{b}月</p>"+data.title+":{c}"+data.ad+"<br/>同比："+data.yoyList[i]+"% 环比："+data.momList[i]+"%",show:true},value:data.feeList[i]})
+		}
+		return [{type:"bar",data:datas}];
+	}
+	
+	function getPieFun(datas){
+		var dataJson = [];
+		for(var i=0;i<datas.typeList.length;i++){
+			dataJson.push({value:datas.countList[i], name:datas.typeList[i]})
+		}
+		return dataJson;
+	}	
+</script>
+</html>

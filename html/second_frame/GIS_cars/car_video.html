@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>title</title>
+    <link rel="stylesheet" type="text/css" href="../../../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/common.css" />
+</head>
+<body>
+	<div id="wrap">
+		<div id="header">
+		    <div class='egret-img event-back'>
+		    	<img src="../../../image/back_btn.png"/>
+		    </div>
+		    <h1>车辆实时视频</h1>
+		</div>
+		<div id="main">
+		</div>	
+	</div>
+</body>
+<script type="text/javascript" src="../../../script/api.js"></script>
+<script type="text/javascript" src="../../../script/common.js"></script>
+<script type="text/javascript">
+	var param = null;
+	var video = null;
+	apiready = function(){
+		fnReadyHeader2();
+		fnMyKeyBack();
+		fnFrame();
+	};
+	
+	function fnMyKeyBack(){
+		var keybacks = $api.domAll('.event-back');
+	    for (var i = 0; i < keybacks.length; i++) {
+	        $api.attr(keybacks[i], 'tapmode', 'highlight');
+	        keybacks[i].onclick = function() {
+	        	api.execScript({
+	        		frameName:'car_video_body',
+	                script: 'fnDestory();'
+                });
+	            api.closeWin();
+	        };
+	    }
+	    api.parseTapmode();
+	    
+	    api.addEventListener({
+		    name: 'keyback'
+		}, function(ret, err) {
+		    api.execScript({
+        		frameName:'car_video_body',
+                script: 'fnDestory();'
+            });
+            api.closeWin();
+		});
+	}
+	function fnFrame(){
+		var param = api.pageParam;
+		param.headerHeight = headerHeight;
+		var frameName = api.winName + '_body';
+	    api.openFrame({
+	        name: frameName,
+	        url: './' + frameName + '.html',
+	        bounces: true,
+	        pageParam:param,
+	        rect: {
+	            x: 0,
+	            y: headerHeight,
+	            w: 'auto',
+	            h: 'auto'
+	        },
+	        vScrollBarEnabled: false
+	    });
+	   
+	}
+</script>
+</html>

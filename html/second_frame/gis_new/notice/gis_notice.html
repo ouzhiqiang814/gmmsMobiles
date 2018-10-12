@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>title</title>
+    <link rel="stylesheet" type="text/css" href="../../../../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../../css/common.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../css/mui.css" />
+    <style>
+    	.mui-title{color:#969595;}
+		#my-select{
+			width:100%;height:40px;
+			line-height:35px;
+		    padding-right: 10px;
+   	 		padding-left: 10px;
+   	 		background: #f3f3f3;
+   	 		box-shadow: 0px 0px 1px 0px #adadad;
+		}
+		#my-select .mui-title{
+		    right: 0px;
+		    left: 0px;
+		    display: inline-block;
+		    overflow: hidden;
+		    width: auto;
+		    margin: 0;
+		    text-overflow: ellipsis;
+		}
+		#my-select .mui-title:active{
+			background: #ececec;
+		}
+		#my-select a{
+			padding-top: 8px;
+		}
+		#my-header{    
+			background: #1081da;
+    	}
+    	
+    </style>
+</head>
+<body>
+	<div id="wrap">
+		<div id="my-header">
+			<div id="header" style="position: relative;">
+			    <div class='egret-img event-back'>
+			    	<img src="../../../../image/back_btn.png" alt="" style="webkit-box-sizing: content-box;box-sizing: content-box;"/>
+			    </div>
+			    <h1 style="line-height: 2.5;"></h1>
+		    </div>
+		    <div id="my-select">
+				<h1 class="mui-title" onclick="openPopup()"><span id="cur_plano">所有区域</span>&nbsp;<span class="mui-icon mui-icon-arrowdown"></span></h1>
+			</div>
+		</div>
+	</div>
+</body>
+<script type="text/javascript" src="../../../../script/api.js"></script>
+<script type="text/javascript" src="../../../../script/common.js"></script>
+<script type="text/javascript" src="../../../../script/zepto.min.js"></script>
+<script type="text/javascript">
+	var myPopup = null;
+	var popupData = [
+		{plano:'',title:'所有区域'},
+    	{plano:'0001',title:'厦门大桥'},
+    	{plano:'0002',title:'海沧大桥'},
+    	{plano:'0003',title:'集美大桥'},
+    	{plano:'0004',title:'杏林大桥'},
+    	{plano:'0005',title:'翔安隧道'},
+    	{plano:'GS10',title:'厦漳高速厦门段'},
+    	{plano:'GS20',title:'厦蓉高速厦门段'}
+	];
+	apiready = function(){
+		header = $api.byId('my-header');
+	    if (header) {
+	        $api.fixStatusBar(header);
+	        headerHeight = $api.offset(header).h;
+	    }
+		fnReadyKeyback();
+		var title = api.pageParam.title;
+		$('#header h1').html(title);
+		fnFrame();
+		myPopup = api.require('MNPopups');
+	};
+	
+	function fnFrame(){
+		var pageParam = api.pageParam;
+		api.openFrame({
+	        name: 'gis_notice_body',
+	        url: './gis_notice_body.html',
+	        bounces: true,
+	        rect: {
+	            x: 0,
+	            y: headerHeight+1,
+	            w: 'auto',
+	            h: 'auto'
+	        },
+	        pageParam:api.pageParam,
+	        vScrollBarEnabled: false
+	    });
+	}
+	
+	function openPopup(){
+		myPopup.open({
+		    rect: {
+		        w: api.frameWidth,
+		        h: 180
+		    },
+		    position: {
+		        x: 0,
+		        y: headerHeight
+		    },
+		    styles: {
+		        mask: 'rgba(0,0,0,0.2)',
+		        bg: '#eee',
+		        cell: {
+		            bg: {
+		                normal: '',
+		                highlight: ''
+		            },
+		            h: 45,
+		            title: {
+		                marginL: 30,
+		                color: '#636363',
+		                size: 14,
+		            },
+		            separateLine: {
+			            hideLastSeparateLine: true //(可选项)布尔类型；是否隐藏最后一条分割线，默认false                    
+			        }
+		        },
+		        pointer: {
+		            size: 7,
+		            xPercent: 50,
+		            yPercent: 0,
+		            orientation: 'downward'
+		        }
+		    },
+		    datas: popupData,
+		    animation: false
+		}, function(ret) {
+		    if (ret.eventType=='click') {
+		    	$('#cur_plano').html(popupData[ret.index].title);
+		    	api.execScript({
+		    		frameName:'gis_notice_body',
+			        script: 'fnReloadData(\''+popupData[ret.index].plano+'\');'
+		        });
+		    }
+		});
+	}
+</script>
+</html>

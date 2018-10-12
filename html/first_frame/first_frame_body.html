@@ -1,0 +1,319 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="copyright" content="www.apicloud.com" />
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<title>首页推荐</title>
+		<link rel="stylesheet" type="text/css" href="../../css/api.css" />
+		<link rel="stylesheet" type="text/css" href="../../css/first_frame_body.css"/>
+	</head>
+	<body id='headlist'>
+		<!--<div class="no-msg">
+			<img src="../../image/7517C.png"/><br/>
+			<span style="color:#ddd">暂无消息</span>
+		</div>-->
+		<!--<div class="egret-flex-item" tapmode="fmbtnhover" onclick="openTodoList('故障报修')">
+		<div class="egret-flex-item-logo">
+		<img src="../../image/message/message_email.png" alt="" class="">
+		</div>
+		<div class="egret-flex-item-shelf">
+		<div class="egret-flex-item-shelf01">故障报修<div class='egret-flex-item-shelf01-R'>周三</div></div>
+		<div class="egret-flex-item-shelf02">放松下来，享受你的专属推荐</div>
+		</div>
+		</div>
+		<div class="hdivider"></div>-->
+	</body>
+	<script id="template" type="text/template">
+		{{? it.length>0}}
+		{{~ it:data:index}}
+		<div class="egret-flex-item" tapmode="fmbtnhover" onclick="openList('{{=index}}','{{= data.module }}','{{= data.group_name }}');">
+		<div class="egret-flex-item-logo">
+		{{? data.module == '9'}}
+		<img src="../../image/message/message_email.png" alt="" class="">
+		{{?}}
+		{{? data.module != '9'}}
+		<img src="{{=data.icon}}" alt="" class="">
+		{{?}}
+		{{? data.read_num != '' && data.read_num  > 0}}
+		<span id='badge_{{=index}}' class="badge">{{= data.read_num }}</span>
+		{{?}}
+		</div>
+		<div class="egret-flex-item-shelf">
+		<div class="egret-flex-item-shelf01">{{= data.group_name }}<div class='egret-flex-item-shelf01-R'>{{= data.edit_time }}</div></div>
+		<div class="egret-flex-item-shelf02">{{= data.content }}</div>
+		</div>
+		</div>
+		<div class="hdivider"></div>
+		{{~}}
+		{{??}}
+		<div class="no-msg">
+			<img src="../../image/7517C.png"/><br/>
+			<span style="color:#ddd">暂无消息</span>
+		</div>
+		{{?}}
+	</script>
+	<script type="text/javascript" src="../../script/api.js"></script>
+	<script type="text/javascript" src="../../script/zepto.min.js"></script>
+	<script type="text/javascript" src="../../script/doT.min.js"></script>
+	<script type="text/javascript" src="../../script/local.message.js"></script>
+	<script type="text/javascript" src="../../script/CDateTime.js"></script>
+	<script type="text/javascript">
+		var headlist, dot, user, progress;
+		apiready = function() {
+			progress = true;
+			fninit();
+			fnInitDB();
+			fnInitPull();
+			showMessage();
+			fnGetMessage(true);
+		}
+		
+		/**
+		 * 静默获取消息 
+		 */
+		function fnJMGetMessage(){
+			progress = false;
+			fnGetMessage(false);
+		}
+		
+		function fninit() {
+			user = $api.getStorage("user");
+			headlist = $api.byId('headlist');
+			var template = $api.byId('template');
+			dot = doT.template(template.innerHTML);
+		}
+
+		// 刷新
+		function fnInitPull() {
+			api.setRefreshHeaderInfo({
+				bgColor: '#efeff4',
+	        	dropColor:'#9BA2AC'
+			}, function(ret, err) {
+				progress = false;
+				fnGetMessage(false);
+			});
+		};
+		function showMessage() {
+			var gmms_url = $api.getStorage("gmms_url");
+			var condition = 'accepter_id="' + user.id + '"';
+			var ret = fnSelectMessageGroup(condition);
+			if (ret.status) {
+				var totalReadNum = 0;
+				$.each(ret.data, function(idx, item) {
+					item.edit_time = tranTime(item.edit_time);
+					if (item.read_num && item.read_num > 0){
+						totalReadNum += parseInt(item.read_num);
+					}
+					var pitems = fnSelectItemByName(item.group_name);
+					item.icon = '../../image/message/lmbh_icon.png';
+					if(pitems.status&&pitems.data.length>0){
+						item.icon = gmms_url+'/js/jcarousel/images/flat/'+pitems.data[0].icon;
+					}
+				});
+				headlist.innerHTML = dot(ret.data);
+				setBadgeValue(totalReadNum);
+			} else
+				alert(ret.msg);
+		}
+
+		function fnGetMessage(isInit) {
+			console.log('刷新消息');
+			if (progress) {
+				api.showProgress({
+					title : '收取中...',
+					text : '',
+					modal : true
+				});
+			}
+			user = $api.getStorage("user");
+			fnPost('modules/mobile/msgremind/msg-remind!getMsgRemindInfo.action', {
+				values : {
+					userId : user.id,
+					lesseeId : user.lesseeId
+				}
+			}, function(ret, err) {
+				if (ret) {
+					if (ret == ''&&isInit) {
+						api.execScript({
+							name:'main',
+	                        script: 'switchframe("second_frame")'
+                        });
+					} else {
+						fnBeginTransaction();
+						//开始事务
+						var msgRemindIds = '';
+						$.each(ret, function(idx, item) {
+							var condition = 'accepter_id ="' + user.id + '" and group_name = "' + item.groupName + '"';
+							var ret = fnSelectMessageGroup(condition);
+//							if (ret.status && ret.data != '') {
+//								item.readNum += parseInt(ret.data[0].read_num);
+//							}
+							var result = fnAddMessageGroup(item);
+							$.each(item.data, function(idex, subItem) {
+								msgRemindIds += subItem.id + ",";
+								fnAddMessage(subItem);
+								if (subItem.todo != '') {
+									fnAddBusinessTodo(subItem.todo);
+									fnAddBusiness(subItem.todo.business);
+									fnAddPermissionItem(subItem.todo.item);
+								}
+							});
+						});
+						var ret = fnCommitTransaction();
+						//事务提交
+						if (!ret.status)
+							fnRollbackTransaction();
+						//事务回滚
+						if (ret.status) {
+							//						msgRemindIds; 更新消息数据已查收
+							updateStatus(msgRemindIds);
+						}
+						showMessage();
+					}
+				} else {
+					api.toast({
+						msg : '网络不给力',
+						duration : 2000,
+						location : 'bottom'
+					});
+				}
+			});
+		};
+		function fnPost(path, data, callback) {
+			var url = $api.getStorage("gmms_url");
+			api.ajax({
+				url : url + path,
+				method : 'post',
+				timeout : 10,
+				dataType : 'json',
+				returnAll : false,
+				data : data
+			}, function(ret, err) {
+				api.hideProgress();
+				callback(ret, err);
+				api.refreshHeaderLoadDone();
+			});
+		};
+		function openList(indexNum, module, module_name) {
+			switch (module) {
+				case '9':
+					//内部通讯提醒
+					openTodoList(module_name, 'infomation');
+					break;
+				case '2':
+					//待办事务
+					openTodoList(module_name, 'business_todo');
+					break;
+				case '4':
+					//事务退回
+					openTodoList(module_name, 'business_todo');
+					break;
+				case '6':
+					//事务转交
+					openTodoList(module_name, 'business_todo');
+					break;
+				default:
+					break;
+			}
+			fnSetMessageGroupReaded(module_name);
+			//设置该消息组全部已读
+			setBadgeForNone(indexNum);
+			//未读标识设置已读;
+		}
+
+		function openTodoList(param, winName) {
+			api.openWin({
+				name : winName,
+				url : './' + winName + '.html',
+				pageParam : {
+					"name" : param
+				}
+			});
+		}
+
+		function setBadgeValue(totalReadNum) {
+			var jsfun = 'setBadgeValue(' + totalReadNum + ')';
+			api.execScript({
+				name : 'main', //窗口名
+				script : jsfun
+			});
+		}
+
+		function setBadgeForNone(indexNum) {
+			window.setTimeout(function() {
+				var read_num = $('#badge_' + indexNum).html();
+				if (read_num && read_num != '0') {
+					var jsfun = 'setBadgeMinusValue(' + read_num + ')';
+					api.execScript({
+						name : 'main', //窗口名
+						script : jsfun
+					});
+				}
+				$('#badge_' + indexNum).html('0');
+				$('#badge_' + indexNum).attr('style', 'display:none');
+			}, 600);
+		}
+
+		function updateStatus(msgRemindIds) {
+			if (msgRemindIds != null && msgRemindIds != '') {
+				if (msgRemindIds.charAt(msgRemindIds.length - 1) == ',') {
+					msgRemindIds = msgRemindIds.substring(0, msgRemindIds.length - 1);
+				}
+				var url = $api.getStorage("gmms_url");
+				api.ajax({
+					url : url + '/modules/mobile/msgremind/msg-remind!updateAppleSendStatus.action',
+					method : 'post',
+					timeout : 10,
+					dataType : 'json',
+					returnAll : false,
+					data : {
+						values : {
+							msgRemindIds : msgRemindIds
+						}
+					}
+				});
+			}
+		}
+		
+		function doReloadMsg(){
+			api.showProgress({
+				title : '获取待办消息',
+				text : '请稍后...',
+				modal : false
+			});
+			
+			var url = $api.getStorage("gmms_url");
+			api.ajax({
+	            url:url+'/modules/mobile/business/business-deal!reloadMsgForApp.action',
+	            method:'get',
+	            timout:30,
+	            dataType:'text',
+	            data : {
+					values : {
+						userId:user.id,
+						lesseeId:user.lesseeId
+					}
+				}
+            },function(ret,err){
+            	api.hideProgress();
+            	if(ret){
+            		//先删除本地消息
+//					fnRemoveAllGroup();
+//					fnRemoveAllMessage();
+//					fnRemoveAllPermissionItem();
+//					fnRemoveAllBusiness();
+//					fnRemoveAllBusinessTodo();
+            		progress = true;
+            		fnGetMessage(false);
+            	}else{
+            		api.toast({
+						msg : '网络不给力',
+						duration : 2000,
+						location : 'bottom'
+					});
+            	}
+            });
+		}
+	</script>
+</html>

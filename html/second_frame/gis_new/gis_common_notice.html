@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>title</title>
+    <link rel="stylesheet" type="text/css" href="../../../css/api.css" />
+    <link rel="stylesheet" type="text/css" href="../../../css/iconfont.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/mui.min.css"/>
+    <style type="text/css">
+    	html, body {
+			width: 100%;
+			height: 100%;
+		 	background: transparent;
+		}
+		.mui-table-view{background-color: rgba(255, 255, 255, 0);}
+    	.mui-table-view-cell{
+    		padding: 7px 10px;
+		    background: rgba(253, 167, 1, 0.7);
+		    color: #fff;
+    	}
+    	.mui-table-view-cell .my-em{
+    		position:absolute;
+    		left:5px;top:3px;
+    		font-size:18px;
+    	}
+    	.mui-table-view-cell span{
+    		font-size:14px;
+    		padding-left: 36px;
+    		width: 100%;
+		    margin: -11px -15px;
+    	}
+    	.mui-navigate-right:after, .mui-push-left:after, .mui-push-right:after{
+    		color:#fd7501;
+    	}
+    	.mui-table-view:after{height:0px;}
+    	.mui-table-view-cell>a:not(.mui-btn){
+    		padding-left: 36px;
+    		font-size:12px;
+    	}
+    </style>
+</head>
+<body>
+	<ul id="gis_main_group_monitor_notice" class="mui-table-view">
+		<!--<li class="mui-table-view-cell">
+			<em class="iconfont icon-voice my-em"></em>
+			<a class="mui-navigate-right">
+				厦门大桥发生车辆侧翻事故,造成3人受伤
+			</a>
+		</li>-->
+	</ul>
+	<ul id="gis_main_group_road_notice" class="mui-table-view" style="display: none;">
+		<!--<li class="mui-table-view-cell">
+			<em class="iconfont icon-voice my-em"></em>
+			<a class="mui-navigate-right">
+				厦门大桥发生车辆侧翻事故,造成3人受伤
+			</a>
+		</li>-->
+	</ul>
+	<ul id="gis_main_group_mainten_notice" class="mui-table-view" style="display: none;">
+		<!--<li class="mui-table-view-cell">
+			<em class="iconfont icon-voice my-em"></em>
+			<a class="mui-navigate-right">
+				厦门大桥发生车辆侧翻事故,造成3人受伤
+			</a>
+		</li>-->
+	</ul>
+	<ul id="gis_main_group_toll_notice" class="mui-table-view" style="display: none;">
+		<li class="mui-table-view-cell">
+			<em class="iconfont icon-light my-em"></em>
+			<a>提示：累计金额为凌00:00晨至当前内累计现金收费金额</a>
+		</li>
+	</ul>
+	<!--<div class="notice-div"><em class="iconfont icon-voice"></em>厦门大桥发生车辆侧翻事故,造成3人受伤<em style="float:right;">></em></div>-->
+</body>
+<script type="text/javascript" src="../../../script/api.js"></script>
+<script type="text/javascript" src="../../../script/zepto.min.js"></script>
+<script type="text/javascript">
+	apiready = function(){
+		$('#gis_main_group_monitor_notice').on('click','li',function(){
+			fnOpenNoticeWin('重大事故','monitor');
+		});
+		
+		$('#gis_main_group_road_notice').on('click','li',function(){
+			fnOpenNoticeWin('超限播报','road');
+		});
+		
+		$('#gis_main_group_mainten_notice').on('click','li',function(){
+			fnOpenNoticeWin('施工播报','mainten');
+		});
+		fnSelectToolBar('gis_main_group_monitor');
+	};
+	
+	function fnOpenNoticeWin(title,type){
+		api.openWin({
+            name: 'gis_notice',
+            url: './notice/gis_notice.html',
+            bounces : false,
+			slidBackEnabled:false,
+			pageParam:{title:title,type:type},
+			animation:{
+				type:'movein'
+			}
+        });
+	}
+	
+	function fnSelectToolBar(tabName){
+		$('.mui-table-view').hide();
+		if($('#'+tabName+'_notice').length>0){
+			$('#'+tabName+'_notice').show();
+		}
+		if(tabName=='gis_main_group_monitor'){
+			fnQueryAccident();
+		}
+		if(tabName=='gis_main_group_road'){
+			fnQueryExact();
+		}
+		if(tabName=='gis_main_group_mainten'){
+			fnQueryMainten();
+		}
+		if(tabName=='gis_main_group_toll'){
+			api.setFrameAttr({
+	            name: 'gis_common_notice',
+	            hidden:false
+            });
+		}
+	}
+	
+	/**
+	 * 查询一条最新的重大事故播报 
+	 */
+	function fnQueryAccident(){
+		var reportUrl = $api.getStorage("report_url");
+		api.ajax({
+	        url:reportUrl+'gims/gis-new/queryAccidentByPage',
+	        timeout:10,
+	        data:{
+	        	values:{pageNo:1,pageSize:1}
+	        }
+        },function(ret,err){
+        	if(ret&&ret.errcode==0&&ret.total>0){
+        		var data = ret.rows[0];
+        		$('#gis_main_group_monitor_notice').html(
+        			'<li class="mui-table-view-cell">'+
+					'	<em class="iconfont icon-voice my-em"></em>'+
+					'	<a class="mui-navigate-right">'+
+						data.scene+
+					'	</a>'+
+					'</li>'
+        		);
+        		$('#gis_main_group_monitor_notice').show();
+        		api.setFrameAttr({
+		            name: 'gis_common_notice',
+		            hidden:false
+	            });
+        	}else{
+        		api.setFrameAttr({
+		            name: 'gis_common_notice',
+		            hidden:true
+	            });
+        	}
+        });
+	}
+	
+	/**
+	 *  查询一条最新的重车辆超限播报 
+	 */
+	function fnQueryExact(){
+		var reportUrl = $api.getStorage("report_url");
+		api.ajax({
+	        url:reportUrl+'gims/gis-new/queryExactByPage',
+	        timeout:10,
+	        data:{
+	        	values:{pageNo:1,pageSize:1}
+	        }
+        },function(ret,err){
+        	if(ret&&ret.errcode==0&&ret.total>0){
+        		var data = ret.rows[0];
+        		$('#gis_main_group_road_notice').html(
+        			'<li class="mui-table-view-cell">'+
+					'	<em class="iconfont icon-voice my-em"></em>'+
+					'	<a class="mui-navigate-right">'+
+						data.planame+' '+data.plateno+' '+data.axisnum+'轴'+data.vehiclekind+'车货总量'+(data.vehicleweight/1000).toFixed(2)+'吨'+
+					'	</a>'+
+					'</li>'
+        		);
+        		$('#gis_main_group_road_notice').show();
+        		api.setFrameAttr({
+		            name: 'gis_common_notice',
+		            hidden:false
+	            });
+        	}else{
+        		api.setFrameAttr({
+		            name: 'gis_common_notice',
+		            hidden:true
+	            });
+        	}
+        });
+	}
+	
+	/**
+	 *  查询一条最新的施工信息播报 
+	 */
+	function fnQueryMainten(){
+		var reportUrl = $api.getStorage("report_url");
+		api.ajax({
+	        url:reportUrl+'gims/gis-new/queryMaintenByPage',
+	        timeout:10,
+	        data:{
+	        	values:{pageNo:1,pageSize:1}
+	        }
+        },function(ret,err){
+        	if(ret&&ret.errcode==0&&ret.total>0){
+        		var data = ret.rows[0];
+        		$('#gis_main_group_mainten_notice').html(
+        			'<li class="mui-table-view-cell">'+
+					'	<em class="iconfont icon-voice my-em"></em>'+
+					'	<a class="mui-navigate-right">'+
+					'	厦门大桥进岛方向 左1车道 占道施工'+
+					'	</a>'+
+					'</li>'
+        		);
+        		$('#gis_main_group_mainten_notice').show();
+        		api.setFrameAttr({
+		            name: 'gis_common_notice',
+		            hidden:false
+	            });
+        	}else{
+        		api.setFrameAttr({
+		            name: 'gis_common_notice',
+		            hidden:true
+	            });
+        	}
+        });
+	}
+</script>
+</html>

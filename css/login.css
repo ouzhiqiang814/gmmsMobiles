@@ -1,0 +1,182 @@
+body {
+	background-color: #FFFFFF;
+}
+			.flex-wrap {
+				display: -webkit-box;
+				display: -webkit-flex;
+				display: flex;
+				flex-flow: column;
+			}
+			.flex-con {
+				-webkit-box-flex: 1;
+				-webkit-flex: 1;
+				flex: 1;
+			}
+			#header {
+				background-color: #0877d0;
+				text-align: center;
+				color: #fff;
+				width: 100%;
+				position: relative;
+				padding-top:20px;
+			}
+			#header span {
+				font-size: 18px;
+				height: 50px;
+				line-height: 50px;
+				margin: 0em;
+				color: #fff;
+			}
+			.back-icon {
+				display: inline-block;
+				width: 50px;
+				height: 54px;
+				background: url(../image/arr-l.png) no-repeat center center;
+				-webkit-background-size: 18px 20px;
+				background-size: 18px 20px;
+				position: absolute;
+				left: 0;
+				bottom: 0;
+			}
+.button {
+	padding: 0.9285rem 0;
+	width: 29%;
+	border-radius: 3px;
+	background-color: #0099FF;
+	color: white;
+	margin-left: 2%;
+	margin-top: 1px;
+	filter: alpha(Opacity=50);
+	opacity: 0.5;
+}
+
+
+.floor {
+	border-radius: 3px;
+	height: 2.8571rem;
+	line-height: 2.8571rem;
+	margin: 0.7142rem 3% 0;
+	padding-left: 0.7142rem;
+	background-color: #fff;
+	width: 90%;
+}
+
+.btned {
+	border: 1px;
+	border-radius: 3px;
+	background-color: #CCCCCC;
+	padding: 1rem 0.3571rem;
+	display: block;
+	margin-left: 3%;
+	font-size: 1rem;
+	color: #fff;
+	text-align: center;
+	margin-top: 2.1428rem;
+	width: 91%
+}
+
+.btned_row {
+	border: 1px;
+	border-radius: 3px;
+	background-color: #0877d0;
+	padding: 1rem 0.3571rem;
+	display: block;
+	margin-left: 3%;
+	font-size: 1rem;
+	color: #fff;
+	text-align: center;
+	margin-top: 2.1428rem;
+	width: 91%
+}
+
+input {
+	margin-left: 0.7857rem;
+	line-height: 1.4285rem;
+	width: 70%;
+	font-size: 1.1428rem;
+}
+input:focus {
+	outline: none
+}
+
+
+
+.Center_text {
+	line-height: 2.8571rem;
+	margin-left: 17%;
+	width: 65%;
+	text-align: center;
+	font-size:1rem;
+}
+
+.fork {
+	float: right;
+	width: 1.4285rem;
+	padding: 0.7142rem 0.7142rem 0.7142rem 0;
+	display: none;
+}
+
+.line {
+	height: 1px;
+	margin:0 auto;
+	background: #e9e7e7;
+}
+
+.right-icon {
+	display: inline-block;
+	width: 3.5714rem;
+	height: 3.2857rem;
+	background: url(../image/50.png) no-repeat center center;
+	-webkit-background-size: 18px 20px;
+	background-size: 1.2857rem 1.4285rem;
+	position: absolute;
+	right: 0;
+	bottom: 0;
+}
+
+.FontStyle {
+	font-size: 1.1428rem;
+}
+
+.active {
+	background-color: #36A8DC;
+}
+
+.active_row {
+	background-color: #C3C1C2;
+}
+
+
+/*媒体查询，参考部分Bootstrap 框架*/
+/*当页面大于1200px 时，大屏幕，主要是PC 端*/
+@media (min-width: 1200px) {
+	html {
+		font-size: 28px;
+	}
+}
+/*在992 和1199 像素之间的屏幕里
+ ，中等屏幕，分辨率低的PC*/
+@media (min-width: 992px) and (max-width: 1199px) {
+	html {
+		font-size: 24px;
+	}
+}
+/*在768 和991 像素之间的屏幕里，小屏幕，主要是PAD*/
+@media (min-width: 768px) and (max-width: 991px) {
+	html {
+		font-size: 20px;
+	}
+}
+/*在480 和767 像素之间的屏幕里，超小屏幕，主要是手机*/
+@media (min-width: 480px) and (max-width: 767px) {
+	html {
+		font-size: 18px;
+	}
+}
+/*在小于480 像素的屏幕，微小屏幕，更低分辨率的手机*/
+@media (max-width: 479px) {
+	html {
+		font-size: 14px;
+	}
+}
+

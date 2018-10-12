@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>title</title>
+		<link rel="stylesheet" type="text/css" href="../../../css/api.css" />
+		<link rel="stylesheet" type="text/css" href="../../../css/mui.min.css" />
+		<link rel="stylesheet" type="text/css" href="../../../css/icons-extra.css" />
+		<style>
+			html, body {
+				width: 100%;
+				height: 100%;
+				 background: transparent;
+			}
+			body {
+				background-size: 100%;
+				background-position: center;
+				margin: 0;
+				padding: 0;
+			}
+			
+			.my-footer{
+				position: absolute;
+				width:100%;
+				height:auto;
+				border-radius: 8px;
+				overflow: hidden;
+				padding: 5px 0;
+			}
+			
+			.footer-main{
+	    	 	text-align:center;
+	    		width:100%;height:65px;
+	    		display:box;
+	    		display:-moz-box; /* Firefox */
+				display:-webkit-box; /* Safari and Chrome */
+				-moz-box-pack:center;
+				-moz-box-align:center;
+				-webkit-box-pack:center;
+				-webkit-box-align:center;
+			}
+			.footer-main div{
+				-moz-box-flex:1.0; /* Firefox */
+				-webkit-box-flex:1.0; /* Safari and Chrome */
+				box-flex:1.0;
+				text-align: center;
+			}
+					
+	    	.my-radius{		    
+			    border-radius: 50%;
+			    /* Firefox */
+				display:-moz-box;
+				-moz-box-pack:center;
+				-moz-box-align:center;
+				/* Safari、Opera 以及 Chrome */
+			    display: -webkit-box;
+			    -webkit-box-pack: center;
+			    -webkit-box-align: center;		    
+			    text-align: center;
+		        border: 1px solid #1081DA;
+			    color:#1081DA;
+		    	background: #fff;
+			    margin:0 auto;
+			}
+			.radius-big{
+				width:65px;
+				height:65px;
+			}
+			.radius-big span{
+				white-space: normal;
+				font-weight: bold;
+			}
+			.radius-small{
+				width:55px;
+				height:55px;
+			}
+			.radius-small span{
+				font-size:16px;
+				padding:5px;
+				line-height: 16px;
+				white-space: normal;
+			}
+			.my-radius:active{
+				color:#fff;
+				background: #0b69b3;
+			}
+			
+			.radius-actived{
+			    color:#fff;
+			    background: #1081DA;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="my-footer">
+			<!-- 监控toolbar -->
+			 <div id="gis_main_group_monitor_toolbar" class="footer-main">
+				<div>
+					<div onclick="openNewWindow('GIS_variable_information')" class="my-radius radius-actived radius-small">
+						<span>可变信息</span>
+					</div>
+				</div>
+				<div>
+					<div onclick="openNewWindow('GIS_traffic_flow')" class="my-radius radius-actived radius-small">
+						<span>交通流量</span>
+					</div>
+				</div>
+				<div>
+					<div onclick="openNewWindow('GIS_video_surveillance')" class="my-radius radius-actived radius-small">
+						<span>视频监控</span>
+					</div>
+				</div>
+				<div>
+					<div onclick="openNewWindow('GIS_meteorological_information')" class="my-radius radius-actived radius-small">
+						<span>气象信息</span>
+					</div>
+				</div>
+				<div>
+					<div onclick="openNewWindow('GIS_lane_condition')" class="my-radius radius-actived radius-small">
+						<span>隧道指示</span>
+					</div>
+				</div>
+			</div> 
+			<!-- 路政toolbar -->
+			 <div id="gis_main_group_road_toolbar" class="footer-main" style="width:80%;margin:0 auto;display: none;">
+				<div>
+					<div onclick="chart_openWindow('路政图表','gis_chart_road');" class="my-radius radius-actived radius-small">
+						<em class="mui-icon-extra mui-icon-extra-trend"></em>
+						<span style="padding:0;">图表</span>
+					</div>
+				</div>
+				<div>
+					<div onclick="fnOpenReport('路政明细报表','road');" class="my-radius radius-actived radius-small">
+						<em class="mui-icon mui-icon-bars"></em>
+						<span style="padding:0;">报表</span>
+					</div>
+				</div>
+				<div>
+					<div onclick="video_openWindow('GIS_video_surveillance','road')" class="my-radius radius-actived radius-small">
+						<em class="mui-icon mui-icon-videocam"></em>
+						<span style="padding:0;">视频</span>
+					</div>
+				</div>
+				<div>
+					<div onclick="video_evidenceWindow()" class="my-radius radius-actived radius-small">
+						<em class="mui-icon-extra mui-icon-extra-xiaoshuo"></em>
+						<span style="padding:0;">取证</span>
+					</div>
+				</div>
+			</div> 
+			<!-- 养护toolbar -->
+			<div id="gis_main_group_mainten_toolbar" class="footer-main" style="display: none;">
+				<div>
+					<div onclick="fnGetInfo(this,'3')" class="my-radius radius-small">
+						<span>保洁冲洗</span>
+					</div>
+				</div>
+				<div>
+					<div onclick="fnGetInfo(this,'2')" class="my-radius radius-small">
+						<span>保洁洗扫</span>
+					</div>
+				</div>
+				<div>
+					<div onclick="fnGetInfo(this,'')" class="my-radius radius-big radius-actived">
+						<span>总图</span>
+					</div>
+				</div>
+				<div>
+					<div onclick="fnGetInfo(this,'0')" class="my-radius radius-small">
+						<span>保洁巡检</span>
+					</div>
+				</div>
+				<div>
+					<div onclick="fnGetInfo(this,'1')" class="my-radius radius-small">
+						<span>绿化巡检</span>
+					</div>
+				</div>
+			</div>
+			<!-- 收费toolbar -->
+			<div id="gis_main_group_toll_toolbar" class="footer-main" style="width:60%;margin:0 auto;display: none;">
+				<div>
+					<div onclick="chart_openWindow('收费图表','gis_chart_toll')" class="my-radius radius-actived radius-small">
+						<em class="mui-icon-extra mui-icon-extra-trend"></em>
+						<span style="padding:0;">图表</span>
+					</div>
+				</div>
+				<div>
+					<div onclick="fnOpenReport('收费报表','toll');" class="my-radius radius-actived radius-small">
+						<em class="mui-icon mui-icon-bars"></em>
+						<span style="padding:0;">报表</span>
+					</div>
+				</div>
+				<div>
+					<div onclick="video_openWindow('GIS_video_surveillance','toll')" class="my-radius radius-actived radius-small">
+						<em class="mui-icon mui-icon-videocam"></em>
+						<span style="padding:0;">视频</span>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript" src="../../../script/api.js"></script>
+	<script type="text/javascript" src="../../../script/zepto.min.js"></script>
+	<script type="text/javascript">
+		apiready = function() {
+			
+		};
+		function fnSelectToolBar(tabName){
+			$('.footer-main').hide();
+			if($('#'+tabName+'_toolbar').length>0){
+				$('#'+tabName+'_toolbar').show();
+			}
+		}
+		
+		/**
+		 * 监控查看各个监控信息 
+		 */
+		function openNewWindow(type) {
+			api.openWin({
+				name : type,
+				url : '../' + type + '.html',
+				delay : 200,
+				bounces : false,
+				slidBackEnabled:false,
+				animation:{
+					type:'movein'
+				}
+			});
+		}
+		
+		/**
+		 * 根据摄像机类型查看列表 
+		 */
+		function video_openWindow(winName,data){
+			api.openWin({
+				name : winName,
+				url : '../' + winName + '.html',
+				delay : 200,
+				bounces : false,
+				slidBackEnabled:false,
+				pageParam:{datafrom:data},
+				animation:{
+					type:'movein'
+				}
+			});
+		}
+		
+		/**
+		 * 路政、收费图表信息
+		 */
+		function chart_openWindow(title,frameName){
+			api.openWin({
+				name : 'gis_chart',
+				url : './chart/gis_chart.html',
+				delay : 200,
+				bounces : false,
+				slidBackEnabled:false,
+				pageParam:{title:title,frameName:frameName},
+				animation:{
+					type:'movein'
+				}
+			});
+		}
+		
+		/**
+		 * 路政-视频取证 
+		 */
+		function video_evidenceWindow(){
+			api.toast({
+	            msg:'开发正在联调中...敬请期待'
+            });
+		}
+		
+		/**
+		 * 养护 -各类型车辆信息 
+		 */
+		function fnGetInfo(_this,type){
+			$('#gis_main_group_mainten_toolbar').find('.my-radius').removeClass('radius-actived');
+			$(_this).addClass('radius-actived');
+			api.execScript({
+				frameName:'gis_main_body',
+		        script: "mainten_fnQueryCars(1,'"+type+"');"
+	        });
+		}
+		
+		//设置养护 总图
+		function fnGetMainInfo(){
+			$('#gis_main_group_mainten_toolbar').find('.my-radius').removeClass('radius-actived');
+			$('#gis_main_group_mainten_toolbar').find('.radius-big').addClass('radius-actived');
+		}
+		
+		/**
+		 * 打开相应报表 
+		 */
+		function fnOpenReport(title,type){
+			if(type==null||type==''){
+				api.toast({
+		            msg:'暂无该报表数据'
+	            });
+	            return;
+			}
+			api.openWin({
+				name : 'report_main_data',
+				url : '../report/report_main_data.html',
+				bounces : false,
+				pageParam:{title:title,type:type},
+				animation:{
+					type:'movein'
+				}
+			});
+		}
+	</script>
+</html>

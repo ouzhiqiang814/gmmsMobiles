@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+		<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+		<title>title</title>
+		<link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+		<style>
+			html, body {
+				background: #f4f5f7;
+			}
+			.main {
+				display: flex;
+			}
+			.main-left {
+				flex: 1;
+				line-height: 60px;
+				background: #FFFFFF;
+				padding-left:5%;
+				border-right: 1px solid #EBECED;
+				border-bottom: 1px solid #EBECED;
+			}
+			.main-right {
+				flex: 1;
+			}
+			.main2 {
+			    padding-top:20px;
+				height: 30px;
+				background: #FFFFFF;
+				padding-left:5%;
+				border-bottom: 1px solid #EBECED;
+				padding-bottom:20px;
+			}
+			.main3 {
+			    padding-top:20px;
+				height: 30px;
+				background: #FFFFFF;
+				padding-left:5%;
+				border-bottom: 1px solid #EBECED;
+				padding-bottom:20px;
+				display: flex;
+			}
+			.mainfont{
+			 flex:2;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="main">
+			<div class="main-left">
+				施工路段：<span id="plano"></span>
+			</div>
+			<div class="main-left">
+				施工类型：<span id="worktype"></span>
+			</div>
+		</div>
+		<div class="main">
+			<div class="main-left">
+				方向：<span id="direction"></span>
+			</div>
+			<div class="main-left">
+				施工状态：<span id="workstatus"></span>
+			</div>
+		</div>
+		<div class="main2">
+			施工位置：<span id="workplace"></span>
+		</div>
+		<div class="main3">
+			<div class="maintime">施工时间：</div><div class="mainfont"><span id="startdate"></span><span id="enddate"></span></div>
+		</div>
+		<div class="main2">
+			占用车道：<span id="workroad"></span>
+		</div>
+		<div class="main2">
+			施工描述：<span id="workdesc"></span>
+		</div>
+		<div class="main">
+			<div class="main-left">
+				项目负责人：<span id="promanager"></span>
+			</div>
+			<div class="main-left">
+				联系方式：<span id="prophone"></span>
+			</div>
+		</div>
+		<div class="main">
+			<div class="main-left">
+				施工负责人：<span id="workmanager"></span>
+			</div>
+			<div class="main-left">
+				联系方式：<span id="workphone"></span>
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript" src="../../script/api.js"></script>
+	<script type="text/javascript" src="../../script/GIS_construction_detail_con.js"></script>
+</html>

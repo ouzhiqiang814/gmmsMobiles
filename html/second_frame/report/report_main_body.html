@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>title</title>
+    <link rel="stylesheet" type="text/css" href="../../../css/api.css"/>
+    <style>
+    	.main {
+			display: flex;
+		}
+		.main-left {
+			flex: 1;
+			background: #FFFFFF;
+			text-align: center;
+			border-right: 1px solid #EBECED;
+			border-bottom: 1px solid #EBECED;
+			padding-top: 30px;
+			padding-bottom: 30px;
+		}
+		.main-right {
+			flex: 1;
+			background: #FFFFFF;
+			text-align: center;
+			padding-top: 30px;
+			padding-bottom: 30px;
+			border-bottom: 1px solid #EBECED;
+		}
+		.menu img{
+			width:80px;
+		}
+		.presshover {
+			background-color: #CCCCCC;
+		}
+		
+		
+		.oneTitle{
+			flex: 0;
+			float:left;
+			width:50%;
+		}
+    </style>
+</head>
+<body>
+	<div id="main">
+		<div class="main">
+			<div class="main-left menu" tapmode="presshover" onclick="fnOpenReport('综合监控明细报表','monitor')">
+				<img src="../../../image/report/91F7.png" alt="" >
+				<div>监控报表</div>
+			</div>
+			<div class="main-right menu" tapmode="presshover" onclick="fnOpenReport('收费报表','toll')">
+				<img src="../../../image/report/E374.png" alt="" >
+				<div>收费报表</div>
+			</div>
+		</div>
+		<div class="main">
+			<div class="main-left menu" tapmode="presshover" onclick="fnOpenReport('路政明细报表','road')">
+				<img src="../../../image/report/7A35.png" alt="" >
+				<div>路政报表</div>
+			</div>
+			<div class="main-right menu" tapmode="presshover" onclick="fnOpenReport('养护报表','')">
+				<img src="../../../image/report/66AE.png" alt="" >
+				<div>养护报表</div>
+			</div>
+		</div>
+		<div class="main">
+			<div class="main-left menu" tapmode="presshover" onclick="fnOpenReport('财务报表','finance')">
+				<img src="../../../image/report/4645.png" alt="" >
+				<div>财务报表</div>
+			</div>
+			<div class="main-left menu" tapmode="presshover">
+			</div>
+		</div>
+	</div>
+</body>
+<script type="text/javascript" src="../../../script/api.js"></script>
+<script type="text/javascript">
+	apiready = function(){
+		
+	};
+	function fnOpenReport(title,type){
+		if(type==null||type==''){
+			api.toast({
+	            msg:'暂无该报表数据'
+            });
+            return;
+		}
+		api.openWin({
+			name : 'report_main_data',
+			url : './report_main_data.html',
+			bounces : false,
+			pageParam:{title:title,type:type},
+			animation:{
+				type:'movein'
+			}
+		});
+	}
+</script>
+</html>

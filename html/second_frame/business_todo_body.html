@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>title</title>
+    <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/mui.min.css"/>
+    <style>
+    	html,body{
+    		min-height:100%;
+    		background-color: #efeff4;
+    	}
+    	.my-media-img{max-height:48px;height:48px;width:48px;margin-top:5px;}
+    	.mui-media-body .title01{color:#111111;white-space: normal;}
+    	.mui-card-footer .title02{font-size: 0.7em;color: #999;margin-bottom: 0;}
+    	.mui-card-footer p img{width: 12px; height:12px;margin-right: 2px;vertical-align: text-top;}
+    	.mui-media-body .sharetime{font-size: 0.8em; color: #999;}
+    	.mui-table-view-cell>a:not(.mui-btn) {
+    		display: -webkit-flex;
+		    display: flex;
+		    -webkit-align-items: center;
+		    align-items: center;
+		    position: relative;
+		    overflow: hidden;
+		    margin: -11px -15px;
+		    padding: inherit;
+		    white-space: nowrap;
+		    text-overflow: ellipsis;
+		    color: inherit;
+    	}
+    </style>
+</head>
+<body>
+	<div id="businesstodo_list" class="mui-content">
+		<!-- <div class="mui-card">
+			<ul class="mui-table-view">
+				<li class="mui-table-view-cell mui-media">
+					<a href="javascript:;">
+						<img class="mui-media-object mui-pull-left" src="../../image/message/lmbh_icon.png"/>
+						<div class="mui-media-body" style="width: 100%;">
+							<p class='mui-pull-left'><span style="color: #507DAF;">姚锐</span> 发送了一笔:</p>
+							<p class='mui-pull-right sharetime'>6/9</p><br/>
+							<p class="title01">账户开通权限变更热风分分发</p>
+						</div>
+					</a>
+				</li>
+			</ul>
+			<div class="mui-card-footer">
+				<p class='mui-pull-left title02'><img src='../../image/lkxc_save_sel.png'/>开发单位系统评估及处理意见</p>
+				<p class="mui-pull-right title02"><img src='../../image/newmine.png'/>姚锐</p>
+			</div>
+		</div> -->
+	</div>
+	<div id="load_more" style="margin-bottom:10px;text-align: center;height:24px;"></div>
+</body>
+<script id="template" type="text/template">
+	{{~ it:data }}
+	<div class="mui-card" onclick="openDynamic('{{=data.bsnum}}')">
+		<ul class="mui-table-view">
+			<li class="mui-table-view-cell mui-media">
+				<a href="javascript:;">
+					<img class="mui-media-object mui-pull-left" src="{{=data.itemIcon}}"/>
+					<div class="mui-media-body" style="width: 100%;">
+						<p class='mui-pull-left'><span style="color: #507DAF;">{{=data.prevActor}}</span> 发送了一笔:</p>
+						<p class='mui-pull-right sharetime'>{{=data.todoTime}}</p><br/>
+						<p class="mui-ellipsis title01">{{=data.pname}}</p>
+					</div>
+				</a>
+			</li>
+		</ul>
+		<div class="mui-card-footer">
+			<p class='mui-pull-left title02'><img src='../../image/lkxc_save_sel.png'/>{{=data.currentNodeName}}</p>
+			<p class="mui-pull-right title02"><img src='../../image/newmine.png'/>{{=data.creator}}</p>
+		</div>
+	</div>
+	{{~}}
+</script>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/mui.min.js"></script>
+<script type="text/javascript" src="../../script/zepto.min.js"></script>
+<script type="text/javascript" src="../../script/doT.min.js"></script>
+<script type="text/javascript" src="../../script/CDateTime.js"></script>
+<script type="text/javascript">
+	var businessTodo_list,dot;
+	var pageNo = 1;
+	var pageSize = 10;
+	var totalRows = 0;
+	var isPush = true;
+	var typePicker = null;
+	var curItemId = 0;
+	apiready = function(){
+		fnInit();
+		fnLoadBusinessTodo(false,'down');
+		fnInitPull();
+		fnInitPushRefresh();
+	};
+	
+	function fnInit(){
+		businessTodo_list = $api.byId('businesstodo_list');
+		var template = $api.byId('template');
+    	dot = doT.template(template.innerHTML);
+	}
+	
+	function fnPickerQuery(itemId){
+		curItemId = itemId;
+		fnLoadBusinessTodo(false,'down');
+	}
+	
+	// 刷新
+    function fnInitPull() {
+		api.setRefreshHeaderInfo({
+		 	bgColor: '#efeff4',
+	        dropColor:'#9BA2AC'
+		},function(){
+			fnLoadBusinessTodo(true,'down');
+		});
+	};
+	
+	 // 下拉加载更多
+	function fnInitPushRefresh() {
+		api.addEventListener({
+			name: 'scrolltobottom',
+			extra: {
+	      		threshold: 0
+	    	}
+	  	}, function(ret, err) {
+	  		if(!isPush)
+	  			return;
+	  		if($('#businesstodo_list').find('.mui-card').length>=totalRows){
+	  			api.toast({
+	          		msg: '没有更多了',
+	          		duration: 2000,
+	          		location: 'bottom'
+	        	});
+	        	isPush = false;
+	        	$('#load_more').html('');
+	  		}else{
+	  			fnLoadBusinessTodo(false,'up');
+	  		}
+	  	});
+	};
+	/**
+	 * 加载数据 
+	 */
+	function fnLoadBusinessTodo(isLoad,upordown){
+		var ctype = api.connectionType;
+		if(ctype.toLowerCase()=='unknown'||ctype.toLowerCase()=='none'){
+			api.toast({
+			    msg: '暂无网络',
+			    duration: 2000,
+			    location: 'bottom'
+			});
+			if(isLoad){
+				api.refreshHeaderLoadDone(); //刷新结束
+			}
+		}else{
+			if(!isLoad){
+				$('#load_more').html('<span class="mui-spinner" style="vertical-align: bottom;"></span> 加载更多...');
+			}
+			if(upordown=='down'){
+				pageNo = 1;
+				isPush = true;
+				businessTodo_list.innerHTML = '';
+			}
+			var gmms_url = $api.getStorage('gmms_url');
+			var userId = $api.getStorage('userId');
+			var lesseeId = $api.getStorage('lesseeId');
+			api.ajax({
+		        url:gmms_url+'modules/mobile/business/business-deal!queryBusinessDeal.action',
+		        method: 'post',
+		        timeout:10,
+			    data: {
+			        values: {userId:userId,lesseeId:lesseeId,itemid:curItemId,pageNo:pageNo,pageSize:pageSize}
+			    }
+	        },function(ret,err){
+	        	if(ret){
+	        		totalRows = ret.totalRows;
+	        		$.each(ret.datas, function(idx,item){
+	        			if(item.itemIcon!=''){
+	        				item.itemIcon = gmms_url+'/js/jcarousel/images/flat/'+item.itemIcon;
+	        			}else{
+	        				item.itemIcon = '../../image/message/lmbh_icon.png';
+	        			}
+		    			item.todoTime = tranTime(item.todoTime);
+		    		});
+	        		if(upordown=='down'){
+	        			businessTodo_list.innerHTML = dot(ret.datas);
+	        		}else{
+	        			businessTodo_list.innerHTML += dot(ret.datas);
+	        		}
+	        	}else{
+	        		api.toast({
+	                    msg:err.msg,
+	                    duration: 2000,
+    					location: 'bottom'
+                    });
+                    isPush = false;
+	        	}
+	        	if(isLoad){
+					api.refreshHeaderLoadDone(); //刷新结束
+				}else{
+					$('#load_more').html('');
+				}
+				pageNo++;
+	        });
+		}
+	}
+	
+	function openDynamic(bsnum){
+		api.openWin({
+			name: '事务处理',
+			url: '../first_frame/business_deal_todo.html',
+			pageParam: {
+		        bsnum: bsnum
+		    }
+		});       
+    }
+</script>
+</html>
